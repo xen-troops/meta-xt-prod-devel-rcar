@@ -1,0 +1,30 @@
+#!/bin/sh
+# Change domain configuration to boot from storage configured by u-boot
+
+DOMD_CFG_FILE="/etc/xen/domd.cfg"
+
+# detect boot storage device
+BOOT_STORAGE=`cat /proc/device-tree/boot_dev/device`
+if [ -z "$BOOT_STORAGE" ] ; then
+    BOOT_STORAGE=mmcblk1
+    echo "WARNING! Using default storage: ${BOOT_STORAGE}"
+fi
+
+# Special case for NFS - we want to quite different cmd line
+if [ $BOOT_STORAGE = nfs ] ; then
+    BOOT_STR="nfs nfsroot=192.168.1.100:\/srv\/domd,vers=3 ip=dhcp"
+    echo "Mangling domain configuration: setting storage to network boot"
+    sed -i "s/STORAGE_PART[0-9]/${BOOT_STR}/g" $DOMD_CFG_FILE
+    exit 0
+fi
+
+# guess partition prefix, e.g. "" for sda2 or "p" for mmcblk1p2
+PART_PREFIX=""
+if echo "${BOOT_STORAGE}" | grep -q 'mmc' ; then
+   PART_PREFIX="p"
+fi
+STORAGE_PART="${BOOT_STORAGE}${PART_PREFIX}"
+
+# now make up the configuration
+echo "Mangling domain configuration: setting storage to ${BOOT_STORAGE}"
+sed -i "s/STORAGE_PART/${STORAGE_PART}/g" $DOMD_CFG_FILE
