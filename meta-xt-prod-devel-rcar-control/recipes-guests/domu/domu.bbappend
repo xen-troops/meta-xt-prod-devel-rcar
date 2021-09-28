@@ -38,11 +38,11 @@ do_install_append() {
         echo "After=backend-ready@virtio.service" >> ${D}${systemd_unitdir}/system/domu.service
     fi
 
-    # Install domd-set-root script
+    # Install domu-set-root script
     install -d ${D}${libdir}/xen/bin
     install -m 0744 ${WORKDIR}/domu-set-root ${D}${libdir}/xen/bin
 
-# Call domu-set-root script
+    # Call domu-set-root script
     echo "[Service]" >> ${D}${systemd_unitdir}/system/domu.service
     echo "ExecStartPre=${libdir}/xen/bin/domu-set-root" >> ${D}${systemd_unitdir}/system/domu.service
 }
