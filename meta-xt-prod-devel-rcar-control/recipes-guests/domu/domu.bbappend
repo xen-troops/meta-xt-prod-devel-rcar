@@ -11,11 +11,19 @@ FILES_${PN} += " \
     ${libdir}/xen/bin/domu-set-root \
 "
 
+python () {
+    for pair in d.getVar('XT_GUEST_NETWORK_DOMU', True).split(';'):
+        key, value = pair.split('=')
+        if key == 'mac':
+            d.setVar('DOMU_NET_MAC', value)
+}
+
 # It is used a lot in the do_install, so variable will be handy
 CFG_FILE="${D}${sysconfdir}/xen/domu.cfg"
 
 do_install_append() {
     cat ${WORKDIR}/domu-vdevices.cfg >> ${CFG_FILE}
+    sed -i 's/MAC_FOR_DOMAIN/"${DOMU_NET_MAC}"/" ${CFG_FILE}
 
     if ${@bb.utils.contains('DISTRO_FEATURES', 'pvcamera', 'true', 'false', d)}; then
         cat ${WORKDIR}/domu-pvcamera.cfg >> ${CFG_FILE}
