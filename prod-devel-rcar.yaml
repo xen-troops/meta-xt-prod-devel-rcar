@@ -17,6 +17,7 @@ variables:
   XT_DOMA_DDK_KM_PREBUILT_MODULE: ""
   XT_DOMA_KERNEL_EXTRA_MODULES: ""
   XT_DOMA_SOURCE_GROUP: ""
+  XT_MULTIMEDIA_EVA_DIR : ""
 common_data:
   # Sources used by all yocto-based domains
   sources: &COMMON_SOURCES
@@ -209,6 +210,7 @@ components:
         # Machine feature 'multimedia' is used to enable (VSP in domd) and (LOSSY build option in ATF)
         - [MACHINE_FEATURES_append, " multimedia"]
 
+        - [XT_MULTIMEDIA_EVA_DIR, "%{XT_MULTIMEDIA_EVA_DIR}"]
       build_target: core-image-weston
       layers:
         - "../poky/meta"
@@ -573,6 +575,37 @@ parameters:
               conf:
                 # Mask MMP recipes
                 - [BBMASK_append, "|kernel-module-uvcs-drv|omx-user-module"]
+    "yes":
+      overrides:
+        variables:
+          # Note 1
+          # Folder with multimedia evaluation package, i.e. files:
+          #   R-Car_Gen3_Series_Evaluation_Software_Package_for_Linux-*.zip
+          #   R-Car_Gen3_Series_Evaluation_Software_Package_of_Linux_Drivers-*.zip
+          # Pay attention that you do not need to unpack these files,
+          # as they will be unpacked by recipe eval-pack.bb into two
+          # subfolders inside specified folder.
+          #
+          # Note 2
+          # You can specify folder in following ways:
+          # - absolute path;
+          # - relative to domains build root:
+          #   - use yocto's internal variable ${TOPDIR};
+          #   - or moulin's variable like %{DOMD_BUILD_DIR}.
+          #     Pay attention to usage of % instead of $.
+          XT_MULTIMEDIA_EVA_DIR: "${TOPDIR}/../../../eva_mm"
+        components:
+          domd:
+            builder:
+              conf:
+                # If you enable MM you need to specify features that you need.
+                # See meta-renesas/meta-rcar-gen3/include/omx-control.inc for
+                # list of possible distro features, and make sure that required
+                # library is provided to you within Evaluation package.
+                # Following line is just example applicable for
+                # multimedia evaluation package 20210428.
+                - [DISTRO_FEATURES_append, " aaclcdec_lib aaclcdec_mdw aaclcenc_lib aaclcenc_mdw h264dec_lib h264enc_lib"]
+                - ["HOSTTOOLS_append", " unzip "]
   ENABLE_AOS_VIS:
     desc: "Enable AOS VIS service"
     "no":
