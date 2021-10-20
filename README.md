@@ -15,6 +15,7 @@ as Moulin-based project files provide correct entries in local.conf
 Work is still in progress, but right now the following features are tested and working:
 
 * Renesas Salvator-XS M3 with 8GB memory is supported
+* Renesas Salvator-X H3 with 8GB memory is supported
 * GPU sharing between domains
 * 3 domains are being built: Linux based Dom0, DomD and DomU
 * Graphics back-end in DomD
@@ -76,14 +77,14 @@ option:
 ```
 # moulin prod-devel-rcar.yaml --help-config
 usage: moulin prod-devel-rcar.yaml
-       [--MACHINE {salvator-x-m3,salvator-xs-m3-2x4g,salvator-xs-h3}]
+       [--MACHINE {salvator-x-m3,salvator-xs-m3-2x4g,salvator-xs-h3,salvator-x-h3-4x2g}]
        [--ENABLE_MM {no}] [--PREBUILT_DDK {no}]
 
 Config file description: Xen-Troops development setup for Renesas RCAR Gen3
 hardware
 
 optional arguments:
-  --MACHINE {salvator-x-m3,salvator-xs-m3-2x4g,salvator-xs-h3}
+  --MACHINE {salvator-x-m3,salvator-xs-m3-2x4g,salvator-xs-h3,salvator-x-h3-4x2g}
                         RCAR Gen3-based device
   --ENABLE_MM {no}      Enable Multimedia support
   --PREBUILT_DDK {no}   Use pre-built GPU drivers
