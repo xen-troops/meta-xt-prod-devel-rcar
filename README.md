@@ -110,6 +110,65 @@ This will require even more time and space, as Android is quite big.
 
 ## Creating SD card image
 
+Image file can be created with `rouge` tool. This is a companion
+application for `moulin`.
+
+It can be invoked either as a standalone tool, or via Ninja.
+
+### Creating image(s) via Ninja
+
+Newer versions of `moulin` (>= 0.5) will generate two additional Ninja
+targets:
+
+ - `image-full`
+ - `image-android_only` (if building with `--ENABLE_ANDROID=yes`)
+
+Thus, you can just run `ninja image-full` or `ninja full.img` which
+will generate the `full.img` in your build directory.
+
+Then you can use `dd` to write this image to your SD card. Don't
+forget `conv=sparse` option for `dd` to speed up writing.
+
+### Using `rouge` in standalone mode
+
+In this mode you can write image right to SD card. But it requires
+additional options.
+
+In standalone mode`rouge` accepts the same parameters like
+`--MACHINE`, `--ENABLE_ANDROID`, `--ENABLE_DOMU` as `moulin` do.
+
+This XT product provides two images: `full` and `android_only`. Latter
+is available only when `--ENABLE_ANDROID=yes`.
+
+You can prepare image by running
+
+```
+# rouge prod-devel-rcar.yaml --ENABLE_DOMU=yes --ENABLE_ANDROID=no -i full
+```
+
+This will create file `full.img` in your current directory.
+
+Also you can write image directly to a SD card by running
+
+```
+# sudo rouge prod-devel-rcar.yaml --ENABLE_DOMU=yes --ENABLE_ANDROID=no -i full -so /dev/sdX
+```
+
+**BE SURE TO PROVIDE CORRECT DEVICE NAME**. `rouge` have no
+interactive prompts and will overwrite your device right away. **ALL
+DATA WILL BE LOST**.
+
+If you want to generate only Android sub-image use `-i android_only`
+option.
+
+For more information about `rouge` check its
+[manual](https://moulin.readthedocs.io/en/latest/rouge.html).
+
+## Creating SD card image (old way)
+
+This approach is not supported anymore. It is left only for historical
+purposes.
+
 This repository includes `mk_sdcard_image.sh` script that can be used
 to create file with a full SD/eMMC image or to write image directly to
 attached SD card. This is a temporary solution, till we introduce
