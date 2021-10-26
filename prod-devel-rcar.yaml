@@ -447,6 +447,28 @@ parameters:
               conf:
                 # Mask MMP recipes
                 - [BBMASK_append, "|kernel-module-uvcs-drv|omx-user-module"]
+  ENABLE_AOS_VIS:
+    desc: "Enable non open source aos-vis service"
+    "no":
+      default: true
+    "yes":
+      overrides:
+        components:
+          domd:
+            sources:
+              - type: git
+                url: "ssh://git@gitpct.epam.com/epmd-aepr/meta-aos"
+                rev: master
+            builder:
+              layers:
+                - " ../meta-aos"
+              conf:
+                - [AOS_VIS_PLUGINS, "telemetryemulatoradapter"]
+                - [DISTRO_FEATURES_append, " vis"]
+          doma:
+            builder:
+              env:
+                - "XT_USE_VIS_SERVER=true"
   PREBUILT_DDK:
     desc: "Use pre-built GPU drivers"
     "no":
