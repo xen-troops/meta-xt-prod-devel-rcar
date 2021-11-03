@@ -101,7 +101,7 @@ common_data:
         url: "git://git.openembedded.org/meta-python2"
         rev: dunfell
       - type: git
-        url: "git://github.com/kraj/meta-clang"
+        url: "https://github.com/kraj/meta-clang.git"
         rev: dunfell
       - type: git
         url: "ssh://git@gitpct.epam.com/epmd-aepr/img-proprietary"
@@ -406,7 +406,7 @@ parameters:
           domd:
             sources:
               - type: git
-                url: "git://github.com/CogentEmbedded/meta-rcar.git"
+                url: "https://github.com/CogentEmbedded/meta-rcar.git"
                 rev: v5.1.0
             builder:
               layers:
