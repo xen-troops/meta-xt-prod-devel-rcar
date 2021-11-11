@@ -539,6 +539,13 @@ parameters:
     desc: "Enable non open source aos-vis service"
     "no":
       default: true
+      overrides:
+        components:
+          domd:
+            builder:
+              conf:
+                # Mask aos-vis append
+                - [BBMASK_append, "|aos-vis"]
     "yes":
       overrides:
         components:
