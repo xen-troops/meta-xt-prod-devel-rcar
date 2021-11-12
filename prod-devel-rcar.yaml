@@ -408,7 +408,7 @@ parameters:
                 rev: v5.1.0
             builder:
               layers:
-                - " ../meta-rcar/meta-rcar-gen3-adas"
+                - "../meta-rcar/meta-rcar-gen3-adas"
               conf:
                 # Ignore OP-TEE patches as we have own OP-TEE
                 -  [BBMASK_append, "|meta-rcar-gen3-adas/recipes-bsp/optee"]
@@ -553,7 +553,7 @@ parameters:
                 rev: master
             builder:
               layers:
-                - " ../meta-aos"
+                - "../meta-aos"
                 - "../meta-xt-prod-devel-rcar/meta-aos-tune"
               conf:
                 - [AOS_VIS_PLUGINS, "telemetryemulatoradapter"]
