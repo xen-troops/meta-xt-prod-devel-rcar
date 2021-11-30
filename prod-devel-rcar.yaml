@@ -409,6 +409,7 @@ parameters:
             builder:
               layers:
                 - "../meta-rcar/meta-rcar-gen3-adas"
+                - "../meta-xt-rcar/meta-xt-cogent-fixups"
               conf:
                 # Ignore OP-TEE patches as we have own OP-TEE
                 -  [BBMASK_append, "|meta-rcar-gen3-adas/recipes-bsp/optee"]
