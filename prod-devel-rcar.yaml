@@ -389,7 +389,7 @@ parameters:
           XT_OP_TEE_FLAVOUR: "salvator_h3_4x2g"
           XT_DOMD_DTB_NAME: "r8a77951-h3ulcb-4x2g-domd.dtb"
           XT_XEN_DTB_NAME: "r8a77951-h3ulcb-4x2g-xen.dtb"
-    h3ulcb-kf-4x2g:
+    h3ulcb-4x2g-kf:
       overrides:
         variables:
           MACHINE: "h3ulcb"
@@ -413,7 +413,7 @@ parameters:
               conf:
                 # Ignore OP-TEE patches as we have own OP-TEE
                 -  [BBMASK_append, "|meta-rcar-gen3-adas/recipes-bsp/optee"]
-    h3ulcb-ab-4x2g:
+    h3ulcb-4x2g-ab:
       overrides:
         variables:
           MACHINE: "h3ulcb"
