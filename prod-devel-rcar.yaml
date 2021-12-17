@@ -93,6 +93,9 @@ common_data:
     # HACK: force ipk instead of rpm b/c it makes troubles to PVR UM build otherwise
     - [PACKAGE_CLASSES, "package_ipk"]
 
+    # Ignore ATF as we have own ATF recipe
+    - [BBMASK_append, "|meta-rcar-gen3/recipes-bsp/arm-trusted-firmware"]
+
   # The same set of layers and configs is used both in DomD and DomU
   # to build a DDK from source code
   ddk_source_overrides: &DDK_SOURCE_OVERRIDES
@@ -413,6 +416,8 @@ parameters:
               conf:
                 # Ignore OP-TEE patches as we have own OP-TEE
                 -  [BBMASK_append, "|meta-rcar-gen3-adas/recipes-bsp/optee"]
+                # Ignore ATF patches as we do not need V3 support
+                -  [BBMASK_append, "|meta-rcar-gen3-adas/recipes-bsp/arm-trusted-firmware"]
     h3ulcb-4x2g-ab:
       overrides:
         variables:
