@@ -163,21 +163,3 @@ option.
 
 For more information about `rouge` check its
 [manual](https://moulin.readthedocs.io/en/latest/rouge.html).
-
-## Creating SD card image (old way)
-
-This approach is not supported anymore. It is left only for historical
-purposes.
-
-This repository includes `mk_sdcard_image.sh` script that can be used
-to create file with a full SD/eMMC image or to write image directly to
-attached SD card. This is a temporary solution, till we introduce
-`moulin`-based image generator.
-
-Use it by invoking `./mk_sdcard_image.sh -p . -d sd_image.bin -c
-devel`. `-p` parameter should point to your build directory (where
-`build.ninja` lies). g`-d` should be either path to `/dev/sdX` or to a
-file. `-c` should always be equal to `devel` for this particular product.
-
-Please take care when pointing it to your `/dev/sdX`. It will destroy
-all data on provided storage.
