@@ -203,6 +203,8 @@ components:
         - [XT_OP_TEE_FLAVOUR, "%{XT_OP_TEE_FLAVOUR}"]
         - [XT_DEVICE_TREES, "%{XT_DOMD_DTB_NAME} %{XT_DOMA_DTB_NAME} %{XT_XEN_DTB_NAME}"]
         - [XT_GUEST_INSTALL, "%{XT_GENERIC_DOMU_TAG} %{XT_DOMA_TAG}"]
+        # Machine feature 'multimedia' is used to enable (VSP in domd) and (LOSSY build option in ATF)
+        - [MACHINE_FEATURES_append, " multimedia"]
 
       build_target: core-image-weston
       layers:
