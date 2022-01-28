@@ -80,10 +80,6 @@ common_data:
     # Add for gstreamer plugins ugly
     - [LICENSE_FLAGS_WHITELIST, "commercial"]
 
-    # Configuration for USB 3.0
-    # TODO: Enable this after validation
-    #- [MACHINE_FEATURES_append, " usb3"]
-
     # Add Capacity Aware migration Strategy (CAS)
     - [MACHINE_FEATURES_append, " cas"]
 
@@ -415,6 +411,13 @@ parameters:
               conf:
                 # Ignore OP-TEE patches as we have own OP-TEE
                 -  [BBMASK_append, "|meta-rcar-gen3-adas/recipes-bsp/optee"]
+                # Configuration for USB 3.0
+                - [MACHINE_FEATURES_append, " usb3"]
+          domu:
+            builder:
+              conf:
+                # Configuration for USB 3.0
+                - [MACHINE_FEATURES_append, " usb3"]
     h3ulcb-4x2g-ab:
       overrides:
         variables:
@@ -426,6 +429,17 @@ parameters:
           XT_OP_TEE_FLAVOUR: "salvator_h3_4x2g"
           XT_DOMD_DTB_NAME: "r8a77951-h3ulcb-4x2g-ab-domd.dtb"
           XT_XEN_DTB_NAME: "r8a77951-h3ulcb-4x2g-ab-xen.dtb"
+        components:
+          domd:
+            builder:
+              conf:
+                # Configuration for USB 3.0
+                - [MACHINE_FEATURES_append, " usb3"]
+          domu:
+            builder:
+              conf:
+                # Configuration for USB 3.0
+                - [MACHINE_FEATURES_append, " usb3"]
     m3ulcb:
       overrides:
         variables:
