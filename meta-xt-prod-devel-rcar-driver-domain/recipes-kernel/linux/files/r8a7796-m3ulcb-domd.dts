@@ -1,0 +1,76 @@
+/*
+ * Device Tree Source for the M3ULCB (R-Car Starter Kit Pro) board
+ * running XEN hypervisor
+ *
+ * Copyright (C) 2016-2018 Renesas Electronics Corp.
+ * Copyright (C) 2016 Cogent Embedded, Inc.
+ *
+ * This file is licensed under the terms of the GNU General Public License
+ * version 2.  This program is licensed "as is" without any warranty of any
+ * kind, whether express or implied.
+ */
+
+#include "r8a77961-ulcb.dts"
+
+/*
+ * The device tree compiler (DTC) is allocating the phandle from 1 to
+ * onwards. Reserve a high value for the GIC phandle.
+ */
+#define PHANDLE_GIC (65000)
+
+/ {
+	soc {
+		/* This must point to Xen interrupt-parent */
+		interrupt-parent = <PHANDLE_GIC>;
+	};
+
+	passthrough {
+	};
+
+	/*
+	 * When creating DT for the guest domain Xen inserts only dummy CPU nodes.
+	 * And the number of these inserted CPU nodes is equal to the number of
+	 * vCPUs assigned to this domain. All CPU properties which original DT has,
+	 * such as OPP, clock, regulator, etc are not passed to the guest’s DT.
+	 *
+	 * Example of guest vCPU node:
+	 *
+	 * cpu@0 {
+	 *     device_type = "cpu";
+	 *     compatible = "arm,armv8";
+	 *     enable-method = "psci";
+	 *     reg = <0x0>;
+	 * };
+	 *
+	 * This results in the fact that all features expecting a57_x or a53_x
+	 * CPU nodes to be present get broken. This is why we have to explicitly
+	 * remove the following.
+	 */
+	/delete-node/thermal-zones;
+	/delete-node/pmu_a57;
+	/delete-node/pmu_a53;
+
+	/* Reduce CMA pool to from 384MB to 256MB */
+	reserved-memory {
+		/delete-node/linux,cma@58000000;
+
+		/* global autoconfigured region for contiguous allocations */
+		linux,cma@60000000 {
+			compatible = "shared-dma-pool";
+			reusable;
+			reg = <0x00000000 0x60000000 0x0 0x10000000>;
+			linux,cma-default;
+		};
+	};
+};
+
+/delete-node/&adsp;
+
+/* Xen will provide its own GIC, mask ours */
+&gic {
+	compatible = "";
+};
+
+&scif2 {
+	status = "disabled";
+};

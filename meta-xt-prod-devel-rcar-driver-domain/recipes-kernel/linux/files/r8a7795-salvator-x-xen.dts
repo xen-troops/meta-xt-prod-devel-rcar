@@ -1,0 +1,55 @@
+/*
+ * Device Tree Source for the Salvator-X board
+ * running XEN hypervisor
+ *
+ * Copyright (C) 2015 Renesas Electronics Corp.
+ *
+ * This file is licensed under the terms of the GNU General Public License
+ * version 2.  This program is licensed "as is" without any warranty of any
+ * kind, whether express or implied.
+ */
+
+#include "r8a7795-salvator-x-4x2g-xen.dts"
+
+/ {
+	model = "Renesas Salvator-X board based on r8a7795 ES2.0+";
+
+	memory@48000000 {
+		device_type = "memory";
+		/* first 128MB is reserved for secure area. */
+		reg = <0x0 0x48000000 0x0 0x38000000>,
+			  <0x5 0x00000000 0x0 0x40000000>,
+			  <0x6 0x00000000 0x0 0x40000000>,
+			  <0x7 0x00000000 0x0 0x40000000>;
+	};
+};
+
+/ {
+	soc {
+		/delete-node/gsx_pv0_domd;
+		/delete-node/gsx_pv1_domd;
+		/delete-node/gsx_pv2_domd;
+		/delete-node/gsx_pv3_domd;
+		/delete-node/gsx_pv0_domu;
+		/delete-node/gsx_pv1_domu;
+		/delete-node/gsx_pv2_domu;
+		/delete-node/gsx_pv3_domu;
+	};
+
+};
+
+&ipmmu_pv0 {
+	status = "disabled";
+};
+
+&ipmmu_pv1 {
+	status = "disabled";
+};
+
+&ipmmu_pv2 {
+	status = "disabled";
+};
+
+&ipmmu_pv3 {
+	status = "disabled";
+};

@@ -1,0 +1,45 @@
+/dts-v1/;
+
+#include <dt-bindings/interrupt-controller/arm-gic.h>
+
+/ {
+
+	#address-cells = <2>;
+	#size-cells = <2>;
+
+	passthrough {
+		compatible = "simple-bus";
+		ranges;
+		#address-cells = <2>;
+		#size-cells = <2>;
+
+		gsx: gsx@fd000000 {
+			compatible = "renesas,gsx";
+			reg = <0 0xfd000000 0 0x3ffff>;
+			interrupts = <GIC_SPI 119 IRQ_TYPE_LEVEL_HIGH>;
+			/*clocks = <&cpg CPG_MOD 112>;*/
+			/*power-domains = <&sysc R8A7795_PD_3DG_E>;*/
+		};
+	};
+
+	firmware {
+		android {
+			compatible = "android,firmware";
+
+			vbmeta {
+                                compatible = "android,vbmeta";
+                                /* partitions witch can be mount in the first stage */
+                                parts = "vbmeta,boot";
+                                by_name_prefix="/dev/block/by-name";
+                        };
+		};
+	};
+
+	ion {
+		compatible = "renesas,ion-rcar";
+
+		heap_rcar_custom@0 {
+			heap-name = "rcar custom";
+		};
+	};
+};
