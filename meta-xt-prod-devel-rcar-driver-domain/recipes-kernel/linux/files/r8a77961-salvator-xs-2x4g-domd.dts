@@ -1,0 +1,64 @@
+// SPDX-License-Identifier: GPL-2.0
+/*
+ * Device Tree Source for the Salvator-X 2nd version board with R-Car M3 ES3.0+
+ * running XEN hypervisor
+ *
+ * Copyright (C) 2018-2019 Renesas Electronics Corp.
+ */
+
+#include "r8a77961-salvator-xs.dts"
+
+/*
+ * The device tree compiler (DTC) is allocating the phandle from 1 to
+ * onwards. Reserve a high value for the GIC phandle.
+ */
+#define PHANDLE_GIC (65000)
+
+/ {
+	soc {
+		//this must point to Xen interrupt-parent
+		interrupt-parent = <PHANDLE_GIC>;
+	};
+
+	passthrough {
+	};
+
+	/*
+	 * When creating DT for the guest domain Xen inserts only dummy CPU nodes.
+	 * And the number of these inserted CPU nodes is equal to the number of
+	 * vCPUs assigned to this domain. All CPU properties which original DT has,
+	 * such as OPP, clock, regulator, etc are not passed to the guest’s DT.
+	 *
+	 * Example of guest vCPU node:
+	 *
+	 * cpu@0 {
+	 *     device_type = "cpu";
+	 *     compatible = "arm,armv8";
+	 *     enable-method = "psci";
+	 *     reg = <0x0>;
+	 * };
+	 *
+	 * This results in the fact that all features expecting a57_x or a53_x
+	 * CPU nodes to be present get broken. This is why we have to explicitly
+	 * remove the following.
+	 */
+	/delete-node/thermal-zones;
+	/delete-node/pmu_a57;
+	/delete-node/pmu_a53;
+};
+
+/delete-node/&adsp;
+
+
+/* Xen will provide its own GIC, mask ours */
+&gic {
+	compatible = "";
+};
+
+&scif2 {
+	status = "disabled";
+};
+
+&sound_card {
+	dais = <&rsnd_port0>; /* ak4613 */
+};

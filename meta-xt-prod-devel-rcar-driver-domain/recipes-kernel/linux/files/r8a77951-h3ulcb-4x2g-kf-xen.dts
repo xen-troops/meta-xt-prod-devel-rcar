@@ -1,0 +1,515 @@
+// SPDX-License-Identifier: GPL-2.0
+/*
+ * Device Tree Source for the H3ULCB Kingfisher board
+ * running XEN hypervisor
+ *
+ * Copyright (C) 2016-2018 Renesas Electronics Corp.
+ * Copyright (C) 2016 Cogent Embedded, Inc.
+ */
+
+#include "r8a77951-ulcb-kf.dts"
+#include "xen-chosen.dtsi"
+
+/ {
+	model = "Renesas H3ULCB Kingfisher board based on r8a77951, running XEN hypervisor";
+	compatible = "shimafuji,kingfisher", "renesas,h3ulcb",
+		     "renesas,r8a7795";
+
+	reserved-memory {
+		/delete-node/linux,cma@57000000;
+		/delete-node/linux,multimedia@70000000;
+	};
+
+	/delete-node/mmngr;
+	/delete-node/mmngrbuf;
+
+	/*
+	 * When creating DT for the guest domain Xen inserts only dummy CPU nodes.
+	 * And the number of these inserted CPU nodes is equal to the number of
+	 * vCPUs assigned to this domain. All CPU properties which original DT has,
+	 * such as OPP, clock, regulator, etc are not passed to the guest’s DT.
+	 *
+	 * Example of guest vCPU node:
+	 *
+	 * cpu@0 {
+	 *     device_type = "cpu";
+	 *     compatible = "arm,armv8";
+	 *     enable-method = "psci";
+	 *     reg = <0x0>;
+	 * };
+	 *
+	 * This results in the fact that all features expecting a57_x or a53_x
+	 * CPU nodes to be present get broken. This is why we have to explicitly
+	 * remove the following.
+	 */
+	/delete-node/thermal-zones;
+	/delete-node/pmu_a57;
+	/delete-node/pmu_a53;
+};
+
+/* ============================ Enabled IPMMUs ===============================*/
+
+&ipmmu_mm {
+	status = "okay";
+};
+
+&ipmmu_vi0 {
+	status = "okay";
+};
+
+&ipmmu_vi1 {
+	status = "okay";
+};
+
+&ipmmu_vp0 {
+	/*
+	 * The "renesas,ipmmu-mmu-r8a7795" string is known for mmngr, but is not
+	 * known for the Xen's IPMMU driver. Overwrite compatible string as these
+	 * IPMMU devices need to be picked up by Xen.
+	 */
+	compatible = "renesas,ipmmu-r8a7795";
+	status = "okay";
+};
+
+&ipmmu_vp1 {
+	compatible = "renesas,ipmmu-r8a7795";
+	status = "okay";
+};
+
+&ipmmu_vc0 {
+	compatible = "renesas,ipmmu-r8a7795";
+	status = "okay";
+};
+
+&ipmmu_vc1 {
+	compatible = "renesas,ipmmu-r8a7795";
+	status = "okay";
+};
+
+&ipmmu_pv0 {
+	status = "okay";
+};
+
+&ipmmu_pv1 {
+	status = "okay";
+};
+
+&ipmmu_pv2 {
+	status = "okay";
+};
+
+&ipmmu_pv3 {
+	status = "okay";
+};
+
+&ipmmu_hc {
+	status = "okay";
+};
+
+&ipmmu_mp0 {
+	status = "okay";
+};
+
+&ipmmu_ds0 {
+	status = "okay";
+};
+
+&ipmmu_ds1 {
+	status = "okay";
+};
+
+&ipmmu_ir {
+	status = "okay";
+};
+
+&ipmmu_rt {
+	status = "okay";
+};
+
+/*=========================== Bus masters linked to IPMMUS ===================*/
+
+&dmac0 {
+	iommus = <&ipmmu_ds0 0>, <&ipmmu_ds0 1>,
+			 <&ipmmu_ds0 2>, <&ipmmu_ds0 3>,
+			 <&ipmmu_ds0 4>, <&ipmmu_ds0 5>,
+			 <&ipmmu_ds0 6>, <&ipmmu_ds0 7>,
+			 <&ipmmu_ds0 8>, <&ipmmu_ds0 9>,
+			 <&ipmmu_ds0 10>, <&ipmmu_ds0 11>,
+			 <&ipmmu_ds0 12>, <&ipmmu_ds0 13>,
+			 <&ipmmu_ds0 14>, <&ipmmu_ds0 15>;
+};
+
+&dmac1 {
+	iommus = <&ipmmu_ds1 0>, <&ipmmu_ds1 1>,
+			 <&ipmmu_ds1 2>, <&ipmmu_ds1 3>,
+			 <&ipmmu_ds1 4>, <&ipmmu_ds1 5>,
+			 <&ipmmu_ds1 6>, <&ipmmu_ds1 7>,
+			 <&ipmmu_ds1 8>, <&ipmmu_ds1 9>,
+			 <&ipmmu_ds1 10>, <&ipmmu_ds1 11>,
+			 <&ipmmu_ds1 12>, <&ipmmu_ds1 13>,
+			 <&ipmmu_ds1 14>, <&ipmmu_ds1 15>;
+};
+
+&dmac2 {
+	iommus = <&ipmmu_ds1 16>, <&ipmmu_ds1 17>,
+			 <&ipmmu_ds1 18>, <&ipmmu_ds1 19>,
+			 <&ipmmu_ds1 20>, <&ipmmu_ds1 21>,
+			 <&ipmmu_ds1 22>, <&ipmmu_ds1 23>,
+			 <&ipmmu_ds1 24>, <&ipmmu_ds1 25>,
+			 <&ipmmu_ds1 26>, <&ipmmu_ds1 27>,
+			 <&ipmmu_ds1 28>, <&ipmmu_ds1 29>,
+			 <&ipmmu_ds1 30>, <&ipmmu_ds1 31>;
+};
+
+&audma0 {
+	iommus = <&ipmmu_mp0 0>, <&ipmmu_mp0 1>,
+			 <&ipmmu_mp0 2>, <&ipmmu_mp0 3>,
+			 <&ipmmu_mp0 4>, <&ipmmu_mp0 5>,
+			 <&ipmmu_mp0 6>, <&ipmmu_mp0 7>,
+			 <&ipmmu_mp0 8>, <&ipmmu_mp0 9>,
+			 <&ipmmu_mp0 10>, <&ipmmu_mp0 11>,
+			 <&ipmmu_mp0 12>, <&ipmmu_mp0 13>,
+			 <&ipmmu_mp0 14>, <&ipmmu_mp0 15>;
+};
+
+&audma1 {
+	iommus = <&ipmmu_mp0 16>, <&ipmmu_mp0 17>,
+			 <&ipmmu_mp0 18>, <&ipmmu_mp0 19>,
+			 <&ipmmu_mp0 20>, <&ipmmu_mp0 21>,
+			 <&ipmmu_mp0 22>, <&ipmmu_mp0 23>,
+			 <&ipmmu_mp0 24>, <&ipmmu_mp0 25>,
+			 <&ipmmu_mp0 26>, <&ipmmu_mp0 27>,
+			 <&ipmmu_mp0 28>, <&ipmmu_mp0 29>,
+			 <&ipmmu_mp0 30>, <&ipmmu_mp0 31>;
+};
+
+&vin0 {
+	iommus = <&ipmmu_vi0 0>;
+};
+
+&vin1 {
+	iommus = <&ipmmu_vi0 0>;
+};
+
+&vin2 {
+	iommus = <&ipmmu_vi0 0>;
+};
+
+&vin3 {
+	iommus = <&ipmmu_vi0 0>;
+};
+
+&vin4 {
+	iommus = <&ipmmu_vi1 1>;
+};
+
+&vin5 {
+	iommus = <&ipmmu_vi1 1>;
+};
+
+&sdhi3 {
+	iommus = <&ipmmu_ds1 35>;
+};
+
+&pciec0 {
+	iommus = <&ipmmu_hc 0>;
+};
+
+&pciec1 {
+	iommus = <&ipmmu_hc 1>;
+};
+
+&ehci0 {
+	iommus = <&ipmmu_hc 4>;
+};
+
+&ohci0 {
+	iommus = <&ipmmu_hc 4>;
+};
+
+&xhci0 {
+	iommus = <&ipmmu_hc 12>;
+};
+
+&fcpvd0 {
+	iommus = <&ipmmu_vi0 8>;
+};
+
+&fcpvd1 {
+	iommus = <&ipmmu_vi0 9>;
+};
+
+&fcpvd2 {
+	iommus = <&ipmmu_vi1 10>;
+};
+
+&hdmi0 {
+	iommus = <&ipmmu_vi1 12>;
+};
+
+&fdp0 {
+	iommus = <&ipmmu_vp0 0>;
+};
+
+&vspbd {
+	iommus = <&ipmmu_vp0 5>;
+};
+
+&vspi0 {
+	iommus = <&ipmmu_vp0 8>;
+};
+
+&fdp1 {
+	iommus = <&ipmmu_vp1 1>;
+};
+
+&vspbc {
+	iommus = <&ipmmu_vp1 7>;
+};
+
+&vspi1 {
+	iommus = <&ipmmu_vp1 9>;
+};
+
+/ {
+	soc {
+		imr-lx4@fe860000 {
+			xen,passthrough;
+			iommus = <&ipmmu_vc1 0>;
+		};
+
+		imr-lx4@fe870000 {
+			xen,passthrough;
+			iommus = <&ipmmu_vc1 0>;
+		};
+
+		imr-lx4@fe880000 {
+			xen,passthrough;
+			iommus = <&ipmmu_vc0 1>;
+		};
+
+		imr-lx4@fe890000 {
+			xen,passthrough;
+			iommus = <&ipmmu_vc0 1>;
+		};
+
+		gsx_pv0_domd {
+			xen,passthrough;
+			iommus = <&ipmmu_pv0 0>;
+		};
+
+		gsx_pv1_domd {
+			xen,passthrough;
+			iommus = <&ipmmu_pv1 0>;
+		};
+
+		gsx_pv2_domd {
+			xen,passthrough;
+			iommus = <&ipmmu_pv2 0>;
+		};
+
+		gsx_pv3_domd {
+			xen,passthrough;
+			iommus = <&ipmmu_pv3 0>;
+		};
+
+		gsx_pv0_domu {
+			xen,passthrough;
+			iommus = <&ipmmu_pv0 1>;
+		};
+
+		gsx_pv1_domu {
+			xen,passthrough;
+			iommus = <&ipmmu_pv1 1>;
+		};
+
+		gsx_pv2_domu {
+			xen,passthrough;
+			iommus = <&ipmmu_pv2 1>;
+		};
+
+		gsx_pv3_domu {
+			xen,passthrough;
+			iommus = <&ipmmu_pv3 1>;
+		};
+
+		fcpcs_vc0 {
+			xen,passthrough;
+			iommus = <&ipmmu_vc0 8>,
+					 <&ipmmu_vc0 12>;
+		};
+
+		fcpcs_vc1 {
+			xen,passthrough;
+			iommus = <&ipmmu_vc1 8>,
+					 <&ipmmu_vc1 12>;
+		};
+
+		impdm0 {
+			xen,passthrough;
+			iommus = <&ipmmu_ir 0>,
+					 <&ipmmu_ir 1>;
+		};
+
+		imp0 {
+			xen,passthrough;
+		};
+
+		impdes0 {
+			xen,passthrough;
+		};
+
+		imprtt {
+			xen,passthrough;
+		};
+
+		lossy_shmem {
+			reg = <0 0x47fd7000 0 0x1000>;
+		};
+	};
+};
+
+&ehci1 {
+	iommus = <&ipmmu_hc 5>;
+};
+
+&ohci1 {
+	iommus = <&ipmmu_hc 5>;
+};
+
+&usb_dmac0 {
+	iommus = <&ipmmu_hc 9>;
+};
+
+&usb_dmac1 {
+	iommus = <&ipmmu_hc 10>;
+};
+
+&usb_dmac2 {
+	iommus = <&ipmmu_hc 14>;
+};
+
+&usb_dmac3 {
+	iommus = <&ipmmu_hc 15>;
+};
+
+&avb {
+	iommus = <&ipmmu_ds0 16>;
+};
+
+&sdhi0 {
+	iommus = <&ipmmu_ds1 32>;
+};
+
+&sdhi2 {
+	iommus = <&ipmmu_ds1 34>;
+};
+
+&rt_dmac0 {
+	iommus = <&ipmmu_rt 4>, <&ipmmu_rt 5>,
+			 <&ipmmu_rt 6>, <&ipmmu_rt 7>,
+			 <&ipmmu_rt 8>, <&ipmmu_rt 9>,
+			 <&ipmmu_rt 10>, <&ipmmu_rt 11>;
+};
+
+&rt_dmac1 {
+	iommus = <&ipmmu_rt 12>, <&ipmmu_rt 13>,
+			 <&ipmmu_rt 14>, <&ipmmu_rt 15>,
+			 <&ipmmu_rt 16>, <&ipmmu_rt 17>,
+			 <&ipmmu_rt 18>, <&ipmmu_rt 19>;
+};
+
+/* ============================ Xen pass through section =====================*/
+
+&can0			{ xen,passthrough; };
+&can1			{ xen,passthrough; };
+&arm_cc630p		{ xen,passthrough; };
+&csi20			{ xen,passthrough; };
+&csi40			{ xen,passthrough; };
+&du				{ xen,passthrough; };
+&usb_dmac2		{ xen,passthrough; };
+&usb_dmac3		{ xen,passthrough; };
+&usb_dmac0		{ xen,passthrough; };
+&usb_dmac1		{ xen,passthrough; };
+&dmac0			{ xen,passthrough; };
+&dmac1			{ xen,passthrough; };
+&dmac2			{ xen,passthrough; };
+&audma0			{ xen,passthrough; };
+&audma1			{ xen,passthrough; };
+&avb			{ xen,passthrough; };
+&fcpvd0			{ xen,passthrough; };
+&fcpvd1			{ xen,passthrough; };
+&fcpvd2			{ xen,passthrough; };
+&fdp0			{ xen,passthrough; };
+&fdp1			{ xen,passthrough; };
+&gpio0			{ xen,passthrough; };
+&gpio1			{ xen,passthrough; };
+&gpio2			{ xen,passthrough; };
+&gpio3			{ xen,passthrough; };
+&gpio4			{ xen,passthrough; };
+&gpio5			{ xen,passthrough; };
+&gpio6			{ xen,passthrough; };
+&gpio7			{ xen,passthrough; };
+&gsx			{ xen,passthrough; };
+&hdmi0			{ xen,passthrough; };
+&i2c2			{ xen,passthrough; };
+&i2c4			{ xen,passthrough; };
+&i2c_dvfs		{ xen,passthrough; };
+&intc_ex		{ xen,passthrough; };
+&mfis_as		{ xen,passthrough; };
+&pciec1			{ xen,passthrough; };
+&pciec0			{ xen,passthrough; };
+&pmic			{ xen,passthrough; };
+&rpc0			{ xen,passthrough; };
+&sdhi0			{ xen,passthrough; };
+&sdhi2			{ xen,passthrough; };
+&sdhi3			{ xen,passthrough; };
+&hscif0			{ xen,passthrough; };
+&hscif1			{ xen,passthrough; };
+&scif1			{ xen,passthrough; };
+&src0			{ xen,passthrough; };
+&src1			{ xen,passthrough; };
+&src2			{ xen,passthrough; };
+&src3			{ xen,passthrough; };
+&src4			{ xen,passthrough; };
+&src5			{ xen,passthrough; };
+&src6			{ xen,passthrough; };
+&src7			{ xen,passthrough; };
+&src8			{ xen,passthrough; };
+&src9			{ xen,passthrough; };
+&ssi0			{ xen,passthrough; };
+&ssi1			{ xen,passthrough; };
+&ssi2			{ xen,passthrough; };
+&ssi3			{ xen,passthrough; };
+&ssi4			{ xen,passthrough; };
+&ssi5			{ xen,passthrough; };
+&ssi6			{ xen,passthrough; };
+&ssi7			{ xen,passthrough; };
+&ssi8			{ xen,passthrough; };
+&ssi9			{ xen,passthrough; };
+&tsc			{ xen,passthrough; };
+&usb2_phy0		{ xen,passthrough; };
+&hsusb			{ xen,passthrough; };
+&xhci0			{ xen,passthrough; };
+&ohci0			{ xen,passthrough; };
+&ehci0			{ xen,passthrough; };
+&ohci1			{ xen,passthrough; };
+&ehci1			{ xen,passthrough; };
+&ivdp1c			{ xen,passthrough; };
+&vdpb			{ xen,passthrough; };
+&vcplf			{ xen,passthrough; };
+&vin0			{ xen,passthrough; };
+&vin1			{ xen,passthrough; };
+&vin2			{ xen,passthrough; };
+&vin3			{ xen,passthrough; };
+&vin4			{ xen,passthrough; };
+&vin5			{ xen,passthrough; };
+&vspd0			{ xen,passthrough; };
+&vspd1			{ xen,passthrough; };
+&vspd2			{ xen,passthrough; };
+&vspbc			{ xen,passthrough; };
+&vspbd			{ xen,passthrough; };
+&vspi0			{ xen,passthrough; };
+&vspi1			{ xen,passthrough; };
+&rt_dmac0		{ xen,passthrough; };
+&rt_dmac1		{ xen,passthrough; };
