@@ -1,5 +1,5 @@
 desc: "Xen-Troops development setup for Renesas RCAR Gen3 hardware"
-min_ver: "0.4"
+min_ver: "0.6"
 
 variables:
   YOCTOS_WORK_DIR: "yocto"
@@ -257,6 +257,26 @@ components:
       target_images:
         - "tmp/deploy/images/%{MACHINE}/Image"
         - "tmp/deploy/images/%{MACHINE}/core-image-weston-%{MACHINE}.ext4"
+
+  doma_kernel:
+    build-dir: "android_kernel"
+    sources:
+      - type: repo
+        url: https://github.com/arminn/android_kernel_manifest.git
+        rev: common-android12-5.4-xt-master
+        manifest: default.xml
+        depth: 1
+        groups: all
+        dir: "."
+    builder:
+      type: android_kernel
+      env:
+        - "TARGET_BOARD_PLATFORM=%{SOC_FAMILY}"
+        - "BUILD_CONFIG=common/build.config.xenvm"
+        - "SKIP_MRPROPER=1"
+      target_images:
+        - "out/android12-5.4/common/arch/arm64/boot/Image"
+
   doma:
     build-dir: "android"
     sources:
@@ -277,6 +297,9 @@ components:
         - "out/target/product/xenvm/super.img"
         - "out/target/product/xenvm/userdata.img"
         - "out/target/product/xenvm/vbmeta.img"
+        - "out/target/product/xenvm/system.img"
+      additional_deps:
+        - "../android_kernel/out/android12-5.4/common/arch/arm64/boot/Image"
 
 images:
   full:
