@@ -313,6 +313,7 @@ parameters:
           XT_DOMA_CONFIG_NAME: "NO-DOMA-CONFIG-FOR-M3-4GB"
           XT_DOMD_DTB_NAME: "r8a77960-%{MACHINE}-domd.dtb"
           XT_XEN_DTB_NAME: "r8a77960-%{MACHINE}-xen.dtb"
+          XT_OP_TEE_FLAVOUR: "salvator_m3"
     salvator-xs-m3-2x4g:
       default: true
       overrides:
