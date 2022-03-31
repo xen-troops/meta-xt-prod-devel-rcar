@@ -90,6 +90,8 @@ common_data:
     # Remove ptest to reduce the build time
     - [DISTRO_FEATURES_remove, "ptest"]
 
+    - [DISTRO_FEATURES_append, " pulseaudio"]
+
     # HACK: force ipk instead of rpm b/c it makes troubles to PVR UM build otherwise
     - [PACKAGE_CLASSES, "package_ipk"]
 
