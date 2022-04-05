@@ -303,7 +303,6 @@ parameters:
   MACHINE:
     desc: "RCAR Gen3-based device"
     salvator-x-m3:
-      default: true
       overrides:
         variables:
           MACHINE: "salvator-x"
@@ -311,10 +310,11 @@ parameters:
           XT_DOMD_CONFIG_NAME: "domd-salvator-x-m3.cfg"
           XT_DOMU_CONFIG_NAME: "domu-salvator-x-m3.cfg"
           XT_DOMA_CONFIG_NAME: "NO-DOMA-CONFIG-FOR-M3-4GB"
+          XT_OP_TEE_FLAVOUR: "salvator_m3"
           XT_DOMD_DTB_NAME: "r8a77960-%{MACHINE}-domd.dtb"
           XT_XEN_DTB_NAME: "r8a77960-%{MACHINE}-xen.dtb"
-          XT_OP_TEE_FLAVOUR: "salvator_m3"
     salvator-xs-m3-2x4g:
+      # This is not misprint. This machine has 2x4 memory config
       default: true
       overrides:
         variables:
@@ -323,9 +323,9 @@ parameters:
           XT_DOMD_CONFIG_NAME: "domd-salvator-xs-m3-2x4g.cfg"
           XT_DOMU_CONFIG_NAME: "domu-generic-m3-2x4g.cfg"
           XT_DOMA_CONFIG_NAME: "doma-generic-m3-2x4g.cfg"
+          XT_OP_TEE_FLAVOUR: "salvator_m3_2x4g"
           XT_DOMD_DTB_NAME: "r8a77961-salvator-xs-2x4g-domd.dtb"
           XT_XEN_DTB_NAME: "r8a77961-salvator-xs-2x4g-xen.dtb"
-          XT_OP_TEE_FLAVOUR: "salvator_m3_2x4g"
     salvator-xs-h3:
       overrides:
         variables:
