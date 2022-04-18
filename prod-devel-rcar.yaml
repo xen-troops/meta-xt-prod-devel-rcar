@@ -8,7 +8,7 @@ variables:
   DOMU_BUILD_DIR: "build-domu"
   XT_DOMD_DTB_NAME: "%{SOC_FAMILY}-%{MACHINE}-domd.dtb"
   XT_DOMU_DTB_NAME: "salvator-generic-domu.dtb"
-  XT_DOMA_DTB_NAME: "salvator-generic-doma.dtb"
+  XT_DOMA_DTB_NAME: ""
   XT_XEN_DTB_NAME: "%{SOC_FAMILY}-%{MACHINE}-xen.dtb"
   XT_PVR_NUM_OSID: "2"
   XT_OP_TEE_FLAVOUR: "generic_dt"
@@ -265,53 +265,6 @@ components:
         - "tmp/deploy/images/%{MACHINE}/Image"
         - "tmp/deploy/images/%{MACHINE}/core-image-weston-%{MACHINE}.ext4"
 
-  doma_kernel:
-    build-dir: "android_kernel"
-    sources:
-      - type: repo
-        url: https://github.com/xen-troops/android_kernel_manifest.git
-        rev: common-android12-5.4-xt-master
-        manifest: default.xml
-        depth: 1
-        groups: "%{XT_DOMA_SOURCE_GROUP}"
-        dir: "."
-    builder:
-      type: android_kernel
-      env:
-        - "TARGET_BOARD_PLATFORM=%{SOC_FAMILY}"
-        - "BUILD_CONFIG=common/build.config.xenvm"
-        - "SKIP_MRPROPER=1"
-        - "EXT_MODULES=%{XT_DOMA_KERNEL_EXTRA_MODULES}"
-      target_images:
-        - "out/android12-5.4/common/arch/arm64/boot/Image"
-        - "out/android12-5.4/staging/vendor/lib/modules/pvrsrvkm.ko"
-
-  doma:
-    build-dir: "android"
-    sources:
-      - type: repo
-        url: https://github.com/xen-troops/android_manifest.git
-        rev: android-12-master
-        manifest: doma.xml
-        depth: 1
-        groups: "%{XT_DOMA_SOURCE_GROUP}"
-        dir: "."
-    builder:
-      type: android
-      env:
-        - "TARGET_BOARD_PLATFORM=%{SOC_FAMILY}"
-        - "TARGET_PREBUILT_KERNEL=../android_kernel/out/android12-5.4/common/arch/arm64/boot/Image"
-        - "DDK_KM_PREBUILT_MODULE=%{XT_DOMA_DDK_KM_PREBUILT_MODULE}"
-      lunch_target: xenvm-userdebug
-      target_images:
-        - "out/target/product/xenvm/boot.img"
-        - "out/target/product/xenvm/super.img"
-        - "out/target/product/xenvm/userdata.img"
-        - "out/target/product/xenvm/vbmeta.img"
-        - "out/target/product/xenvm/system.img"
-      additional_deps:
-        - "../android_kernel/out/android12-5.4/common/arch/arm64/boot/Image"
-
 images:
   full:
     type: gpt
@@ -481,7 +434,53 @@ parameters:
       overrides:
         variables:
           XT_DOMA_TAG: "doma"
+          XT_DOMA_DTB_NAME: "salvator-generic-doma.dtb"
         components:
+          doma_kernel:
+            build-dir: "android_kernel"
+            sources:
+              - type: repo
+                url: https://github.com/xen-troops/android_kernel_manifest.git
+                rev: common-android12-5.4-xt-master
+                manifest: default.xml
+                depth: 1
+                groups: "%{XT_DOMA_SOURCE_GROUP}"
+                dir: "."
+            builder:
+              type: android_kernel
+              env:
+                - "TARGET_BOARD_PLATFORM=%{SOC_FAMILY}"
+                - "BUILD_CONFIG=common/build.config.xenvm"
+                - "SKIP_MRPROPER=1"
+                - "EXT_MODULES=%{XT_DOMA_KERNEL_EXTRA_MODULES}"
+              target_images:
+                - "out/android12-5.4/common/arch/arm64/boot/Image"
+                - "out/android12-5.4/staging/vendor/lib/modules/pvrsrvkm.ko"
+          doma:
+            build-dir: "android"
+            sources:
+              - type: repo
+                url: https://github.com/xen-troops/android_manifest.git
+                rev: android-12-master
+                manifest: doma.xml
+                depth: 1
+                groups: "%{XT_DOMA_SOURCE_GROUP}"
+                dir: "."
+            builder:
+              type: android
+              env:
+                - "TARGET_BOARD_PLATFORM=%{SOC_FAMILY}"
+                - "TARGET_PREBUILT_KERNEL=../android_kernel/out/android12-5.4/common/arch/arm64/boot/Image"
+                - "DDK_KM_PREBUILT_MODULE=%{XT_DOMA_DDK_KM_PREBUILT_MODULE}"
+              lunch_target: xenvm-userdebug
+              target_images:
+                - "out/target/product/xenvm/boot.img"
+                - "out/target/product/xenvm/super.img"
+                - "out/target/product/xenvm/userdata.img"
+                - "out/target/product/xenvm/vbmeta.img"
+                - "out/target/product/xenvm/system.img"
+              additional_deps:
+                - "../android_kernel/out/android12-5.4/common/arch/arm64/boot/Image"
           # Build and install ivi-shell in case of Android builds
           domd:
             builder:
