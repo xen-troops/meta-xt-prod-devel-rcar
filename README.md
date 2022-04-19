@@ -92,6 +92,8 @@ optional arguments:
                         Build Android as a guest VM
   --ENABLE_DOMU {no,yes}
                         Build generic Yocto-based DomU
+  --ANDROID_PREBUILT_DDK {no,yes}
+                        Use pre-built GPU drivers for Android
 ```
 
 To built for Salvator XS M3 8GB with DomU (generic yocto-based virtual
@@ -107,6 +109,68 @@ command line: `moulin prod-devel-rcar.yaml --MACHINE
 salvator-xs-h3-4x2g --ENABLE_DOMU no --ENABLE_ANDROID yes `.
 
 This will require even more time and space, as Android is quite big.
+
+## Building with prebuilts Android graphics
+
+Prior to running ninja, you need to create "eva" directory (in product root, where the actual
+yaml file is present) and place Android prebuilds inside. So directory tree will be:
+```
+./eva
+├── pvr-km
+│   └── pvrsrvkm.ko
+└── pvr-um
+    └── r8a7795
+        ├── prebuilds.mk
+        └── vendor
+            ├── bin
+            │   ├── hwperfbin2jsont
+            │   ├── pvrhwperf
+            │   ├── pvrlogdump
+            │   ├── pvrlogsplit
+            │   ├── pvrsrvctl
+            │   └── rscompiler
+            ├── etc
+            │   ├── firmware
+            │   │   ├── rgx.fw.4.46.6.62
+            │   │   └── rgx.fw.4.46.6.62.vz
+            │   └── powervr.ini
+            ├── lib
+            │   ├── egl
+            │   │   ├── libEGL_POWERVR_ROGUE.so
+            │   │   ├── libGLESv1_CM_POWERVR_ROGUE.so
+            │   │   └── libGLESv2_POWERVR_ROGUE.so
+            │   ├── hw
+            │   │   ├── gralloc.r8a7795.so
+            │   │   ├── memtrack.r8a7795.so
+            │   │   └── vulkan.r8a7795.so
+            │   ├── libAppHintsIPC.so
+            │   ├── libglslcompiler.so
+            │   ├── libIMGegl.so
+            │   ├── libPVRRS.so
+            │   ├── libPVRScopeServices.so
+            │   ├── libsrv_um.so
+            │   ├── libufwriter.so
+            │   ├── libusc.so
+            │   └── vendor.imagination.gpu.apphints@1.0.so
+            └── lib64
+                ├── egl
+                │   ├── libEGL_POWERVR_ROGUE.so
+                │   ├── libGLESv1_CM_POWERVR_ROGUE.so
+                │   └── libGLESv2_POWERVR_ROGUE.so
+                ├── hw
+                │   ├── gralloc.r8a7795.so
+                │   ├── memtrack.r8a7795.so
+                │   └── vulkan.r8a7795.so
+                ├── libAppHintsIPC.so
+                ├── libglslcompiler.so
+                ├── libIMGegl.so
+                ├── libPVRRS.so
+                ├── libPVRScopeServices.so
+                ├── libsrv_um.so
+                ├── libufwriter.so
+                ├── libusc.so
+                └── vendor.imagination.gpu.apphints@1.0.so
+```
 
 ## Creating SD card image
 
