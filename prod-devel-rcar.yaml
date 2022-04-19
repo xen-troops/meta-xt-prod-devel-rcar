@@ -14,6 +14,9 @@ variables:
   XT_OP_TEE_FLAVOUR: "generic_dt"
   XT_GENERIC_DOMU_TAG: ""
   XT_DOMA_TAG: ""
+  XT_DOMA_DDK_KM_PREBUILT_MODULE: ""
+  XT_DOMA_KERNEL_EXTRA_MODULES: ""
+  XT_DOMA_SOURCE_GROUP: ""
 common_data:
   # Sources used by all yocto-based domains
   sources: &COMMON_SOURCES
@@ -266,7 +269,7 @@ components:
         rev: common-android12-5.4-xt-master
         manifest: default.xml
         depth: 1
-        groups: all
+        groups: "%{XT_DOMA_SOURCE_GROUP}"
         dir: "."
     builder:
       type: android_kernel
@@ -274,6 +277,7 @@ components:
         - "TARGET_BOARD_PLATFORM=%{SOC_FAMILY}"
         - "BUILD_CONFIG=common/build.config.xenvm"
         - "SKIP_MRPROPER=1"
+        - "EXT_MODULES=%{XT_DOMA_KERNEL_EXTRA_MODULES}"
       target_images:
         - "out/android12-5.4/common/arch/arm64/boot/Image"
         - "out/android12-5.4/staging/vendor/lib/modules/pvrsrvkm.ko"
@@ -286,14 +290,14 @@ components:
         rev: android-12-master
         manifest: doma.xml
         depth: 1
-        groups: all
+        groups: "%{XT_DOMA_SOURCE_GROUP}"
         dir: "."
     builder:
       type: android
       env:
         - "TARGET_BOARD_PLATFORM=%{SOC_FAMILY}"
         - "TARGET_PREBUILT_KERNEL=../android_kernel/out/android12-5.4/common/arch/arm64/boot/Image"
-        - "DDK_KM_PREBUILT_MODULE=../android_kernel/out/android12-5.4/staging/vendor/lib/modules/pvrsrvkm.ko"
+        - "DDK_KM_PREBUILT_MODULE=%{XT_DOMA_DDK_KM_PREBUILT_MODULE}"
       lunch_target: xenvm-userdebug
       target_images:
         - "out/target/product/xenvm/boot.img"
@@ -602,3 +606,23 @@ parameters:
             *DDK_SOURCE_OVERRIDES
           domu:
             *DDK_SOURCE_OVERRIDES
+  ANDROID_PREBUILT_DDK:
+    desc: "Use pre-built GPU drivers for Android"
+    "no":
+      default: true
+      overrides:
+        variables:
+          XT_DOMA_DDK_KM_PREBUILT_MODULE: "../android_kernel/out/android12-5.4/staging/vendor/lib/modules/pvrsrvkm.ko"
+          XT_DOMA_KERNEL_EXTRA_MODULES: "imagination"
+          XT_DOMA_SOURCE_GROUP: "all"
+    "yes":
+      overrides:
+        variables:
+          XT_DOMA_DDK_KM_PREBUILT_MODULE: "../eva/pvr-km/pvrsrvkm.ko"
+          XT_DOMA_KERNEL_EXTRA_MODULES: ""
+          XT_DOMA_SOURCE_GROUP: "default"
+        components:
+          doma:
+            builder:
+              env:
+                - "DDK_UM_PREBUILDS=../eva/pvr-um"
