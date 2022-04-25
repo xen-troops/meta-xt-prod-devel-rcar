@@ -108,7 +108,7 @@ common_data:
         rev: dunfell
       - type: git
         url: "ssh://git@gitpct.epam.com/epmd-aepr/img-proprietary"
-        rev: "ef1aa566d74a11c4d2ae9592474030a706b4cf39"
+        rev: "6ed789681c2867c7cae8b0150e093e1e2781797e"
         dir: "proprietary"
     builder:
       conf:
