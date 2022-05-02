@@ -112,65 +112,9 @@ This will require even more time and space, as Android is quite big.
 
 ## Building with prebuilts Android graphics
 
-Prior to running ninja, you need to create "eva" directory (in product root, where the actual
-yaml file is present) and place Android prebuilds inside. So directory tree will be:
-```
-./eva
-├── pvr-km
-│   └── pvrsrvkm.ko
-└── pvr-um
-    └── r8a7795
-        ├── prebuilds.mk
-        └── vendor
-            ├── bin
-            │   ├── hwperfbin2jsont
-            │   ├── pvrhwperf
-            │   ├── pvrlogdump
-            │   ├── pvrlogsplit
-            │   ├── pvrsrvctl
-            │   └── rscompiler
-            ├── etc
-            │   ├── firmware
-            │   │   ├── rgx.fw.4.46.6.62
-            │   │   └── rgx.fw.4.46.6.62.vz
-            │   └── powervr.ini
-            ├── lib
-            │   ├── egl
-            │   │   ├── libEGL_POWERVR_ROGUE.so
-            │   │   ├── libGLESv1_CM_POWERVR_ROGUE.so
-            │   │   └── libGLESv2_POWERVR_ROGUE.so
-            │   ├── hw
-            │   │   ├── gralloc.r8a7795.so
-            │   │   ├── memtrack.r8a7795.so
-            │   │   └── vulkan.r8a7795.so
-            │   ├── libAppHintsIPC.so
-            │   ├── libglslcompiler.so
-            │   ├── libIMGegl.so
-            │   ├── libPVRRS.so
-            │   ├── libPVRScopeServices.so
-            │   ├── libsrv_um.so
-            │   ├── libufwriter.so
-            │   ├── libusc.so
-            │   └── vendor.imagination.gpu.apphints@1.0.so
-            └── lib64
-                ├── egl
-                │   ├── libEGL_POWERVR_ROGUE.so
-                │   ├── libGLESv1_CM_POWERVR_ROGUE.so
-                │   └── libGLESv2_POWERVR_ROGUE.so
-                ├── hw
-                │   ├── gralloc.r8a7795.so
-                │   ├── memtrack.r8a7795.so
-                │   └── vulkan.r8a7795.so
-                ├── libAppHintsIPC.so
-                ├── libglslcompiler.so
-                ├── libIMGegl.so
-                ├── libPVRRS.so
-                ├── libPVRScopeServices.so
-                ├── libsrv_um.so
-                ├── libufwriter.so
-                ├── libusc.so
-                └── vendor.imagination.gpu.apphints@1.0.so
-```
+Prior to running moulin, you need to place android graphics prebuilts
+archive `rcar-prebuilts-graphics-xt-doma.tar.gz` in the same directory
+as yaml file.
 
 ## Creating SD card image
 

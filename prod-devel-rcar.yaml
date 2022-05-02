@@ -1,5 +1,5 @@
 desc: "Xen-Troops development setup for Renesas RCAR Gen3 hardware"
-min_ver: "0.6"
+min_ver: "0.7"
 
 variables:
   YOCTOS_WORK_DIR: "yocto"
@@ -618,11 +618,16 @@ parameters:
     "yes":
       overrides:
         variables:
-          XT_DOMA_DDK_KM_PREBUILT_MODULE: "../eva/pvr-km/pvrsrvkm.ko"
+          XT_DOMA_DDK_KM_PREBUILT_MODULE: "eva/pvr-km/pvrsrvkm.ko"
           XT_DOMA_KERNEL_EXTRA_MODULES: ""
           XT_DOMA_SOURCE_GROUP: "default"
         components:
           doma:
+            sources:
+              - type: unpack
+                file: rcar-prebuilts-graphics-xt-doma.tar.gz
+                dir: eva
+                archive_type: tar
             builder:
               env:
-                - "DDK_UM_PREBUILDS=../eva/pvr-um"
+                - "DDK_UM_PREBUILDS=eva/pvr-um"
