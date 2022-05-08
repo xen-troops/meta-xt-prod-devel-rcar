@@ -583,8 +583,8 @@ parameters:
           domd:
             sources:
               - type: git
-                url: "ssh://git@gitpct.epam.com/epmd-aepr/meta-aos"
-                rev: master
+                url: "https://github.com/aoscloud/meta-aos"
+                rev: main
             builder:
               layers:
                 - "../meta-aos"
