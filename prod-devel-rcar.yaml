@@ -18,6 +18,7 @@ variables:
   XT_DOMA_KERNEL_EXTRA_MODULES: ""
   XT_DOMA_SOURCE_GROUP: ""
   XT_MULTIMEDIA_EVA_DIR : ""
+  XT_PREBUILT_GSX_DIR: ""
 common_data:
   # Sources used by all yocto-based domains
   sources: &COMMON_SOURCES
@@ -227,6 +228,7 @@ components:
         - "../meta-xt-common/meta-xt-driver-domain"
         - "../meta-xt-rcar/meta-xt-rcar-fixups"
         - "../meta-xt-rcar/meta-xt-rcar-driver-domain"
+        - "../meta-xt-rcar/meta-xt-rcar-gles_common"
         - "../meta-xt-prod-devel-rcar/meta-xt-prod-devel-rcar-driver-domain"
       target_images:
         - "tmp/deploy/images/%{MACHINE}/Image"
@@ -260,6 +262,7 @@ components:
         - "../meta-xt-common/meta-xt-domu"
         - "../meta-xt-rcar/meta-xt-rcar-fixups"
         - "../meta-xt-rcar/meta-xt-rcar-domu"
+        - "../meta-xt-rcar/meta-xt-rcar-gles_common"
       build_target: core-image-weston
       target_images:
         - "tmp/deploy/images/%{MACHINE}/Image"
@@ -641,6 +644,21 @@ parameters:
             *DDK_SOURCE_OVERRIDES
           domu:
             *DDK_SOURCE_OVERRIDES
+    "yes":
+      # Folder with prebuilt graphics package, i.e. file ${SOC_NAME}_linux_gsx_binaries_gles.tar.gz
+      # is provided as XT_PREBUILT_GSX_DIR variable to components
+      overrides:
+        variables:
+          XT_PREBUILT_GSX_DIR: "${TOPDIR}/../../../prebuilt_gsx"
+        components:
+          domd:
+            builder:
+              conf:
+                - [XT_PREBUILT_GSX_DIR, "%{XT_PREBUILT_GSX_DIR}"]
+          domu:
+            builder:
+              conf:
+                - [XT_PREBUILT_GSX_DIR, "%{XT_PREBUILT_GSX_DIR}"]
   ANDROID_PREBUILT_DDK:
     desc: "Use pre-built GPU drivers for Android"
     "no":
