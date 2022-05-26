@@ -113,14 +113,6 @@ common_data:
         rev: "6ed789681c2867c7cae8b0150e093e1e2781797e"
         dir: "proprietary"
     builder:
-      conf:
-        - [GLES_VERSION, "1.11"]
-        - [PREFERRED_PROVIDER_gles-user-module,          "gles-user-module"]
-        - [PREFERRED_VERSION_gles-user-module,           "${GLES_VERSION}"]
-        - [PREFERRED_PROVIDER_kernel-module-gles,        "kernel-module-gles"]
-        - [PREFERRED_VERSION_kernel-module-gles,         "${GLES_VERSION}"]
-        - [PREFERRED_PROVIDER_gles-module-egl-headers,   "gles-module-egl-headers"]
-        - [PREFERRED_VERSION_gles-module-egl-headers,    "${GLES_VERSION}"]
       layers:
         - "../meta-python2"
         - "../meta-clang"
