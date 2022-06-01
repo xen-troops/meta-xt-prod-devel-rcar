@@ -574,7 +574,7 @@ parameters:
                 # Mask MMP recipes
                 - [BBMASK_append, "|kernel-module-uvcs-drv|omx-user-module"]
   ENABLE_AOS_VIS:
-    desc: "Enable non open source aos-vis service"
+    desc: "Enable AOS VIS service"
     "no":
       default: true
     "yes":
