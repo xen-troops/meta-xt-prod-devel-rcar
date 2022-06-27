@@ -97,6 +97,9 @@ common_data:
     # HACK: force ipk instead of rpm b/c it makes troubles to PVR UM build otherwise
     - [PACKAGE_CLASSES, "package_ipk"]
 
+    # Remove not used demo packages from core-image-weston
+    - [CORE_IMAGE_BASE_INSTALL_remove, "gtk+3-demo clutter-1.0-examples"]
+
   # The same set of layers and configs is used both in DomD and DomU
   # to build a DDK from source code
   ddk_source_overrides: &DDK_SOURCE_OVERRIDES
