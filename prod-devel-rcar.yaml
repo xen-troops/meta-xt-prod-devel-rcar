@@ -1,5 +1,5 @@
 desc: "Xen-Troops development setup for Renesas RCAR Gen3 hardware"
-min_ver: "0.7"
+min_ver: "0.8"
 
 variables:
   YOCTOS_WORK_DIR: "yocto"
@@ -17,6 +17,8 @@ variables:
   XT_DOMA_DDK_KM_PREBUILT_MODULE: ""
   XT_DOMA_KERNEL_EXTRA_MODULES: ""
   XT_DOMA_SOURCE_GROUP: ""
+  XT_DOMZ_TAG: ""
+  XT_DOMZ_CONFIG_NAME: ""
   XT_MULTIMEDIA_EVA_DIR : ""
   XT_PREBUILT_GSX_DIR: ""
 common_data:
@@ -136,11 +138,12 @@ components:
         - [XT_DOMD_CONFIG_NAME, "%{XT_DOMD_CONFIG_NAME}"]
         - [XT_DOMU_CONFIG_NAME, "%{XT_DOMU_CONFIG_NAME}"]
         - [XT_DOMA_CONFIG_NAME, "%{XT_DOMA_CONFIG_NAME}"]
+        - [XT_DOMZ_CONFIG_NAME, "%{XT_DOMZ_CONFIG_NAME}"]
         - [XT_DOMD_DTB_NAME, "%{XT_DOMD_DTB_NAME}"]
         - [XT_DOMU_DTB_NAME, "%{XT_DOMU_DTB_NAME}"]
         - [XT_DOMA_DTB_NAME, "%{XT_DOMA_DTB_NAME}"]
         - [XT_DOM_NAME, "dom0"]
-        - [XT_GUEST_INSTALL, "%{XT_GENERIC_DOMU_TAG} %{XT_DOMA_TAG} domd"]
+        - [XT_GUEST_INSTALL, "%{XT_GENERIC_DOMU_TAG} %{XT_DOMA_TAG} %{XT_DOMZ_TAG} domd"]
 
         # Disable HWDB which quite huge (around 15MB) and is not required at all
         - [BAD_RECOMMENDATIONS_append, " udev-hwdb"]
@@ -199,7 +202,7 @@ components:
         - [XT_DOM_NAME, "domd"]
         - [XT_OP_TEE_FLAVOUR, "%{XT_OP_TEE_FLAVOUR}"]
         - [XT_DEVICE_TREES, "%{XT_DOMD_DTB_NAME} %{XT_DOMA_DTB_NAME} %{XT_XEN_DTB_NAME}"]
-        - [XT_GUEST_INSTALL, "%{XT_GENERIC_DOMU_TAG} %{XT_DOMA_TAG}"]
+        - [XT_GUEST_INSTALL, "%{XT_GENERIC_DOMU_TAG} %{XT_DOMA_TAG} %{XT_DOMZ_TAG}"]
         # Machine feature 'multimedia' is used to enable (VSP in domd) and (LOSSY build option in ATF)
         - [MACHINE_FEATURES_append, " multimedia"]
 
@@ -306,6 +309,17 @@ components:
         - "out/target/product/xenvm/system.img"
       additional_deps:
         - "../android_kernel/out/android12-5.4/common/arch/arm64/boot/Image"
+
+  zephyr:
+    build-dir: "zephyr"
+    sources:
+      - type: west
+    builder:
+      type: zephyr
+      board: xenvm
+      target: samples/synchronization
+      target_images:
+        - "zephyr/build/zephyr/zephyr.bin"
 
 images:
   full:
@@ -561,6 +575,26 @@ parameters:
                 type: raw_image
                 gpt_type: 0FC63DAF-8483-4772-8E79-3D69D8477DE4 # Linux filesystem data
                 image_path: "%{YOCTOS_WORK_DIR}/build-domu/tmp/deploy/images/%{MACHINE}/core-image-weston-%{MACHINE}.ext4"
+
+  ENABLE_ZEPHYR:
+    desc: "Build Zephyr as guest domain"
+    "no":
+      default: true
+    "yes":
+      overrides:
+        variables:
+          XT_DOMZ_TAG: "domz"
+          XT_DOMZ_CONFIG_NAME: "domz-generic.cfg"
+        components:
+          dom0:
+            builder:
+              additional_deps:
+                # paths relative to dom0 build-dir
+                - "../zephyr/zephyr/build/zephyr/zephyr.bin"
+              external_src:
+                # path relative to folder containing build.ninja
+                domz: "zephyr/zephyr/build/zephyr"
+
   ENABLE_MM:
     desc: "Enable Multimedia support"
     "no":
