@@ -16,7 +16,7 @@ Work is still in progress, but right now the following features are tested and w
 
 * Renesas Salvator-XS M3 with 8GB memory is supported
 * Renesas Salvator-X H3 with 8GB memory is supported
-* Renesas Starter Kit Premiere 8GB (H3ULCB)
+* Renesas Starter Kit Premiere 8GB (H3 ES3.0)
 * Kingfisher with Starter Kit Premiere 8GB board
 * AosBox with Starter Kit Premiere 8GB board
 * GPU sharing between domains
@@ -35,7 +35,7 @@ Features that are present but not tested:
 
 * Renesas Salvator-XS M3 with 4GB memory
 * Renesas Salvator-XS H3 with 8GB memory
-* Renesas Starter Kit Premiere (H3ULCB)
+* Renesas Starter Kit Premiere (H3 ES3.0 8GB)
 * Renesas Starter Kit Pro (M3ULCB)
 * Audio back-end
 
