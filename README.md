@@ -16,9 +16,9 @@ Work is still in progress, but right now the following features are tested and w
 
 * Renesas Salvator-XS M3 with 8GB memory is supported
 * Renesas Salvator-X H3 with 8GB memory is supported
-* Renesas Starter Kit Premiere 8GB (H3 ES3.0)
-* Kingfisher with Starter Kit Premiere 8GB board
-* AosBox with Starter Kit Premiere 8GB board
+* Renesas Starter Kit Premier 8GB (H3 ES3.0)
+* Kingfisher with Starter Kit Premier 8GB board
+* AosBox with Starter Kit Premier 8GB board
 * GPU sharing between domains
 * 3 domains are being built: Linux based Dom0, DomD and DomU
 * Graphics back-end in DomD
@@ -30,12 +30,12 @@ Work is still in progress, but right now the following features are tested and w
 * Multimedia (HW-assisted video decoding/encoding) support
 * SD or eMMC boot
 * Android VM support
+* Zephyr OS as guest
 
 Features that are present but not tested:
 
 * Renesas Salvator-XS M3 with 4GB memory
 * Renesas Salvator-XS H3 with 8GB memory
-* Renesas Starter Kit Premiere (H3 ES3.0 8GB)
 * Renesas Starter Kit Pro (M3ULCB)
 * Audio back-end
 
@@ -72,7 +72,7 @@ of additional options. You can use check them with
 ```
 # moulin prod-devel-rcar.yaml --help-config
 usage: moulin prod-devel-rcar.yaml
-       [--MACHINE {salvator-x-m3,salvator-xs-m3-2x4g,salvator-xs-h3,salvator-x-h3-4x2g}]
+       [--MACHINE {salvator-x-m3,salvator-xs-m3-2x4g,salvator-xs-h3,salvator-xs-h3-4x2g,salvator-x-h3-4x2g,salvator-x-h3,h3ulcb-4x2g,h3ulcb-4x2g-kf,h3ulcb-4x2g-ab,m3ulcb}]
        [--ENABLE_ANDROID {no,yes}] [--ENABLE_DOMU {no,yes}]
        [--ENABLE_ZEPHYR {no,yes}] [--ENABLE_MM {no,yes}]
        [--ENABLE_AOS_VIS {no,yes}] [--PREBUILT_DDK {no,yes}]
@@ -82,7 +82,7 @@ Config file description: Xen-Troops development setup for Renesas RCAR Gen3
 hardware
 
 optional arguments:
-  --MACHINE {salvator-x-m3,salvator-xs-m3-2x4g,salvator-xs-h3,salvator-x-h3-4x2g}
+  --MACHINE {salvator-x-m3,salvator-xs-m3-2x4g,salvator-xs-h3,salvator-xs-h3-4x2g,salvator-x-h3-4x2g,salvator-x-h3,h3ulcb-4x2g,h3ulcb-4x2g-kf,h3ulcb-4x2g-ab,m3ulcb}
                         RCAR Gen3-based device
   --ENABLE_ANDROID {no,yes}
                         Build Android as a guest VM
