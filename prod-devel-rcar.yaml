@@ -65,8 +65,7 @@ common_data:
     - [SOC_FAMILY, "%{SOC_FAMILY}"]
 
     # Add systemd configuration
-    - [DISTRO_FEATURES_append, " systemd"]
-    - [VIRTUAL-RUNTIME_init_manager, "systemd"]
+    - [INIT_MANAGER, "systemd"]
 
     # add the static lib to SDK toolchain
     - [SDKIMAGE_FEATURES_append, " staticdev-pkgs"]
@@ -157,8 +156,7 @@ components:
                 sysvinit"]
 
         # Enable systemd on dom0
-        - [DISTRO_FEATURES_append, " systemd"]
-        - [VIRTUAL-RUNTIME_init_manager, "systemd"]
+        - [INIT_MANAGER, "systemd"]
 
         # Do not install kernel image to rootfs to decrease initrd size
         - ["RDEPENDS_${KERNEL_PACKAGE_NAME}-base", ""]
