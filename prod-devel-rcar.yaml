@@ -226,6 +226,7 @@ components:
         - "../meta-xt-common/meta-xt-driver-domain"
         - "../meta-xt-rcar/meta-xt-rcar-fixups"
         - "../meta-xt-rcar/meta-xt-rcar-driver-domain"
+        - "../meta-xt-rcar/meta-xt-rcar-domx"
         - "../meta-xt-rcar/meta-xt-rcar-gles_common"
         - "../meta-xt-prod-devel-rcar/meta-xt-prod-devel-rcar-driver-domain"
       target_images:
