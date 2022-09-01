@@ -21,7 +21,8 @@ variables:
   XT_DOMA_KERNEL_EXTRA_MODULES: ""
   XT_DOMA_SOURCE_GROUP: ""
   XT_DOMZ_TAG: ""
-  XT_DOMZ_CONFIG_NAME: ""
+  # For this product we use one config for all machines for Zephyr
+  XT_DOMZ_CONFIG_NAME: "domz-generic.cfg"
   XT_MULTIMEDIA_EVA_DIR : ""
   XT_PREBUILT_GSX_DIR: ""
 common_data:
@@ -554,7 +555,6 @@ parameters:
       overrides:
         variables:
           XT_DOMZ_TAG: "domz"
-          XT_DOMZ_CONFIG_NAME: "domz-generic.cfg"
         components:
           dom0:
             builder:
