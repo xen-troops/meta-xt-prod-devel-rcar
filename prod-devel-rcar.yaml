@@ -1,5 +1,5 @@
 desc: "Xen-Troops development setup for Renesas RCAR Gen3 hardware"
-min_ver: "0.8"
+min_ver: "0.9"
 
 variables:
   YOCTOS_WORK_DIR: "yocto"
@@ -501,6 +501,7 @@ parameters:
               misc:
                 gpt_type: EF32A33B-A409-486C-9141-9FFB711F6266 # Android misc
                 type: empty
+                filled: zeroes
                 size: 1 MiB
               metadata:
                 gpt_type: 20AC26BE-20B7-11E3-84C5-6CFDB94711E9 # Android metadata
@@ -509,6 +510,7 @@ parameters:
               rpmbemul:
                 gpt_type: DC76DDA9-5AC1-491C-AF42-A82591580C0D # Android data
                 type: empty
+                filled: zeroes
                 size: 1 MiB
               super:
                 gpt_type: 4627AE27-CFEF-48A1-88FE-99C3509ADE26 # Android raw resources
