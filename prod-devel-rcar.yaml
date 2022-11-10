@@ -428,7 +428,7 @@ parameters:
                 - "../meta-xt-rcar/meta-xt-cogent-fixups"
               conf:
                 # Ignore OP-TEE patches as we have own OP-TEE
-                -  [BBMASK_append, "|meta-rcar-gen3-adas/recipes-bsp/optee"]
+                -  [BBMASK_append, " meta-rcar-gen3-adas/recipes-bsp/optee"]
     h3ulcb-4x2g-ab:
       overrides:
         variables:
@@ -576,7 +576,7 @@ parameters:
             builder:
               conf:
                 # Mask MMP recipes
-                - [BBMASK_append, "|kernel-module-uvcs-drv|omx-user-module"]
+                - [BBMASK_append, " kernel-module-uvcs-drv omx-user-module"]
     "yes":
       overrides:
         variables:
