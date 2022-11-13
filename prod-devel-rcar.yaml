@@ -223,6 +223,7 @@ components:
         - "../meta-openembedded/meta-filesystems"
         - "../meta-xt-common/meta-xt-domx"
         - "../meta-xt-common/meta-xt-driver-domain"
+        - "../meta-xt-rcar/meta-oe-fixups"
         - "../meta-xt-rcar/meta-xt-rcar-fixups"
         - "../meta-xt-rcar/meta-xt-rcar-driver-domain"
         - "../meta-xt-rcar/meta-xt-rcar-domx"
