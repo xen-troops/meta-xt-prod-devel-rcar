@@ -251,6 +251,7 @@ components:
         - [XT_DOM_NAME, "domu"]
         - [EXTRA_IMAGEDEPENDS_remove, "arm-trusted-firmware"]
         - [EXTRA_IMAGEDEPENDS_remove, "optee-os"]
+        - [EXTRA_IMAGEDEPENDS_remove, "u-boot"]
 
       layers:
         - "../meta-openembedded/meta-oe"
