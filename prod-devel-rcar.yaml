@@ -9,6 +9,7 @@ variables:
   ANDROID_KERNEL_DIR: "android_kernel"
   DOMA_DIR: "android"
   DOMZ_DIR: "zephyr"
+  DOMZ0_DIR: "zephyr_dom0"
   XT_DOMD_DTB_NAME: "%{SOC_FAMILY}-%{MACHINE}-domd.dtb"
   XT_DOMU_DTB_NAME: "salvator-generic-domu.dtb"
   XT_DOMA_DTB_NAME: "salvator-generic-doma.dtb"
@@ -315,6 +316,20 @@ components:
       additional_deps:
         - "../%{ANDROID_KERNEL_DIR}/out/android12-5.4/common/arch/arm64/boot/Image"
 
+  zephyr_dom0:
+    build-dir: "%{DOMZ0_DIR}"
+    sources:
+      - type: west
+        url: https://github.com/nexec/xenutils
+        rev: xen_dom0_demo
+        file: west.yml
+    builder:
+      type: zephyr
+      board: xenvm
+      target: ../xenutils
+      target_images:
+        - "zephyr/build/zephyr/zephyr.bin"
+
   zephyr:
     build-dir: "%{DOMZ_DIR}"
     sources:
@@ -549,6 +564,24 @@ parameters:
                 type: raw_image
                 gpt_type: 0FC63DAF-8483-4772-8E79-3D69D8477DE4 # Linux filesystem data
                 image_path: "%{YOCTOS_WORK_DIR}/%{DOMU_BUILD_DIR}/tmp/deploy/images/%{MACHINE}/core-image-weston-%{MACHINE}.ext4"
+
+  ENABLE_ZEPHYR_DOM0:
+    desc: "Build Zephyr as domain 0"
+    "no":
+      default: true
+    "yes":
+      overrides:
+        variables:
+          XT_DOMZ_TAG: "domz"
+        components:
+          dom0:
+            builder:
+              additional_deps:
+                # paths relative to dom0 build-dir
+                - "../%{DOMZ0_DIR}/zephyr/build/zephyr/zephyr.bin"
+              external_src:
+                # path relative to folder containing build.ninja
+                domz: "%{DOMZ0_DIR}/zephyr/build/zephyr"
 
   ENABLE_ZEPHYR:
     desc: "Build Zephyr as guest domain"
