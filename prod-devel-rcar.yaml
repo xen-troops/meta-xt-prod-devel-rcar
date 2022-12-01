@@ -29,13 +29,13 @@ common_data:
   # Sources used by all yocto-based domains
   sources: &COMMON_SOURCES
     - type: git
-      url: "git://git.yoctoproject.org/poky"
+      url: "https://git.yoctoproject.org/poky"
       rev: dunfell
     - type: git
-      url: "git://git.openembedded.org/meta-openembedded"
+      url: "https://git.openembedded.org/meta-openembedded"
       rev: dunfell
     - type: git
-      url: "git://git.yoctoproject.org/meta-virtualization"
+      url: "https://git.yoctoproject.org/meta-virtualization"
       rev: dunfell
     - type: git
       url: "https://github.com/xen-troops/meta-xt-common.git"
@@ -108,7 +108,7 @@ common_data:
   ddk_source_overrides: &DDK_SOURCE_OVERRIDES
     sources:
       - type: git
-        url: "git://git.openembedded.org/meta-python2"
+        url: "https://git.openembedded.org/meta-python2"
         rev: dunfell
       - type: git
         url: "https://github.com/kraj/meta-clang.git"
@@ -190,7 +190,7 @@ components:
         url: https://github.com/xen-troops/meta-renesas.git
         rev: "Renesas-Yocto-v5.1-patched"
       - type: git
-        url: git://git.yoctoproject.org/meta-selinux
+        url: https://git.yoctoproject.org/meta-selinux
         rev: dunfell
       - type: git
         url: "https://github.com/xen-troops/meta-xt-prod-devel-rcar.git"
