@@ -49,22 +49,6 @@
 
 /delete-node/&adsp;
 
-&sdhi0 {
-	/delete-property/iommus;
-};
-
-&sdhi1 {
-	/delete-property/iommus;
-};
-
-&sdhi2 {
-	/delete-property/iommus;
-};
-
-&sdhi3 {
-	/delete-property/iommus;
-};
-
 /* Xen will provide its own GIC, mask ours */
 &gic {
 	compatible = "";
