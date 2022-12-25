@@ -48,6 +48,8 @@
 };
 
 /delete-node/&adsp;
+/delete-node/&pciec0_ep;
+/delete-node/&pciec1_ep;
 
 /* ============================ Enabled IPMMUs ===============================*/
 
@@ -417,6 +419,22 @@
 			xen,passthrough;
 		};
 
+		imrlx4_imr0 {
+			xen,passthrough;
+		};
+
+		imrlx4_imr1 {
+			xen,passthrough;
+		};
+
+		imrlx4_imr2 {
+			xen,passthrough;
+		};
+
+		imrlx4_imr3 {
+			xen,passthrough;
+		};
+
 		lossy_shmem {
 			reg = <0 0x47fd7000 0 0x1000>;
 		};
@@ -427,8 +445,6 @@
 &can1			{ xen,passthrough; };
 &canfd			{ xen,passthrough; };
 &intc_ex		{ xen,passthrough; };
-&mfis_as		{ xen,passthrough; };
-&rpc0			{ xen,passthrough; };
 &sdhi0			{ xen,passthrough; };
 &sdhi2			{ xen,passthrough; };
 &src0			{ xen,passthrough; };
