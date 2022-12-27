@@ -97,8 +97,9 @@ common_data:
     # Add Capacity Aware migration Strategy (CAS)
     - [MACHINE_FEATURES_append, " cas"]
 
-    # Remove ptest to reduce the build time
-    - [DISTRO_FEATURES_remove, "ptest"]
+    # Remove ptest to reduce the build time,
+    # remove x11 and vulkan to avoid error after removing mesa
+    - [DISTRO_FEATURES_remove, " ptest x11 vulkan"]
 
     # HACK: force ipk instead of rpm b/c it makes troubles to PVR UM build otherwise
     - [PACKAGE_CLASSES, "package_ipk"]
@@ -191,8 +192,8 @@ components:
     sources:
       - *COMMON_SOURCES
       - type: git
-        url: https://github.com/xen-troops/meta-renesas.git
-        rev: "Renesas-Yocto-v5.1-patched"
+        url: https://github.com/renesas-rcar/meta-renesas.git
+        rev: "dunfell-dev"
       - type: git
         url: https://git.yoctoproject.org/meta-selinux
         rev: dunfell
@@ -246,8 +247,8 @@ components:
     sources:
       - *COMMON_SOURCES
       - type: git
-        url: https://github.com/xen-troops/meta-renesas.git
-        rev: "Renesas-Yocto-v5.1-patched"
+        url: https://github.com/renesas-rcar/meta-renesas.git
+        rev: "dunfell-dev"
     builder:
       type: yocto
       work_dir: "%{DOMU_BUILD_DIR}"
@@ -427,8 +428,8 @@ parameters:
           domd:
             sources:
               - type: git
-                url: "https://github.com/CogentEmbedded/meta-rcar.git"
-                rev: v5.1.0
+                url: "https://github.com/xen-troops/meta-rcar.git"
+                rev: Renesas-Yocto-v5.9-dunfell-dev
             builder:
               layers:
                 - "../meta-rcar/meta-rcar-gen3-adas"
