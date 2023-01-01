@@ -342,6 +342,8 @@ components:
         - "../meta-xt-rcar/meta-xt-rcar-domx"
         - "../meta-xt-rcar/meta-xt-rcar-gles_common"
         - "../meta-xt-prod-devel-rcar/meta-xt-prod-devel-rcar-driver-domain"
+        - "../meta-xt-prod-devel-rcar/meta-agl-tune"
+
       target_images:
         - "tmp/deploy/images/%{MACHINE}/Image"
         - "tmp/deploy/images/%{MACHINE}/xen-%{MACHINE}.uImage"
