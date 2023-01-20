@@ -423,8 +423,8 @@ parameters:
           domd:
             sources:
               - type: git
-                url: "https://github.com/CogentEmbedded/meta-rcar.git"
-                rev: v5.1.0
+                url: "https://github.com/xen-troops/meta-rcar.git"
+                rev: Renesas-Yocto-v5.9-patched
             builder:
               layers:
                 - "../meta-rcar/meta-rcar-gen3-adas"
