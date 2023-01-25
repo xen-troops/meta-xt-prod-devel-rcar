@@ -38,11 +38,11 @@ common_data:
       url: "https://git.yoctoproject.org/meta-virtualization"
       rev: dunfell
     - type: git
-      url: "https://github.com/xen-troops/meta-xt-common.git"
-      rev: master
+      url: "https://github.com/otyshchenko1/meta-xt-common.git"
+      rev: my_devel
     - type: git
-      url: "https://github.com/xen-troops/meta-xt-rcar.git"
-      rev: master
+      url: "https://github.com/otyshchenko1/meta-xt-rcar.git"
+      rev: my_devel
   # Common configuration options for all yocto-based domains
   conf: &COMMON_CONF
     - [SSTATE_DIR, "${TOPDIR}/../../../common_data/sstate"]
@@ -131,8 +131,8 @@ components:
     sources:
       - *COMMON_SOURCES
       - type: git
-        url: "https://github.com/xen-troops/meta-xt-prod-devel-rcar.git"
-        rev: master
+        url: "https://github.com/rshym/meta-xt-prod-devel-rcar.git"
+        rev: mr_agl2
     builder:
       type: yocto
       work_dir: "%{DOM0_BUILD_DIR}"
@@ -231,8 +231,8 @@ components:
         url: "https://gerrit.automotivelinux.org/gerrit/AGL/meta-agl-refhw"
         rev: "marlin"
       - type: git
-        url: "https://github.com/xen-troops/meta-xt-prod-devel-rcar.git"
-        rev: master
+        url: "https://github.com/rshym/meta-xt-prod-devel-rcar.git"
+        rev: mr_agl2
       - type: git
         url: https://git.yoctoproject.org/meta-selinux
         rev: dunfell
