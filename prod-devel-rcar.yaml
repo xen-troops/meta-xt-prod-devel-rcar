@@ -30,13 +30,13 @@ common_data:
   sources: &COMMON_SOURCES
     - type: git
       url: "https://git.yoctoproject.org/poky"
-      rev: dunfell
+      rev: kirkstone
     - type: git
       url: "https://git.openembedded.org/meta-openembedded"
-      rev: dunfell
+      rev: kirkstone
     - type: git
       url: "https://git.yoctoproject.org/meta-virtualization"
-      rev: dunfell
+      rev: kirkstone
     - type: git
       url: "https://github.com/xen-troops/meta-xt-common.git"
       rev: master
@@ -115,10 +115,10 @@ common_data:
     sources:
       - type: git
         url: "https://git.openembedded.org/meta-python2"
-        rev: dunfell
+        rev: kirkstone
       - type: git
         url: "https://github.com/kraj/meta-clang.git"
-        rev: dunfell
+        rev: kirkstone
       - type: git
         url: "ssh://git@gitpct.epam.com/epmd-aepr/img-proprietary"
         rev: "6ed789681c2867c7cae8b0150e093e1e2781797e"
@@ -195,10 +195,10 @@ components:
       - *COMMON_SOURCES
       - type: git
         url: https://github.com/renesas-rcar/meta-renesas.git
-        rev: "dunfell-dev"
+        rev: "kirkstone-dev"
       - type: git
         url: https://git.yoctoproject.org/meta-selinux
-        rev: dunfell
+        rev: kirkstone
       - type: git
         url: "https://github.com/xen-troops/meta-xt-prod-devel-rcar.git"
         rev: master
@@ -250,7 +250,7 @@ components:
       - *COMMON_SOURCES
       - type: git
         url: https://github.com/renesas-rcar/meta-renesas.git
-        rev: "dunfell-dev"
+        rev: "kirkstone-dev"
     builder:
       type: yocto
       work_dir: "%{DOMU_BUILD_DIR}"
@@ -453,7 +453,7 @@ parameters:
             sources:
               - type: git
                 url: "https://github.com/xen-troops/meta-rcar.git"
-                rev: Renesas-Yocto-v5.9-dunfell-dev
+                rev: xt-master
             builder:
               layers:
                 - "../meta-rcar/meta-rcar-gen3-adas"
