@@ -168,6 +168,10 @@ components:
         # Do not install kernel image to rootfs to decrease initrd size
         - ["RDEPENDS:${KERNEL_PACKAGE_NAME}-base", ""]
 
+        # Build our own Xen version rather than proposed by meta-virtualization
+        - [PREFERRED_VERSION_xen, "4.17.0+git%"]
+        - [PREFERRED_VERSION_xen-tools, "4.17.0+git%"]
+
       layers:
         - "../meta-virtualization"
         - "../meta-openembedded/meta-oe"
@@ -216,6 +220,11 @@ components:
         - [MACHINE_FEATURES:append, " multimedia"]
 
         - [XT_MULTIMEDIA_EVA_DIR, "%{XT_MULTIMEDIA_EVA_DIR}"]
+
+        # Build our own Xen version rather than proposed by meta-virtualization
+        - [PREFERRED_VERSION_xen, "4.17.0+git%"]
+        - [PREFERRED_VERSION_xen-tools, "4.17.0+git%"]
+
       build_target: core-image-weston
       layers:
         - "../poky/meta"
