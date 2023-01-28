@@ -175,6 +175,8 @@ components:
         - [PREFERRED_VERSION_xen, "4.17.0+git%"]
         - [PREFERRED_VERSION_xen-tools, "4.17.0+git%"]
 
+        - [PACKAGE_EXCLUDE:append, " qemu"]
+
       layers:
         - "../meta-virtualization"
         - "../meta-openembedded/meta-oe"
