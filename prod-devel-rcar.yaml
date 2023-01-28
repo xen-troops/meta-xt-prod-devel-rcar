@@ -103,6 +103,9 @@ common_data:
     # HACK: force ipk instead of rpm b/c it makes troubles to PVR UM build otherwise
     - [PACKAGE_CLASSES, "package_ipk"]
 
+    # Additional testing and debug tools
+    - [IMAGE_INSTALL_append, "expect ltrace strace evtest"]
+
   # The same set of layers and configs is used both in DomD and DomU
   # to build a DDK from source code
   ddk_source_overrides: &DDK_SOURCE_OVERRIDES
