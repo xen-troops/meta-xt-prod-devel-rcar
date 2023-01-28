@@ -1,17 +1,9 @@
 require xen-source.inc
 
-PACKAGES:append = "\
-    ${PN}-test \
-"
-
 FILES:${PN}-test = "\
     ${libdir}/xen/bin/test-xenstore \
     ${libdir}/xen/bin/test-resource \
     ${libdir}/xen/bin/test-paging-mempool\
-"
-
-RDEPENDS:${PN} += " \
-    util-linux-prlimit \
 "
 
 do_install:append() {
