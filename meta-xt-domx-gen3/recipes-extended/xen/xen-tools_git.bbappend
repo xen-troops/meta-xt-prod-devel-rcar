@@ -1,29 +1,29 @@
 require xen-source.inc
 
-PACKAGES_append = "\
+PACKAGES:append = "\
     ${PN}-test \
 "
 
-FILES_${PN}-test = "\
+FILES:${PN}-test = "\
     ${libdir}/xen/bin/test-xenstore \
     ${libdir}/xen/bin/test-resource \
     ${libdir}/xen/bin/test-paging-mempool\
 "
 
-RDEPENDS_${PN} += " \
+RDEPENDS:${PN} += " \
     util-linux-prlimit \
 "
 
-do_install_append() {
+do_install:append() {
     rm -f ${D}/${libdir}/xen/bin/init-dom0less
     rm -f ${D}/${systemd_unitdir}/system/var-lib-xenstored.mount
     rm -rf ${D}/var
 }
 
-FILES_${PN}-xencommons_remove = "\
+FILES:${PN}-xencommons:remove = "\
     "${systemd_unitdir}/system/var-lib-xenstored.mount" \
 "
 
-SYSTEMD_SERVICE_${PN}-xencommons_remove = " \
+SYSTEMD_SERVICE:${PN}-xencommons:remove = " \
     var-lib-xenstored.mount \
 "

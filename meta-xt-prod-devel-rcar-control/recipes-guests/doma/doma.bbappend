@@ -1,6 +1,6 @@
-FILESEXTRAPATHS_prepend := "${THISDIR}/files:"
+FILESEXTRAPATHS:prepend := "${THISDIR}/files:"
 
-RDEPENDS_${PN} += "backend-ready"
+RDEPENDS:${PN} += "backend-ready"
 
 SRC_URI += "\
     file://doma-vdevices.cfg \
@@ -9,13 +9,13 @@ SRC_URI += "\
     file://backends.conf \
 "
 
-FILES_${PN} += " \
+FILES:${PN} += " \
     ${libdir}/xen/bin/doma-set-root \
     ${sysconfdir}/systemd/system/doma.service.d/doma-set-root.conf \
     ${sysconfdir}/systemd/system/doma.service.d/backends.conf \
 "
 
-do_install_append() {
+do_install:append() {
     cat ${WORKDIR}/doma-vdevices.cfg >> ${D}${sysconfdir}/xen/doma.cfg
 
     # Install doma-set-root script and the drop-in file to run it

@@ -1,6 +1,6 @@
-FILESEXTRAPATHS_prepend := "${THISDIR}/files:"
+FILESEXTRAPATHS:prepend := "${THISDIR}/files:"
 
-SRC_URI_append = "\
+SRC_URI:append = "\
     file://aos-vis.service \
     file://aos_vis.cfg \
 "
@@ -17,15 +17,15 @@ AOS_VIS_PLUGINS += "\
 
 inherit systemd
 
-SYSTEMD_SERVICE_${PN} = "aos-vis.service"
+SYSTEMD_SERVICE:${PN} = "aos-vis.service"
 
-FILES_${PN} += " \
+FILES:${PN} += " \
     ${sysconfdir}/aos/aos_vis.cfg \
     ${systemd_system_unitdir}/aos-vis.service \
     /var/aos/vis/data/*.pem \
 "
 
-RDEPENDS_${PN} += "\
+RDEPENDS:${PN} += "\
     ${@bb.utils.contains('AOS_VIS_PLUGINS', 'telemetryemulatoradapter', 'telemetry-emulator', '', d)} \
 "
 
@@ -60,7 +60,7 @@ python do_configure_adapters() {
         json.dump(data, f, indent=4)
 }
 
-do_install_append() {
+do_install:append() {
     if "${@bb.utils.contains('AOS_VIS_PLUGINS', 'telemetryemulatoradapter', 'true', 'false', d)}"; then
 
         if ! grep -q 'network-online.target telemetry-emulator.service' ${WORKDIR}/aos-vis.service ; then
