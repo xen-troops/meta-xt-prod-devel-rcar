@@ -1,14 +1,14 @@
-FILESEXTRAPATHS_prepend := "${THISDIR}/files:"
+FILESEXTRAPATHS:prepend := "${THISDIR}/files:"
 
 SRC_URI += "\
     file://domd-set-root \
 "
 
-FILES_${PN} += " \
+FILES:${PN} += " \
     ${libdir}/xen/bin/domd-set-root \
 "
 
-do_install_append() {
+do_install:append() {
     if ${@bb.utils.contains('DISTRO_FEATURES', 'virtio', 'true', 'false', d)}; then
         # Increase XT page pool
         sed -i 's/xt_page_pool=67108864/xt_page_pool=603979776/' \
