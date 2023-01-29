@@ -58,7 +58,7 @@ common_data:
     - [XT_PVR_NUM_OSID, "%{XT_PVR_NUM_OSID}"]
 
     # Remove features that we are not using
-    - [DISTRO_FEATURES_remove, "x11 gtk gobject-introspection-data wifi nfc bluetooth irda zeroconf 3g sysvinit"]
+    - [DISTRO_FEATURES:remove, "x11 gtk gobject-introspection-data wifi nfc bluetooth irda zeroconf 3g sysvinit"]
 
   # Conf options for domain that are built used renesas layer
   domd_domu_conf: &DOMD_DOMU_CONF
@@ -69,15 +69,15 @@ common_data:
     - [INIT_MANAGER, "systemd"]
 
     # add the static lib to SDK toolchain
-    - [SDKIMAGE_FEATURES_append, " staticdev-pkgs"]
+    - [SDKIMAGE_FEATURES:append, " staticdev-pkgs"]
 
     # Enable Gfx Pkgs
-    - [MACHINE_FEATURES_append, " gsx"]
-    - [MULTI_PROVIDER_WHITELIST_append," virtual/libgl virtual/egl virtual/libgles1 virtual/libgles2"]
+    - [MACHINE_FEATURES:append, " gsx"]
+    - [BB_MULTI_PROVIDER_ALLOWED:append," virtual/libgl virtual/egl virtual/libgles1 virtual/libgles2"]
 
     # for Wayland/Weston
-    - [DISTRO_FEATURES_NATIVESDK_append, " wayland"]
-    - [DISTRO_FEATURES_append, " pam"]
+    - [DISTRO_FEATURES_NATIVESDK:append, " wayland"]
+    - [DISTRO_FEATURES:append, " pam"]
     - [PREFERRED_PROVIDER_virtual/libgles1, ""]
     - [PREFERRED_PROVIDER_virtual/libgles2, "gles-user-module"]
     - [PREFERRED_PROVIDER_virtual/egl, "libegl"]
@@ -85,29 +85,29 @@ common_data:
     - [PREFERRED_PROVIDER_virtual/mesa, ""]
     - [PREFERRED_PROVIDER_virtual/libgbm, "libgbm"]
     - [PREFERRED_PROVIDER_libgbm-dev, "libgbm"]
-    - [BBMASK_append, " mesa-gl"]
+    - [BBMASK:append, " mesa-gl"]
 
     # Add for gstreamer plugins ugly
-    - [LICENSE_FLAGS_WHITELIST, "commercial"]
+    - [LICENSE_FLAGS_ACCEPTED, "commercial"]
 
     # Configuration for USB 3.0
-    - [MACHINE_FEATURES_append, " usb3"]
+    - [MACHINE_FEATURES:append, " usb3"]
 
     # Add Capacity Aware migration Strategy (CAS)
-    - [MACHINE_FEATURES_append, " cas"]
+    - [MACHINE_FEATURES:append, " cas"]
 
     # Remove ptest to reduce the build time,
     # remove x11 and vulkan to avoid error after removing mesa
-    - [DISTRO_FEATURES_remove, " ptest x11 vulkan"]
+    - [DISTRO_FEATURES:remove, " ptest x11 vulkan"]
 
     # HACK: force ipk instead of rpm b/c it makes troubles to PVR UM build otherwise
     - [PACKAGE_CLASSES, "package_ipk"]
 
     # Additional testing and debug tools
-    - [IMAGE_INSTALL_append, "expect ltrace strace evtest"]
+    - [IMAGE_INSTALL:append, " expect ltrace strace evtest"]
 
     # Install some apps to test GPU/Display
-    - [IMAGE_INSTALL_append, " glmark2 kmscube"]
+    - [IMAGE_INSTALL:append, " glmark2 kmscube"]
 
   # The same set of layers and configs is used both in DomD and DomU
   # to build a DDK from source code
@@ -155,10 +155,10 @@ components:
         - [XT_GUEST_INSTALL, "%{XT_GENERIC_DOMU_TAG} %{XT_DOMA_TAG} %{XT_DOMZ_TAG} domd"]
 
         # Disable HWDB which quite huge (around 15MB) and is not required at all
-        - [BAD_RECOMMENDATIONS_append, " udev-hwdb"]
+        - [BAD_RECOMMENDATIONS:append, " udev-hwdb"]
 
         # Remove unused DISTRO_FEATURES
-        - [DISTRO_FEATURES_remove, "acl alsa argp pcmcia usbgadget
+        - [DISTRO_FEATURES:remove, "acl alsa argp pcmcia usbgadget
                 usbhost opengl ptest multiarch wayland vulkan
                 sysvinit"]
 
@@ -166,7 +166,7 @@ components:
         - [INIT_MANAGER, "systemd"]
 
         # Do not install kernel image to rootfs to decrease initrd size
-        - ["RDEPENDS_${KERNEL_PACKAGE_NAME}-base", ""]
+        - ["RDEPENDS:${KERNEL_PACKAGE_NAME}-base", ""]
 
       layers:
         - "../meta-virtualization"
@@ -213,7 +213,7 @@ components:
         - [XT_DEVICE_TREES, "%{XT_DOMD_DTB_NAME} %{XT_DOMA_DTB_NAME} %{XT_XEN_DTB_NAME}"]
         - [XT_GUEST_INSTALL, "%{XT_GENERIC_DOMU_TAG} %{XT_DOMA_TAG} %{XT_DOMZ_TAG}"]
         # Machine feature 'multimedia' is used to enable (VSP in domd) and (LOSSY build option in ATF)
-        - [MACHINE_FEATURES_append, " multimedia"]
+        - [MACHINE_FEATURES:append, " multimedia"]
 
         - [XT_MULTIMEDIA_EVA_DIR, "%{XT_MULTIMEDIA_EVA_DIR}"]
       build_target: core-image-weston
@@ -258,9 +258,9 @@ components:
         - *COMMON_CONF
         - *DOMD_DOMU_CONF
         - [XT_DOM_NAME, "domu"]
-        - [EXTRA_IMAGEDEPENDS_remove, "arm-trusted-firmware"]
-        - [EXTRA_IMAGEDEPENDS_remove, "optee-os"]
-        - [EXTRA_IMAGEDEPENDS_remove, "u-boot"]
+        - [EXTRA_IMAGEDEPENDS:remove, "arm-trusted-firmware"]
+        - [EXTRA_IMAGEDEPENDS:remove, "optee-os"]
+        - [EXTRA_IMAGEDEPENDS:remove, "u-boot"]
 
       layers:
         - "../meta-openembedded/meta-oe"
@@ -460,7 +460,7 @@ parameters:
                 - "../meta-xt-rcar/meta-xt-cogent-fixups"
               conf:
                 # Ignore OP-TEE patches as we have own OP-TEE
-                -  [BBMASK_append, " meta-rcar-gen3-adas/recipes-bsp/optee"]
+                -  [BBMASK:append, " meta-rcar-gen3-adas/recipes-bsp/optee"]
     h3ulcb-4x2g-ab:
       overrides:
         variables:
@@ -497,7 +497,7 @@ parameters:
           domd:
             builder:
               conf:
-                - [DISTRO_FEATURES_append, " ivi-shell"]
+                - [DISTRO_FEATURES:append, " ivi-shell"]
           dom0:
             builder:
               additional_deps:
@@ -608,7 +608,7 @@ parameters:
             builder:
               conf:
                 # Mask MMP recipes
-                - [BBMASK_append, " kernel-module-uvcs-drv omx-user-module"]
+                - [BBMASK:append, " kernel-module-uvcs-drv omx-user-module"]
     "yes":
       overrides:
         variables:
@@ -638,8 +638,8 @@ parameters:
                 # library is provided to you within Evaluation package.
                 # Following line is just example applicable for
                 # multimedia evaluation package 20210428.
-                - [DISTRO_FEATURES_append, " aaclcdec_lib aaclcdec_mdw aaclcenc_lib aaclcenc_mdw h264dec_lib h264enc_lib"]
-                - ["HOSTTOOLS_append", " unzip "]
+                - [DISTRO_FEATURES:append, " aaclcdec_lib aaclcdec_mdw aaclcenc_lib aaclcenc_mdw h264dec_lib h264enc_lib"]
+                - ["HOSTTOOLS:append", " unzip "]
   ENABLE_AOS_VIS:
     desc: "Enable AOS VIS service"
     "no":
@@ -658,7 +658,7 @@ parameters:
                 - "../meta-xt-prod-devel-rcar/meta-aos-tune"
               conf:
                 - [AOS_VIS_PLUGINS, "telemetryemulatoradapter"]
-                - [DISTRO_FEATURES_append, " vis"]
+                - [DISTRO_FEATURES:append, " vis"]
           doma:
             builder:
               env:

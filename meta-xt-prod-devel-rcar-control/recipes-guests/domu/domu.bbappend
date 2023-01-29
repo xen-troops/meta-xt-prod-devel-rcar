@@ -1,20 +1,20 @@
-FILESEXTRAPATHS_prepend := "${THISDIR}/files:"
+FILESEXTRAPATHS:prepend := "${THISDIR}/files:"
 
-RDEPENDS_${PN} = "backend-ready"
+RDEPENDS:${PN} = "backend-ready"
 SRC_URI += "\
     file://domu-vdevices.cfg \
     file://domu-pvcamera.cfg \
     file://domu-set-root \
 "
 
-FILES_${PN} += " \
+FILES:${PN} += " \
     ${libdir}/xen/bin/domu-set-root \
 "
 
 # It is used a lot in the do_install, so variable will be handy
 CFG_FILE="${D}${sysconfdir}/xen/domu.cfg"
 
-do_install_append() {
+do_install:append() {
     cat ${WORKDIR}/domu-vdevices.cfg >> ${CFG_FILE}
 
     if ${@bb.utils.contains('DISTRO_FEATURES', 'pvcamera', 'true', 'false', d)}; then
