@@ -109,6 +109,9 @@ common_data:
     # Install some apps to test GPU/Display
     - [IMAGE_INSTALL:append, " glmark2 kmscube"]
 
+    # gles-um-compile.bb still requires python2
+    - [I_SWEAR_TO_MIGRATE_TO_PYTHON3, "yes"]
+
   # The same set of layers and configs is used both in DomD and DomU
   # to build a DDK from source code
   ddk_source_overrides: &DDK_SOURCE_OVERRIDES
