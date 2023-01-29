@@ -124,6 +124,10 @@ common_data:
         rev: "6ed789681c2867c7cae8b0150e093e1e2781797e"
         dir: "proprietary"
     builder:
+      conf:
+        # gles-um-compile.bb still requires python2
+        - [I_SWEAR_TO_MIGRATE_TO_PYTHON3, "yes"]
+
       layers:
         - "../meta-python2"
         - "../meta-clang"
