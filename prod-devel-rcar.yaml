@@ -106,6 +106,9 @@ common_data:
     # Additional testing and debug tools
     - [IMAGE_INSTALL_append, "expect ltrace strace evtest"]
 
+    # Install some apps to test GPU/Display
+    - [IMAGE_INSTALL_append, " glmark2 kmscube"]
+
   # The same set of layers and configs is used both in DomD and DomU
   # to build a DDK from source code
   ddk_source_overrides: &DDK_SOURCE_OVERRIDES
