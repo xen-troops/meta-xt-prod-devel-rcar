@@ -223,6 +223,9 @@ components:
         # Machine feature 'multimedia' is used to enable (VSP in domd) and (LOSSY build option in ATF)
         - [MACHINE_FEATURES:append, " multimedia"]
 
+        - [PREFERRED_RPROVIDER_libgstallocators-1.0, "gstreamer1.0-plugins-base"]
+        - [PREFERRED_RPROVIDER_libgstapp-1.0, "gstreamer1.0-plugins-base"]
+
         - [XT_MULTIMEDIA_EVA_DIR, "%{XT_MULTIMEDIA_EVA_DIR}"]
 
         # Build our own Xen version rather than proposed by meta-virtualization
