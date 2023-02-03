@@ -33,13 +33,20 @@ setenv ethaddr 12:34:56:78:9A:BC
 ## TFTP boot
 ```
 setenv tftp_xen_load tftp 0x48080000 xen
-setenv tftp_dtb_load 'tftp 0x48000000 xen.dtb; fdt addr 0x48000000; fdt resize; fdt mknode / boot_dev; fdt set /boot_dev device nfs'
+setenv tftp_dtb_load 'tftp 0x48000000 xen.dtb; fdt addr 0x48000000; fdt resize; fdt mknode / boot_dev; fdt set /boot_dev device nfs; fdt set /boot_dev my_ip ${ipaddr}; fdt set /boot_dev nfs_server_ip ${serverip}; fdt set /boot_dev nfs_dir "/srv/domd-YOUR_BOARD";'
 setenv tftp_kernel_load tftp 0x8a000000 Image
 setenv tftp_xenpolicy_load tftp 0x8c000000 xenpolicy
 setenv tftp_initramfs_load tftp 0x84000000 uInitramfs
 setenv bootcmd_tftp 'run tftp_xen_load; run tftp_dtb_load; run tftp_kernel_load; run tftp_xenpolicy_load; run tftp_initramfs_load; bootm 0x48080000 0x84000000 0x48000000'
 setenv bootcmd run bootcmd_tftp
 ```
+### NFS related properties in a device tree file
+#### my_ip
+IP address of this board
+#### nfs_server_ip
+IP address of a connected machine where NFS server is started
+#### nfs_dir
+Exported path of the root FS.
 
 ## SD0 card boot
 ```
