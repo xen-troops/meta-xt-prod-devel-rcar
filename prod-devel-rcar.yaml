@@ -170,7 +170,7 @@ components:
         - [INIT_MANAGER, "systemd"]
 
         # Do not install kernel image to rootfs to decrease initrd size
-        - ["RDEPENDS:${KERNEL_PACKAGE_NAME}-base", ""]
+        - ["RRECOMMENDS:${KERNEL_PACKAGE_NAME}-base", ""]
 
         # Build our own Xen version rather than proposed by meta-virtualization
         - [PREFERRED_VERSION_xen, "4.17.0+git%"]
