@@ -104,7 +104,7 @@ common_data:
     - [PACKAGE_CLASSES, "package_ipk"]
 
     # Additional testing and debug tools
-    - [IMAGE_INSTALL:append, " expect ltrace strace evtest"]
+    - [IMAGE_INSTALL:append, " expect ltrace evtest"]
 
     # Install some apps to test GPU/Display
     - [IMAGE_INSTALL:append, " glmark2 kmscube"]
