@@ -371,7 +371,6 @@ parameters:
           XT_XEN_DTB_NAME: "r8a77960-%{MACHINE}-xen.dtb"
     salvator-xs-m3-2x4g:
       # This is not misprint. This machine has 2x4 memory config
-      default: true
       overrides:
         variables:
           MACHINE: "salvator-x"
@@ -405,6 +404,7 @@ parameters:
           XT_DOMD_DTB_NAME: "r8a7795-salvator-x-4x2g-domd.dtb"
           XT_XEN_DTB_NAME: "r8a7795-salvator-x-4x2g-xen.dtb"
     h3ulcb-4x2g:
+      default: true
       overrides:
         variables:
           MACHINE: "h3ulcb"
