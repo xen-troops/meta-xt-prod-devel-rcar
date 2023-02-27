@@ -1,5 +1,5 @@
 desc: "Xen-Troops development setup for Renesas RCAR Gen3 hardware"
-min_ver: "0.15"
+min_ver: "0.16"
 
 variables:
   YOCTOS_WORK_DIR: "yocto"
@@ -333,6 +333,28 @@ components:
       target: zephyr/samples/synchronization
       target_images:
         - "zephyr/build/zephyr/zephyr.bin"
+
+  pack-ipl:
+    build-dir: "."
+    builder:
+      type: archive
+      base_dir: "%{YOCTOS_WORK_DIR}/%{DOMD_BUILD_DIR}/tmp/deploy/images/%{MACHINE}/firmware/"
+      name: "ipl-%{MACHINE}.tar.bz2"
+      items:
+        - "bl2-%{MACHINE}-4x2g.bin"
+        - "bl2-%{MACHINE}-4x2g.srec"
+        - "bl31-%{MACHINE}-4x2g.bin"
+        - "bl31-%{MACHINE}-4x2g.srec"
+        - "bootparam_sa0-4x2g.bin"
+        - "bootparam_sa0-4x2g.srec"
+        - "cert_header_sa6-4x2g.bin"
+        - "cert_header_sa6-4x2g.srec"
+        - "cert_header_sa6_emmc.bin"
+        - "cert_header_sa6_emmc.srec"
+        - "tee-%{MACHINE}.bin"
+        - "tee-%{MACHINE}.srec"
+        - "u-boot-elf-%{MACHINE}.srec"
+        - "u-boot-%{MACHINE}.bin"
 
 images:
   full:
