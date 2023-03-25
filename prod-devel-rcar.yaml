@@ -204,7 +204,7 @@ components:
       - *COMMON_SOURCES
       - type: git
         url: https://github.com/renesas-rcar/meta-renesas.git
-        rev: "kirkstone-dev"
+        rev: "644ccf213fed7be3cf68b2a7bd80ae32bcc8a3c8"
       - type: git
         url: https://git.yoctoproject.org/meta-selinux
         rev: kirkstone
@@ -268,7 +268,7 @@ components:
       - *COMMON_SOURCES
       - type: git
         url: https://github.com/renesas-rcar/meta-renesas.git
-        rev: "kirkstone-dev"
+        rev: "644ccf213fed7be3cf68b2a7bd80ae32bcc8a3c8"
     builder:
       type: yocto
       work_dir: "%{DOMU_BUILD_DIR}"
