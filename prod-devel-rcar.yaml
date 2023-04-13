@@ -1,5 +1,5 @@
 desc: "Xen-Troops development setup for Renesas RCAR Gen3 hardware"
-min_ver: "0.13"
+min_ver: "0.15"
 
 variables:
   YOCTOS_WORK_DIR: "yocto"
@@ -343,7 +343,7 @@ images:
         gpt_type: 21686148-6449-6E6F-744E-656564454649 # BIOS boot partition (kinda...)
         type: ext4
         size: 128 MiB
-        files:
+        items:
           "Image": "%{YOCTOS_WORK_DIR}/%{DOM0_BUILD_DIR}/tmp/deploy/images/generic-armv8-xt/Image"
           "uInitramfs": "%{YOCTOS_WORK_DIR}/%{DOM0_BUILD_DIR}/tmp/deploy/images/generic-armv8-xt/uInitramfs"
           "xen": "%{YOCTOS_WORK_DIR}/%{DOMD_BUILD_DIR}/tmp/deploy/images/%{MACHINE}/xen-%{MACHINE}.uImage"
