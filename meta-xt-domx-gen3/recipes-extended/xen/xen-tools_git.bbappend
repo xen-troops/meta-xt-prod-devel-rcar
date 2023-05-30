@@ -19,3 +19,6 @@ FILES:${PN}-xencommons:remove = "\
 SYSTEMD_SERVICE:${PN}-xencommons:remove = " \
     var-lib-xenstored.mount \
 "
+
+# Remove the recommendation for Qemu for non-hvm x86 added in meta-virtualization layer
+RRECOMMENDS:${PN}:remove = " qemu"
