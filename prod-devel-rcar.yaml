@@ -262,6 +262,7 @@ components:
         - "../meta-xt-rcar/meta-xt-rcar-gles_common"
         - "../meta-xt-prod-devel-rcar/meta-xt-domx-gen3"
         - "../meta-xt-prod-devel-rcar/meta-xt-prod-devel-rcar-driver-domain"
+        - "../meta-xt-prod-devel-rcar/meta-xt-domd-gen3"
       target_images:
         - "tmp/deploy/images/%{MACHINE}/Image"
         - "tmp/deploy/images/%{MACHINE}/xen-%{MACHINE}.uImage"
@@ -298,6 +299,7 @@ components:
         - "../meta-xt-rcar/meta-xt-rcar-fixups"
         - "../meta-xt-rcar/meta-xt-rcar-domu"
         - "../meta-xt-rcar/meta-xt-rcar-gles_common"
+        - "../meta-xt-prod-devel-rcar/meta-xt-domu-gen3"
       build_target: core-image-weston
       target_images:
         - "tmp/deploy/images/%{MACHINE}/Image"
