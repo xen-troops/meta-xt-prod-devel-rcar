@@ -222,3 +222,12 @@ option.
 
 For more information about `rouge` check its
 [manual](https://moulin.readthedocs.io/en/latest/rouge.html).
+
+# Distro features
+
+This repository introduces the following Yocto **DISTRO_FEATURES**. They are used, or not used, depending on the moulin build parameters.
+
+|Distro feature|Comment|
+|---|---|
+|displbe|Specifies whether to build and to install [this](https://github.com/xen-troops/displ_be) implementation as a 'displbe' systemd service.|
+|sndbe|Specifies whether to build and to install [this](https://github.com/xen-troops/snd_be) implementation as a 'sndbe' systemd service.|

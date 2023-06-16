@@ -61,6 +61,9 @@ common_data:
     # Remove features that we are not using
     - [DISTRO_FEATURES:remove, "x11 gtk gobject-introspection-data wifi nfc bluetooth irda zeroconf 3g sysvinit"]
 
+    # displbe and sndbe
+    - [DISTRO_FEATURES:append, " displbe sndbe"]
+
   # Conf options for domain that are built used renesas layer
   domd_domu_conf: &DOMD_DOMU_CONF
     - [MACHINE, "%{MACHINE}"]
