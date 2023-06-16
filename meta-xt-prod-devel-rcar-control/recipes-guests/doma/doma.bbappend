@@ -6,13 +6,15 @@ SRC_URI += "\
     file://doma-vdevices.cfg \
     file://doma-set-root \
     file://doma-set-root.conf \
-    file://backends.conf \
+    ${@bb.utils.contains('DISTRO_FEATURES', 'sndbe', 'file://sndbe-backend.conf', '', d)} \
+    ${@bb.utils.contains('DISTRO_FEATURES', 'displbe', 'file://displbe-backend.conf', '', d)} \
 "
 
 FILES:${PN} += " \
     ${libdir}/xen/bin/doma-set-root \
     ${sysconfdir}/systemd/system/doma.service.d/doma-set-root.conf \
-    ${sysconfdir}/systemd/system/doma.service.d/backends.conf \
+    ${@bb.utils.contains('DISTRO_FEATURES', 'sndbe', '${sysconfdir}/systemd/system/doma.service.d/sndbe-backend.conf', '', d)} \
+    ${@bb.utils.contains('DISTRO_FEATURES', 'displbe', '${sysconfdir}/systemd/system/doma.service.d/displbe-backend.conf', '', d)} \
 "
 
 do_install:append() {
@@ -26,5 +28,12 @@ do_install:append() {
 
     # Install drop-in file to add dependencies on sndbe and displbe
     # Directory is installed above for doma-set-root.conf
-    install -m 0644 ${WORKDIR}/backends.conf ${D}${sysconfdir}/systemd/system/doma.service.d
+
+    if ${@bb.utils.contains('DISTRO_FEATURES', 'sndbe', 'true', 'false', d)}; then
+        install -m 0644 ${WORKDIR}/sndbe-backend.conf ${D}${sysconfdir}/systemd/system/doma.service.d
+    fi
+
+    if ${@bb.utils.contains('DISTRO_FEATURES', 'displbe', 'true', 'false', d)}; then
+        install -m 0644 ${WORKDIR}/displbe-backend.conf ${D}${sysconfdir}/systemd/system/doma.service.d
+    fi
 }
