@@ -77,6 +77,7 @@ usage: moulin prod-devel-rcar.yaml
        [--ENABLE_ZEPHYR {no,yes}] [--ENABLE_MM {no,yes}]
        [--ENABLE_AOS_VIS {no,yes}] [--PREBUILT_DDK {no,yes}]
        [--ANDROID_PREBUILT_DDK {no,yes}]
+       [--ENABLE_VIRTIO {no,yes}]
 
 Config file description: Xen-Troops development setup for Renesas RCAR Gen3
 hardware
@@ -97,6 +98,9 @@ optional arguments:
                         Use pre-built GPU drivers
   --ANDROID_PREBUILT_DDK {no,yes}
                         Use pre-built GPU drivers for Android
+  --ENABLE_VIRTIO {no,yes}
+                        Enable sharing of the devices between the driver and the guest domains,
+                        using the virtio technology ( work in progress )
 ```
 
 To build for Salvator XS M3 8GB with DomU (generic yocto-based virtual
@@ -227,7 +231,7 @@ For more information about `rouge` check its
 
 This repository introduces the following Yocto **DISTRO_FEATURES**. They are used, or not used, depending on the moulin build parameters.
 
-|Distro feature|Comment|
-|---|---|
-|displbe|Specifies whether to build and to install [this](https://github.com/xen-troops/displ_be) implementation as a 'displbe' systemd service.|
-|sndbe|Specifies whether to build and to install [this](https://github.com/xen-troops/snd_be) implementation as a 'sndbe' systemd service.|
+|Distro feature|Comment|Typical use-case|
+|---|---|---|
+|displbe|Specifies whether to build and to install [this](https://github.com/xen-troops/displ_be) implementation as a 'displbe' systemd service.|**NOT** used with the ENABLE_VIRTIO parameter|
+|sndbe|Specifies whether to build and to install [this](https://github.com/xen-troops/snd_be) implementation as a 'sndbe' systemd service.|**NOT** used with the ENABLE_VIRTIO parameter|
