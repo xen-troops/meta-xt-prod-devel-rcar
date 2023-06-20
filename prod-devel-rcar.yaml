@@ -746,3 +746,21 @@ parameters:
             builder:
               env:
                 - "DDK_UM_PREBUILDS=eva/pvr-um"
+
+  ENABLE_VIRTIO:
+    desc: "Enable sharing of the virtio devices from the driver domain to the guest domain"
+    "no":
+      default: true
+    "yes":
+      overrides:
+        components:
+          dom0:
+            builder:
+              conf:
+                # We do not need displbe & sndbe in case of virtio
+                - [DISTRO_FEATURES:remove, " displbe sndbe"]
+          domd:
+            builder:
+              conf:
+                # We do not need displbe & sndbe in case of virtio
+                - [DISTRO_FEATURES:remove, " displbe sndbe"]
