@@ -1,5 +1,21 @@
 # meta-xt-prod-devel-rcar #
 
+# Table of contents
+
+- [Overview](#overview)
+- [Moulin project file](#moulin-project-file)
+- [Building the project](#building-the-project)
+  - [Requirements](#requirements)
+  - [Fetching](#fetching)
+  - [Building](#building)
+  - [Building with prebuilt graphics for DomD+DomU](#building-with-prebuilt-graphics-for-domddomu)
+  - [Building with prebuilts Android graphics](#building-with-prebuilts-android-graphics)
+    - [Creating SD card image](#creating-sd-card-image)
+    - [Using rouge in standalone mode](#using-rouge-in-standalone-mode)
+  - [Distro features](#distro-features)
+
+# Overview
+
 This repository contains Renesas RCAR Gen3-specific Yocto layers for
 Xen Troops distro and `moulin` project file to build it. Layers in this
 repository provide final recipes to build meta-xt-prod-devel-rcar
@@ -39,7 +55,7 @@ Features that are present but not tested:
 * Renesas Starter Kit Pro (M3ULCB)
 * Audio back-end
 
-# Building
+# Building the project
 ## Requirements
 
 1. Ubuntu 18.0+ or any other Linux distribution which is supported by Poky/OE
