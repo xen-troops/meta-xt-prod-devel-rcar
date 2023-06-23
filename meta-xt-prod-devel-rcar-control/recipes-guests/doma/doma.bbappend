@@ -17,7 +17,15 @@ FILES:${PN} += " \
     ${@bb.utils.contains('DISTRO_FEATURES', 'displbe', '${sysconfdir}/systemd/system/doma.service.d/displbe-backend.conf', '', d)} \
 "
 
+DOMA_RAM_SIZE:mem8gb:enable_android = "5120"
+DOMA_RAM_SIZE:mem8gb:enable_android:enable_virtio = "4096"
+
 do_install:append() {
+
+    echo "" >> ${D}${sysconfdir}/xen/doma.cfg
+    echo "# Initial memory allocation (MB)" >> ${D}${sysconfdir}/xen/doma.cfg
+    echo "memory = ${DOMA_RAM_SIZE}" >> ${D}${sysconfdir}/xen/doma.cfg
+
     cat ${WORKDIR}/doma-vdevices.cfg >> ${D}${sysconfdir}/xen/doma.cfg
 
     # Install doma-set-root script and the drop-in file to run it
