@@ -26,6 +26,7 @@ variables:
   XT_MULTIMEDIA_EVA_DIR : ""
   XT_PREBUILT_GSX_DIR: ""
   XT_USE_DDK1_11: "0"
+  XT_MACHINEOVERRIDES_RAM: "mem8gb"
 common_data:
   # Sources used by all yocto-based domains
   sources: &COMMON_SOURCES
@@ -186,6 +187,8 @@ components:
         # Build our own Xen version rather than proposed by meta-virtualization
         - [PREFERRED_VERSION_xen, "4.17.0+git%"]
         - [PREFERRED_VERSION_xen-tools, "4.17.0+git%"]
+
+        - [MACHINEOVERRIDES:append, ":%{XT_MACHINEOVERRIDES_RAM}"]
 
       layers:
         - "../meta-virtualization"
@@ -423,6 +426,7 @@ parameters:
           XT_OP_TEE_FLAVOUR: "salvator_m3"
           XT_DOMD_DTB_NAME: "r8a77960-%{MACHINE}-domd.dtb"
           XT_XEN_DTB_NAME: "r8a77960-%{MACHINE}-xen.dtb"
+          XT_MACHINEOVERRIDES_RAM: "mem4gb"
     salvator-xs-m3-2x4g:
       # This is not misprint. This machine has 2x4 memory config
       overrides:
@@ -515,6 +519,7 @@ parameters:
           XT_OP_TEE_FLAVOUR: "salvator_m3"
           XT_DOMD_DTB_NAME: "r8a7796-m3ulcb-domd.dtb"
           XT_XEN_DTB_NAME: "r8a7796-m3ulcb-xen.dtb"
+          XT_MACHINEOVERRIDES_RAM: "mem4gb"
 
   ENABLE_ANDROID:
     desc: "Build Android as a guest VM"
@@ -532,6 +537,10 @@ parameters:
               conf:
                 - [DISTRO_FEATURES:append, " ivi-shell"]
           dom0:
+            conf:
+              # Flag, which allows to override parameters on the Yocto level.
+              # E.g. amount of used RAM for driver domain.
+              - [OVERRIDES:append, ":enable_android"]
             builder:
               additional_deps:
                 # This is not actually a hard dep. We just want to force Android build
@@ -759,6 +768,9 @@ parameters:
               conf:
                 # We do not need displbe & sndbe in case of virtio
                 - [DISTRO_FEATURES:remove, " displbe sndbe"]
+                # Flag, which allows to override parameters on the Yocto level.
+                # E.g. amount of used RAM for driver and guest domains.
+                - [OVERRIDES:append, ":enable_virtio"]
           domd:
             builder:
               conf:
