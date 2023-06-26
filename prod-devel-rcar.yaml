@@ -85,6 +85,7 @@ common_data:
     - [DISTRO_FEATURES:append, " pam"]
     - [PREFERRED_PROVIDER_virtual/libgles1, ""]
     - [PREFERRED_PROVIDER_virtual/libgles2, "gles-user-module"]
+    - [PREFERRED_PROVIDER_virtual/libgles3, "gles-user-module"]
     - [PREFERRED_PROVIDER_virtual/egl, "libegl"]
     - [PREFERRED_PROVIDER_virtual/libgl, ""]
     - [PREFERRED_PROVIDER_virtual/mesa, ""]
