@@ -276,7 +276,6 @@
 &i2c2			{ xen,passthrough; };
 &i2c4			{ xen,passthrough; };
 &intc_ex		{ xen,passthrough; };
-&mfis_as		{ xen,passthrough; };
 &pciec1			{ xen,passthrough; };
 &pciec0			{ xen,passthrough; };
 &sdhi0			{ xen,passthrough; };
