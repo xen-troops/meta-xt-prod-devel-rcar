@@ -210,6 +210,12 @@
 		lossy_shmem {
 			reg = <0 0x47fd7000 0 0x1000>;
 		};
+		imrlx4_imr0 {
+			xen,passthrough;
+		};
+		imrlx4_imr1 {
+			xen,passthrough;
+		};
 	};
 };
 
@@ -336,10 +342,8 @@
 &i2c2			{ xen,passthrough; };
 &i2c4			{ xen,passthrough; };
 &intc_ex		{ xen,passthrough; };
-&mfis_as		{ xen,passthrough; };
 &pciec1			{ xen,passthrough; };
 &pciec0			{ xen,passthrough; };
-&rpc0			{ xen,passthrough; };
 &hscif1			{ xen,passthrough; };
 &sdhi0			{ xen,passthrough; };
 &sdhi2			{ xen,passthrough; };
