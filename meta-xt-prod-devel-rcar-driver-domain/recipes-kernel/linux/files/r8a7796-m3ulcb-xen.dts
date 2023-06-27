@@ -252,7 +252,6 @@
 &i2c4			{ xen,passthrough; };
 &i2c_dvfs		{ xen,passthrough; };
 &intc_ex		{ xen,passthrough; };
-&mfis_as		{ xen,passthrough; };
 &pmic			{ xen,passthrough; };
 &sdhi0			{ xen,passthrough; };
 &sdhi2			{ xen,passthrough; };
