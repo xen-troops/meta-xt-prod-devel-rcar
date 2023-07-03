@@ -699,9 +699,9 @@ parameters:
             builder:
               layers:
                 - "../meta-aos"
-                - "../meta-xt-prod-devel-rcar/meta-aos-tune"
               conf:
-                - [AOS_VIS_PLUGINS, "telemetryemulatoradapter"]
+                - [AOS_VIS_PLUGINS, "storageadapter"]
+                - [AOS_VIS_DATA_PROVIDER, "telemetryemulatoradapter"]
                 - [DISTRO_FEATURES_append, " vis"]
           doma:
             builder:
