@@ -537,11 +537,11 @@ parameters:
               conf:
                 - [DISTRO_FEATURES:append, " ivi-shell"]
           dom0:
-            conf:
-              # Flag, which allows to override parameters on the Yocto level.
-              # E.g. amount of used RAM for driver domain.
-              - [OVERRIDES:append, ":enable_android"]
             builder:
+              conf:
+                # Flag, which allows to override parameters on the Yocto level.
+                # E.g. amount of used RAM for driver domain.
+                - [OVERRIDES:append, ":enable_android"]
               additional_deps:
                 # This is not actually a hard dep. We just want to force Android build
                 - "../%{DOMA_DIR}/out/target/product/xenvm/boot.img"
