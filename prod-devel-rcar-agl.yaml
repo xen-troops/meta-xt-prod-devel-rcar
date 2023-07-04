@@ -793,6 +793,13 @@ parameters:
                 # Flag, which allows to override parameters on the Yocto level.
                 # E.g. amount of used RAM for driver and guest domains.
                 - [OVERRIDES:append, ":enable_virtio"]
+                # QEMU configuration
+                - [QEMUVERSION, "7.0%"]
+                # Enable related distro-feautre in order to create conditions in Yocto recipes
+                - [DISTRO_FEATURES:append, " enable_virtio"]
+                - [DISTRO_FEATURES:append, " xen vmsep"]
+              layers:
+                - "../meta-xt-common/meta-xt-qemu"
           domd:
             builder:
               conf:
@@ -800,3 +807,10 @@ parameters:
                 - [DISTRO_FEATURES:remove, " displbe sndbe"]
                 # We do not need ivi-shell in case of virtio
                 - [DISTRO_FEATURES:remove, " ivi-shell"]
+                # Enable xen-virtio distro feature
+                - [DISTRO_FEATURES:append, " enable_virtio"]
+                # QEMU-related configuration
+                - [DISTRO_FEATURES:append, " xen vmsep"]
+                - [QEMUVERSION, "7.0%"]
+              layers:
+                - "../meta-xt-common/meta-xt-qemu"
