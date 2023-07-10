@@ -1,0 +1,736 @@
+desc: "Xen-Troops development setup for Renesas RCAR Gen3 hardware"
+min_ver: "0.16"
+
+variables:
+  YOCTOS_WORK_DIR: "yocto"
+  DOM0_BUILD_DIR: "build-dom0"
+  DOMD_BUILD_DIR: "build-domd"
+  DOMU_BUILD_DIR: "build-domu"
+  ANDROID_KERNEL_DIR: "android_kernel"
+  DOMA_DIR: "android"
+  DOMZ_DIR: "zephyr"
+  XT_DOMD_DTB_NAME: "%{SOC_FAMILY}-%{MACHINE}-domd.dtb"
+  XT_DOMU_DTB_NAME: "salvator-generic-domu.dtb"
+  XT_DOMA_DTB_NAME: "salvator-generic-doma.dtb"
+  XT_XEN_DTB_NAME: "%{SOC_FAMILY}-%{MACHINE}-xen.dtb"
+  XT_PVR_NUM_OSID: "2"
+  XT_OP_TEE_FLAVOUR: "generic_dt"
+  XT_GENERIC_DOMU_TAG: ""
+  XT_DOMA_TAG: ""
+  XT_DOMA_KERNEL_EXTRA_MODULES: ""
+  XT_DOMA_SOURCE_GROUP: ""
+  XT_DOMZ_TAG: ""
+  # For this product we use one config for all machines for Zephyr
+  XT_DOMZ_CONFIG_NAME: "domz-generic.cfg"
+  XT_MULTIMEDIA_EVA_DIR : ""
+  XT_PREBUILT_GSX_DIR: ""
+  XT_USE_DDK1_11: "0"
+  XT_MACHINEOVERRIDES_RAM: "mem8gb"
+common_data:
+  # Sources used by all yocto-based domains
+  sources: &COMMON_SOURCES
+    - type: git
+      url: "https://git.yoctoproject.org/poky"
+      rev: kirkstone
+    - type: git
+      url: "https://git.openembedded.org/meta-openembedded"
+      rev: kirkstone
+    - type: git
+      url: "https://git.yoctoproject.org/meta-virtualization"
+      rev: kirkstone
+    - type: git
+      url: "https://github.com/xen-troops/meta-xt-common.git"
+      rev: master
+    - type: git
+      url: "https://github.com/xen-troops/meta-xt-rcar.git"
+      rev: master
+  # Common configuration options for all yocto-based domains
+  conf: &COMMON_CONF
+    - [SSTATE_DIR, "${TOPDIR}/../common_data/sstate"]
+    - [DL_DIR, "${TOPDIR}/../common_data/downloads"]
+
+    # Skip warning about missing "virtualization" distro feature
+    - [SKIP_META_VIRT_SANITY_CHECK, "1"]
+
+    # Use hypervisor console on all guests
+    - [SERIAL_CONSOLES, "115200;hvc0"]
+
+    # Configure number of supported GPU virtual guests
+    - [XT_PVR_NUM_OSID, "%{XT_PVR_NUM_OSID}"]
+
+    # Remove features that we are not using
+    - [DISTRO_FEATURES:remove, "x11 gtk gobject-introspection-data wifi nfc bluetooth irda zeroconf 3g sysvinit"]
+
+  # Conf options for domain that are built used renesas layer
+  domd_domu_conf: &DOMD_DOMU_CONF
+    - [SOC_FAMILY, "%{SOC_FAMILY}"]
+
+    # Add systemd configuration
+    - [INIT_MANAGER, "systemd"]
+
+    # add the static lib to SDK toolchain
+    - [SDKIMAGE_FEATURES:append, " staticdev-pkgs"]
+
+    # for Wayland/Weston
+    - [DISTRO_FEATURES_NATIVESDK:append, " wayland"]
+    - [DISTRO_FEATURES:append, " pam"]
+
+    # Add for gstreamer plugins ugly
+    - [LICENSE_FLAGS_ACCEPTED, "commercial"]
+
+    # Configuration for USB 3.0
+    - [MACHINE_FEATURES:append, " usb3"]
+
+    # Add Capacity Aware migration Strategy (CAS)
+    - [MACHINE_FEATURES:append, " cas"]
+
+    # Remove ptest to reduce the build time,
+    # remove x11 and vulkan to avoid error after removing mesa
+    - [DISTRO_FEATURES:remove, " ptest x11 vulkan"]
+
+    # HACK: force ipk instead of rpm b/c it makes troubles to PVR UM build otherwise
+    - [PACKAGE_CLASSES, "package_ipk"]
+
+    # Additional testing and debug tools
+    - [IMAGE_INSTALL:append, " expect ltrace evtest"]
+
+    # Install some apps to test GPU/Display
+    - [IMAGE_INSTALL:append, " glmark2 kmscube"]
+
+
+  # The same set of layers and configs is used both in DomD and DomU
+  # to build a DDK from source code
+  ddk_source_overrides: &DDK_SOURCE_OVERRIDES
+    - type: git
+      url: "https://git.openembedded.org/meta-python2"
+      rev: kirkstone
+    - type: git
+      url: "https://github.com/kraj/meta-clang.git"
+      rev: kirkstone
+    - type: git
+      url: "ssh://git@gitpct.epam.com/epmd-aepr/img-proprietary"
+      rev: "6ed789681c2867c7cae8b0150e093e1e2781797e"
+      dir: "proprietary"
+
+components:
+  dom0:
+    build-dir: "%{YOCTOS_WORK_DIR}"
+    default: true
+    sources:
+      - *COMMON_SOURCES
+      - type: git
+        url: "https://github.com/xen-troops/meta-xt-prod-devel-rcar.git"
+        rev: "master"
+    builder:
+      type: yocto
+      work_dir: "%{DOM0_BUILD_DIR}"
+      conf:
+        - *COMMON_CONF
+        - [MACHINE, "generic-armv8-xt"]
+        - [XT_DOMD_CONFIG_NAME, "%{XT_DOMD_CONFIG_NAME}"]
+        - [XT_DOMU_CONFIG_NAME, "%{XT_DOMU_CONFIG_NAME}"]
+        - [XT_DOMA_CONFIG_NAME, "%{XT_DOMA_CONFIG_NAME}"]
+        - [XT_DOMZ_CONFIG_NAME, "%{XT_DOMZ_CONFIG_NAME}"]
+        - [XT_DOMD_DTB_NAME, "%{XT_DOMD_DTB_NAME}"]
+        - [XT_DOMU_DTB_NAME, "%{XT_DOMU_DTB_NAME}"]
+        - [XT_DOMA_DTB_NAME, "%{XT_DOMA_DTB_NAME}"]
+        - [XT_DOM_NAME, "dom0"]
+        - [XT_GUEST_INSTALL, "%{XT_GENERIC_DOMU_TAG} %{XT_DOMA_TAG} %{XT_DOMZ_TAG} domd"]
+
+        # Disable HWDB which quite huge (around 15MB) and is not required at all
+        - [BAD_RECOMMENDATIONS:append, " udev-hwdb"]
+
+        # Remove unused DISTRO_FEATURES
+        - [DISTRO_FEATURES:remove, "acl alsa argp pcmcia usbgadget
+                usbhost opengl ptest multiarch wayland vulkan
+                sysvinit"]
+
+        # Enable systemd on dom0
+        - [INIT_MANAGER, "systemd"]
+
+        # Do not install kernel image to rootfs to decrease initrd size
+        - ["RRECOMMENDS:${KERNEL_PACKAGE_NAME}-base", ""]
+
+        # Build our own Xen version rather than proposed by meta-virtualization
+        - [PREFERRED_VERSION_xen, "4.18.0+git%"]
+        - [PREFERRED_VERSION_xen-tools, "4.18.0+git%"]
+
+        - [MACHINEOVERRIDES:append, ":%{XT_MACHINEOVERRIDES_RAM}"]
+
+        # Flag, which allows to override parameters on the Yocto level.
+        # E.g. amount of used RAM for driver and guest domains.
+        - [OVERRIDES:append, ":enable_virtio"]
+        # QEMU configuration
+        - [QEMUVERSION, "7.0%"]
+        # Enable related distro-feautre in order to create conditions in Yocto recipes
+        - [DISTRO_FEATURES:append, " enable_virtio"]
+        - [DISTRO_FEATURES:append, " xen vmsep"]
+
+      layers:
+        - "../meta-virtualization"
+        - "../meta-openembedded/meta-oe"
+        - "../meta-openembedded/meta-filesystems"
+        - "../meta-openembedded/meta-python"
+        - "../meta-openembedded/meta-networking"
+        - "../meta-xt-common/meta-xt-domx"
+        - "../meta-xt-common/meta-xt-dom0"
+        - "../meta-xt-common/meta-xt-control-domain"
+        - "../meta-xt-common/meta-xt-qemu"
+        - "../meta-xt-rcar/meta-xt-rcar-dom0"
+        - "../meta-xt-prod-devel-rcar/meta-xt-domx-gen3"
+        - "../meta-xt-prod-devel-rcar/meta-xt-prod-devel-rcar-control"
+      build_target: core-image-thin-initramfs
+      external_src:
+        domd: "%{YOCTOS_WORK_DIR}/%{DOMD_BUILD_DIR}/tmp/deploy/images/%{MACHINE}/"
+      additional_deps:
+        - "%{DOMD_BUILD_DIR}/tmp/deploy/images/%{MACHINE}/Image"
+      target_images:
+        - "tmp/deploy/images/generic-armv8-xt/Image"
+        - "tmp/deploy/images/generic-armv8-xt/uInitramfs"
+
+  domd:
+    build-dir: "%{YOCTOS_WORK_DIR}"
+    sources:
+      - *COMMON_SOURCES
+      - type: git
+        url: "https://github.com/renesas-rcar/meta-renesas.git"
+        rev: "kirkstone-dev"
+      - type: git
+        url: "https://git.yoctoproject.org/meta-selinux"
+        rev: "kirkstone"
+      - type: git
+        url: "https://github.com/xen-troops/meta-xt-prod-devel-rcar.git"
+        rev: "master"
+    builder:
+      type: yocto
+      work_dir: "%{DOMD_BUILD_DIR}"
+      conf:
+        - *COMMON_CONF
+        - *DOMD_DOMU_CONF
+
+        # Enable Gfx Pkgs
+        - [MACHINE_FEATURES:append, " gsx"]
+        - [BB_MULTI_PROVIDER_ALLOWED:append," virtual/libgl virtual/egl virtual/libgles1 virtual/libgles2"]
+
+        # for Wayland/Weston
+        - [PREFERRED_PROVIDER_virtual/libgles1, ""]
+        - [PREFERRED_PROVIDER_virtual/libgles2, "gles-user-module"]
+        - [PREFERRED_PROVIDER_virtual/libgles3, "gles-user-module"]
+        - [PREFERRED_PROVIDER_virtual/egl, "libegl"]
+        - [PREFERRED_PROVIDER_virtual/libgl, ""]
+        - [PREFERRED_PROVIDER_virtual/mesa, ""]
+        - [PREFERRED_PROVIDER_virtual/libgbm, "libgbm"]
+        - [PREFERRED_PROVIDER_libgbm-dev, "libgbm"]
+        - [BBMASK:append, " mesa-gl"]
+
+        - [XT_USE_DDK1_11, "%{XT_USE_DDK1_11}"]
+
+        # The bbappends below are only used for old DDK v1.11
+        - [BBMASK:append, " ${@bb.utils.contains('XT_USE_DDK1_11', '1', '', 'meta-xt-rcar-fixups/recipes-kernel/kernel-module-gles/kernel-module-gles.bbappend', d)}"]
+        - [BBMASK:append, " ${@bb.utils.contains('XT_USE_DDK1_11', '1', '', 'meta-xt-rcar-fixups/recipes-graphics/gles-module/gles-user-module.bbappend', d)}"]
+        - [BBMASK:append, " ${@bb.utils.contains('XT_USE_DDK1_11', '1', '', 'meta-xt-rcar-fixups/recipes-graphics/packagegroups/packagegroup-graphic-renesas.bbappend', d)}"]
+
+        - [MACHINE, "%{MACHINE}"]
+        - [XT_DOM_NAME, "domd"]
+        - [XT_OP_TEE_FLAVOUR, "%{XT_OP_TEE_FLAVOUR}"]
+        - [XT_DEVICE_TREES, "%{XT_DOMD_DTB_NAME} %{XT_DOMA_DTB_NAME} %{XT_XEN_DTB_NAME}"]
+        - [XT_GUEST_INSTALL, "%{XT_GENERIC_DOMU_TAG} %{XT_DOMA_TAG} %{XT_DOMZ_TAG}"]
+        # Machine feature 'multimedia' is used to enable (VSP in domd) and (LOSSY build option in ATF)
+        - [MACHINE_FEATURES:append, " multimedia"]
+
+        - [PREFERRED_RPROVIDER_libgstallocators-1.0, "gstreamer1.0-plugins-base"]
+        - [PREFERRED_RPROVIDER_libgstapp-1.0, "gstreamer1.0-plugins-base"]
+
+        - [XT_MULTIMEDIA_EVA_DIR, "%{XT_MULTIMEDIA_EVA_DIR}"]
+
+        # Build our own Xen version rather than proposed by meta-virtualization
+        - [PREFERRED_VERSION_xen, "4.18.0+git%"]
+        - [PREFERRED_VERSION_xen-tools, "4.18.0+git%"]
+
+        # Enable xen-virtio distro feature
+        - [DISTRO_FEATURES:append, " enable_virtio"]
+        # QEMU-related configuration
+        - [DISTRO_FEATURES:append, " xen vmsep"]
+        - [QEMUVERSION, "7.0%"]
+
+      build_target: core-image-weston
+      layers:
+        - "../poky/meta"
+        - "../poky/meta-poky"
+        - "../poky/meta-yocto-bsp"
+        - "../meta-renesas/meta-rcar-gen3"
+        - "../meta-virtualization"
+        - "../meta-selinux"
+        - "../meta-openembedded/meta-oe"
+        - "../meta-openembedded/meta-networking"
+        - "../meta-openembedded/meta-python"
+        - "../meta-openembedded/meta-filesystems"
+        - "../meta-openembedded/meta-gnome"
+        - "../meta-xt-common/meta-xt-domx"
+        - "../meta-xt-common/meta-xt-driver-domain"
+        - "../meta-xt-common/meta-xt-qemu"
+        - "../meta-xt-rcar/meta-oe-fixups"
+        - "../meta-xt-rcar/meta-xt-rcar-fixups"
+        - "../meta-xt-rcar/meta-xt-rcar-driver-domain"
+        - "../meta-xt-rcar/meta-xt-rcar-domx"
+        - "../meta-xt-rcar/meta-xt-rcar-gles_common"
+        - "../meta-xt-prod-devel-rcar/meta-xt-domx-gen3"
+        - "../meta-xt-prod-devel-rcar/meta-xt-prod-devel-rcar-driver-domain"
+        - "../meta-xt-prod-devel-rcar/meta-xt-domd-gen3"
+      target_images:
+        - "tmp/deploy/images/%{MACHINE}/Image"
+        - "tmp/deploy/images/%{MACHINE}/xen-%{MACHINE}.uImage"
+        - "tmp/deploy/images/%{MACHINE}/xenpolicy-%{MACHINE}"
+        - "tmp/deploy/images/%{MACHINE}/%{XT_XEN_DTB_NAME}"
+        - "tmp/deploy/images/%{MACHINE}/core-image-weston-%{MACHINE}.ext4"
+
+  domu:
+    build-dir: "%{YOCTOS_WORK_DIR}"
+    sources:
+      - *COMMON_SOURCES
+      - type: git
+        url: "https://github.com/renesas-rcar/meta-renesas.git"
+        rev: "kirkstone-dev"
+    builder:
+      type: yocto
+      work_dir: "%{DOMU_BUILD_DIR}"
+      conf:
+        - *COMMON_CONF
+        - *DOMD_DOMU_CONF
+        - [MACHINE, "virtio-armv8-xt"]
+        - [XT_DOM_NAME, "domu"]
+        - [EXTRA_IMAGEDEPENDS:remove, "arm-trusted-firmware"]
+        - [EXTRA_IMAGEDEPENDS:remove, "optee-os"]
+        - [EXTRA_IMAGEDEPENDS:remove, "u-boot"]
+
+      layers:
+        - "../meta-openembedded/meta-oe"
+        - "../meta-openembedded/meta-filesystems"
+        - "../meta-openembedded/meta-python"
+        - "../meta-openembedded/meta-networking"
+        - "../meta-openembedded/meta-gnome"
+        - "../meta-xt-common/meta-xt-domu"
+        - "../meta-xt-prod-devel-rcar/meta-xt-domu-gen3"
+      build_target: core-image-weston
+      target_images:
+        - "tmp/deploy/images/%{MACHINE}/Image"
+        - "tmp/deploy/images/%{MACHINE}/core-image-weston-%{MACHINE}.ext4"
+
+  doma_kernel:
+    build-dir: "%{ANDROID_KERNEL_DIR}"
+    sources:
+      - type: repo
+        url: https://github.com/xen-troops/android_kernel_manifest.git
+        rev: common-android12-5.4-xt-master
+        manifest: default.xml
+        depth: 1
+        groups: "%{XT_DOMA_SOURCE_GROUP}"
+        dir: "."
+    builder:
+      type: android_kernel
+      env:
+        - "TARGET_BOARD_PLATFORM=%{SOC_FAMILY}"
+        - "BUILD_CONFIG=common/build.config.xenvm"
+        - "SKIP_MRPROPER=1"
+        - "EXT_MODULES=%{XT_DOMA_KERNEL_EXTRA_MODULES}"
+      target_images:
+        - "out/android12-5.4/common/arch/arm64/boot/Image"
+        - "out/android12-5.4/staging/vendor/lib/modules/pvrsrvkm.ko"
+
+  doma:
+    build-dir: "%{DOMA_DIR}"
+    sources:
+      - type: repo
+        url: https://github.com/xen-troops/android_manifest.git
+        rev: android-12-master
+        manifest: doma.xml
+        depth: 1
+        groups: "%{XT_DOMA_SOURCE_GROUP}"
+        dir: "."
+    builder:
+      type: android
+      env:
+        - "TARGET_BOARD_PLATFORM=%{SOC_FAMILY}"
+        - "TARGET_PREBUILT_KERNEL=../%{ANDROID_KERNEL_DIR}/out/android12-5.4/common/arch/arm64/boot/Image"
+      lunch_target: xenvm-userdebug
+      target_images:
+        - "out/target/product/xenvm/boot.img"
+        - "out/target/product/xenvm/super.img"
+        - "out/target/product/xenvm/userdata.img"
+        - "out/target/product/xenvm/vbmeta.img"
+        - "out/target/product/xenvm/system.img"
+      additional_deps:
+        - "../%{ANDROID_KERNEL_DIR}/out/android12-5.4/common/arch/arm64/boot/Image"
+
+  zephyr:
+    build-dir: "%{DOMZ_DIR}"
+    sources:
+      - type: west
+    builder:
+      type: zephyr
+      board: xenvm
+      target: zephyr/samples/synchronization
+      target_images:
+        - "zephyr/build/zephyr/zephyr.bin"
+
+  pack-ipl:
+    build-dir: "."
+    builder:
+      type: archive
+      base_dir: "%{YOCTOS_WORK_DIR}/%{DOMD_BUILD_DIR}/tmp/deploy/images/%{MACHINE}/firmware/"
+      name: "ipl-%{MACHINE}.tar.bz2"
+      items:
+        - "bl2-%{MACHINE}-4x2g.bin"
+        - "bl2-%{MACHINE}-4x2g.srec"
+        - "bl31-%{MACHINE}-4x2g.bin"
+        - "bl31-%{MACHINE}-4x2g.srec"
+        - "bootparam_sa0-4x2g.bin"
+        - "bootparam_sa0-4x2g.srec"
+        - "cert_header_sa6-4x2g.bin"
+        - "cert_header_sa6-4x2g.srec"
+        - "cert_header_sa6_emmc.bin"
+        - "cert_header_sa6_emmc.srec"
+        - "tee-%{MACHINE}.bin"
+        - "tee-%{MACHINE}.srec"
+        - "u-boot-elf-%{MACHINE}.srec"
+        - "u-boot-%{MACHINE}.bin"
+
+images:
+  full:
+    type: gpt
+    desc: "Full SD-card/eMMC image"
+    partitions:
+      boot:
+        gpt_type: 21686148-6449-6E6F-744E-656564454649 # BIOS boot partition (kinda...)
+        type: ext4
+        size: 128 MiB
+        items:
+          "Image": "%{YOCTOS_WORK_DIR}/%{DOM0_BUILD_DIR}/tmp/deploy/images/generic-armv8-xt/Image"
+          "uInitramfs": "%{YOCTOS_WORK_DIR}/%{DOM0_BUILD_DIR}/tmp/deploy/images/generic-armv8-xt/uInitramfs"
+          "xen": "%{YOCTOS_WORK_DIR}/%{DOMD_BUILD_DIR}/tmp/deploy/images/%{MACHINE}/xen-%{MACHINE}.uImage"
+          "xenpolicy": "%{YOCTOS_WORK_DIR}/%{DOMD_BUILD_DIR}/tmp/deploy/images/%{MACHINE}/xenpolicy-%{MACHINE}"
+          "xen.dtb": "%{YOCTOS_WORK_DIR}/%{DOMD_BUILD_DIR}/tmp/deploy/images/%{MACHINE}/%{XT_XEN_DTB_NAME}"
+      domd_rootfs:
+        gpt_type: B921B045-1DF0-41C3-AF44-4C6F280D3FAE # Linux aarch64 root
+        type: raw_image
+        image_path: "%{YOCTOS_WORK_DIR}/%{DOMD_BUILD_DIR}/tmp/deploy/images/%{MACHINE}/core-image-weston-%{MACHINE}.ext4"
+
+parameters:
+  # Machines
+  MACHINE:
+    desc: "RCAR Gen3-based device"
+    salvator-x-m3:
+      overrides:
+        variables:
+          MACHINE: "salvator-x"
+          SOC_FAMILY: "r8a7796"
+          XT_DOMD_CONFIG_NAME: "domd-salvator-x-m3.cfg"
+          XT_DOMU_CONFIG_NAME: "domu-salvator-x-m3.cfg"
+          XT_DOMA_CONFIG_NAME: "NO-DOMA-CONFIG-FOR-M3-4GB"
+          XT_OP_TEE_FLAVOUR: "salvator_m3"
+          XT_DOMD_DTB_NAME: "r8a77960-%{MACHINE}-domd.dtb"
+          XT_XEN_DTB_NAME: "r8a77960-%{MACHINE}-xen.dtb"
+          XT_MACHINEOVERRIDES_RAM: "mem4gb"
+    salvator-xs-m3-2x4g:
+      # This is not misprint. This machine has 2x4 memory config
+      overrides:
+        variables:
+          MACHINE: "salvator-x"
+          SOC_FAMILY: "r8a7796"
+          XT_DOMD_CONFIG_NAME: "domd-salvator-xs-m3-2x4g.cfg"
+          XT_DOMU_CONFIG_NAME: "domu-generic-m3-2x4g.cfg"
+          XT_DOMA_CONFIG_NAME: "doma-generic-m3-2x4g.cfg"
+          XT_OP_TEE_FLAVOUR: "salvator_m3_2x4g"
+          XT_DOMD_DTB_NAME: "r8a77961-salvator-xs-2x4g-domd.dtb"
+          XT_XEN_DTB_NAME: "r8a77961-salvator-xs-2x4g-xen.dtb"
+    salvator-xs-h3-4x2g:
+      overrides:
+        variables:
+          MACHINE: "salvator-x"
+          SOC_FAMILY: "r8a7795"
+          XT_DOMD_CONFIG_NAME: "domd-salvator-xs-h3-4x2g.cfg"
+          XT_DOMU_CONFIG_NAME: "domu-generic-h3-4x2g.cfg"
+          XT_DOMA_CONFIG_NAME: "doma-generic-h3-4x2g.cfg"
+          XT_OP_TEE_FLAVOUR: "salvator_h3_4x2g"
+          XT_DOMD_DTB_NAME: "r8a7795-salvator-xs-4x2g-domd.dtb"
+          XT_XEN_DTB_NAME: "r8a7795-salvator-xs-4x2g-xen.dtb"
+    salvator-x-h3-4x2g:
+      overrides:
+        variables:
+          MACHINE: "salvator-x"
+          SOC_FAMILY: "r8a7795"
+          XT_DOMD_CONFIG_NAME: "domd-salvator-x-h3-4x2g.cfg"
+          XT_DOMU_CONFIG_NAME: "domu-generic-h3-4x2g.cfg"
+          XT_DOMA_CONFIG_NAME: "doma-generic-h3-4x2g.cfg"
+          XT_OP_TEE_FLAVOUR: "salvator_h3_4x2g"
+          XT_DOMD_DTB_NAME: "r8a7795-salvator-x-4x2g-domd.dtb"
+          XT_XEN_DTB_NAME: "r8a7795-salvator-x-4x2g-xen.dtb"
+    h3ulcb-4x2g:
+      default: true
+      overrides:
+        variables:
+          MACHINE: "h3ulcb"
+          SOC_FAMILY: "r8a7795"
+          XT_DOMD_CONFIG_NAME: "domd-h3ulcb-4x2g.cfg"
+          XT_DOMU_CONFIG_NAME: "domu-generic-h3-4x2g.cfg"
+          XT_DOMA_CONFIG_NAME: "doma-generic-h3-4x2g.cfg"
+          XT_OP_TEE_FLAVOUR: "salvator_h3_4x2g"
+          XT_DOMD_DTB_NAME: "r8a77951-h3ulcb-4x2g-domd.dtb"
+          XT_XEN_DTB_NAME: "r8a77951-h3ulcb-4x2g-xen.dtb"
+    h3ulcb-4x2g-kf:
+      overrides:
+        variables:
+          MACHINE: "h3ulcb"
+          SOC_FAMILY: "r8a7795"
+          XT_DOMD_CONFIG_NAME: "domd-h3ulcb-4x2g-kf.cfg"
+          XT_DOMU_CONFIG_NAME: "domu-generic-h3-4x2g.cfg"
+          XT_DOMA_CONFIG_NAME: "doma-generic-h3-4x2g.cfg"
+          XT_OP_TEE_FLAVOUR: "salvator_h3_4x2g"
+          XT_DOMD_DTB_NAME: "r8a77951-h3ulcb-4x2g-kf-domd.dtb"
+          XT_XEN_DTB_NAME: "r8a77951-h3ulcb-4x2g-kf-xen.dtb"
+        components:
+          domd:
+            sources:
+              - type: git
+                url: "https://github.com/xen-troops/meta-rcar.git"
+                rev: xt-master
+            builder:
+              layers:
+                - "../meta-rcar/meta-rcar-gen3-adas"
+                - "../meta-xt-rcar/meta-xt-cogent-fixups"
+              conf:
+                # Ignore OP-TEE patches as we have own OP-TEE
+                -  [BBMASK:append, " meta-rcar-gen3-adas/recipes-bsp/optee"]
+    h3ulcb-4x2g-ab:
+      overrides:
+        variables:
+          MACHINE: "h3ulcb"
+          SOC_FAMILY: "r8a7795"
+          XT_DOMD_CONFIG_NAME: "domd-h3ulcb-4x2g-ab.cfg"
+          XT_DOMU_CONFIG_NAME: "domu-generic-h3-4x2g.cfg"
+          XT_DOMA_CONFIG_NAME: "doma-generic-h3-4x2g.cfg"
+          XT_OP_TEE_FLAVOUR: "salvator_h3_4x2g"
+          XT_DOMD_DTB_NAME: "r8a77951-h3ulcb-4x2g-ab-domd.dtb"
+          XT_XEN_DTB_NAME: "r8a77951-h3ulcb-4x2g-ab-xen.dtb"
+    m3ulcb:
+      overrides:
+        variables:
+          MACHINE: "m3ulcb"
+          SOC_FAMILY: "r8a7796"
+          XT_DOMD_CONFIG_NAME: "domd-m3ulcb.cfg"
+          XT_DOMU_CONFIG_NAME: "domu-m3ulcb.cfg"
+          XT_DOMA_CONFIG_NAME: "NO-DOMA-CONFIG-FOR-M3-4GB"
+          XT_OP_TEE_FLAVOUR: "salvator_m3"
+          XT_DOMD_DTB_NAME: "r8a7796-m3ulcb-domd.dtb"
+          XT_XEN_DTB_NAME: "r8a7796-m3ulcb-xen.dtb"
+          XT_MACHINEOVERRIDES_RAM: "mem4gb"
+
+  ENABLE_ANDROID:
+    desc: "Build Android as a guest VM"
+    "no":
+      default: true
+    "yes":
+      overrides:
+        variables:
+          XT_DOMA_TAG: "doma"
+        components:
+          dom0:
+            builder:
+              conf:
+                # Flag, which allows to override parameters on the Yocto level.
+                # E.g. amount of used RAM for driver domain.
+                - [OVERRIDES:append, ":enable_android"]
+              additional_deps:
+                # This is not actually a hard dep. We just want to force Android build
+                - "../%{DOMA_DIR}/out/target/product/xenvm/boot.img"
+              external_src:
+                # Android uses DTB generated by DomD
+                doma: "%{YOCTOS_WORK_DIR}/%{DOMD_BUILD_DIR}/tmp/deploy/images/%{MACHINE}/"
+        images:
+          android_only: &ANDROID_IMAGE
+            desc: "Android sub-image (this image is passed to Android VM as a separate block device)"
+            gpt_type:  A326898F-C893-4A64-9990-6F6B7BFDEF18 # GPT type for the upper GPT
+            type: gpt
+            partitions:
+              boot_a:
+                gpt_type: 49A4D17F-93A3-45C1-A0DE-F50B2EBE2599 # Android boot 1
+                type: raw_image
+                size: 30 MiB
+                image_path: "%{DOMA_DIR}/out/target/product/xenvm/boot.img"
+              boot_b:
+                gpt_type: 20117F86-E985-4357-B9EE-374BC1D8487D # Android boot 2
+                type: empty
+                size: 30 MiB
+              vbmeta_a:
+                gpt_type: 19A710A2-B3CA-11E4-B026-10604B889DCF # Android meta
+                type: raw_image
+                size: 1 MiB
+                image_path: "%{DOMA_DIR}/out/target/product/xenvm/vbmeta.img"
+              vbmeta_b:
+                gpt_type: 19A710A2-B3CA-11E4-B026-10604B889DCF # Android meta
+                type: empty
+                size: 1 MiB
+              misc:
+                gpt_type: EF32A33B-A409-486C-9141-9FFB711F6266 # Android misc
+                type: empty
+                filled: zeroes
+                size: 1 MiB
+              metadata:
+                gpt_type: 20AC26BE-20B7-11E3-84C5-6CFDB94711E9 # Android metadata
+                type: ext4
+                size: 11 MiB
+              rpmbemul:
+                gpt_type: DC76DDA9-5AC1-491C-AF42-A82591580C0D # Android data
+                type: empty
+                filled: zeroes
+                size: 1 MiB
+              super:
+                gpt_type: 4627AE27-CFEF-48A1-88FE-99C3509ADE26 # Android raw resources
+                type: android_sparse
+                image_path: "%{DOMA_DIR}/out/target/product/xenvm/super.img"
+              userdata:
+                gpt_type: 1B81E7E6-F50D-419B-A739-2AEEF8DA3335 # Android userdata
+                type: android_sparse
+                image_path: "%{DOMA_DIR}/out/target/product/xenvm/userdata.img"
+          full:
+            partitions:
+              android:
+                *ANDROID_IMAGE
+
+  ENABLE_DOMU:
+    desc: "Build generic Yocto-based DomU"
+    "no":
+      default: true
+    "yes":
+      overrides:
+        variables:
+          XT_GENERIC_DOMU_TAG: "domu"
+        components:
+          dom0:
+            builder:
+              additional_deps:
+                - "%{DOMU_BUILD_DIR}/tmp/deploy/images/%{MACHINE}/Image"
+              external_src:
+                domu: "%{YOCTOS_WORK_DIR}/%{DOMU_BUILD_DIR}/tmp/deploy/images/%{MACHINE}/"
+        images:
+          full:
+            partitions:
+              domu-rootfs:
+                type: raw_image
+                gpt_type: 0FC63DAF-8483-4772-8E79-3D69D8477DE4 # Linux filesystem data
+                image_path: "%{YOCTOS_WORK_DIR}/%{DOMU_BUILD_DIR}/tmp/deploy/images/%{MACHINE}/core-image-weston-%{MACHINE}.ext4"
+
+  ENABLE_ZEPHYR:
+    desc: "Build Zephyr as guest domain"
+    "no":
+      default: true
+    "yes":
+      overrides:
+        variables:
+          XT_DOMZ_TAG: "domz"
+        components:
+          dom0:
+            builder:
+              additional_deps:
+                # paths relative to dom0 build-dir
+                - "../%{DOMZ_DIR}/zephyr/build/zephyr/zephyr.bin"
+              external_src:
+                # path relative to folder containing build.ninja
+                domz: "%{DOMZ_DIR}/zephyr/build/zephyr"
+
+  ENABLE_MM:
+    desc: "Enable Multimedia support"
+    "no":
+      default: true
+      overrides:
+        components:
+          domd:
+            builder:
+              conf:
+                # Mask MMP recipes
+                - [BBMASK:append, " kernel-module-uvcs-drv omx-user-module"]
+    "yes":
+      overrides:
+        variables:
+          # Note 1
+          # Folder with multimedia evaluation package, i.e. files:
+          #   R-Car_Gen3_Series_Evaluation_Software_Package_for_Linux-*.zip
+          #   R-Car_Gen3_Series_Evaluation_Software_Package_of_Linux_Drivers-*.zip
+          # Pay attention that you do not need to unpack these files,
+          # as they will be unpacked by recipe eval-pack.bb into two
+          # subfolders inside specified folder.
+          #
+          # Note 2
+          # You can specify folder in following ways:
+          # - absolute path;
+          # - relative to domains build root:
+          #   - use yocto's internal variable ${TOPDIR};
+          #   - or moulin's variable like %{DOMD_BUILD_DIR}.
+          #     Pay attention to usage of % instead of $.
+          XT_MULTIMEDIA_EVA_DIR: "/mnt/download/eva_mm"
+        components:
+          domd:
+            builder:
+              conf:
+                # If you enable MM you need to specify features that you need.
+                # See meta-renesas/meta-rcar-gen3/include/omx-control.inc for
+                # list of possible distro features, and make sure that required
+                # library is provided to you within Evaluation package.
+                # Following line is just example applicable for
+                # multimedia evaluation package 20210428.
+                - [DISTRO_FEATURES:append, " aaclcdec_lib aaclcdec_mdw aaclcenc_lib aaclcenc_mdw h264dec_lib h264enc_lib"]
+                - ["HOSTTOOLS:append", " unzip "]
+
+  ENABLE_AOS_VIS:
+    desc: "Enable AOS VIS service"
+    "no":
+      default: true
+    "yes":
+      overrides:
+        components:
+          domd:
+            sources:
+              - type: git
+                url: "https://github.com/aoscloud/meta-aos"
+                rev: main
+            builder:
+              layers:
+                - "../meta-aos"
+                - "../meta-xt-prod-devel-rcar/meta-aos-tune"
+              conf:
+                - [AOS_VIS_PLUGINS, "telemetryemulatoradapter"]
+                - [DISTRO_FEATURES:append, " vis"]
+          doma:
+            builder:
+              env:
+                - "XT_USE_VIS_SERVER=true"
+
+  PREBUILT_DDK:
+    desc: "Use pre-built GPU drivers"
+    "no":
+      default: true
+      overrides:
+        components:
+          domd:
+            sources:
+              *DDK_SOURCE_OVERRIDES
+            builder:
+              conf:
+                # gles-um-compile.bb still requires python2
+                - [I_SWEAR_TO_MIGRATE_TO_PYTHON3, "yes"]
+
+              layers:
+                - "../meta-python2"
+                - "../meta-clang"
+                - "../meta-xt-rcar/meta-xt-rcar-proprietary"
+    "yes":
+      # Folder with prebuilt graphics package, i.e. file ${SOC_NAME}_linux_gsx_binaries_gles.tar.gz
+      # is provided as XT_PREBUILT_GSX_DIR variable to components
+      overrides:
+        variables:
+          XT_PREBUILT_GSX_DIR: "${TOPDIR}/../../../prebuilt_gsx"
+        components:
+          domd:
+            builder:
+              conf:
+                - [XT_PREBUILT_GSX_DIR, "%{XT_PREBUILT_GSX_DIR}"]
