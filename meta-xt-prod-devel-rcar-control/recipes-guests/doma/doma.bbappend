@@ -44,4 +44,8 @@ do_install:append() {
     if ${@bb.utils.contains('DISTRO_FEATURES', 'displbe', 'true', 'false', d)}; then
         install -m 0644 ${WORKDIR}/displbe-backend.conf ${D}${sysconfdir}/systemd/system/doma.service.d
     fi
+
+    if ${@bb.utils.contains('DISTRO_FEATURES', 'enable_virtio', 'false', 'true', d)}; then
+        echo "device_tree = \"/usr/lib/xen/boot/doma.dtb\"" >> ${D}${sysconfdir}/xen/doma.cfg
+    fi
 }

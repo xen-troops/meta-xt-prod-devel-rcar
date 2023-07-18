@@ -28,6 +28,10 @@ do_install:append() {
         echo "After=backend-ready@camerabe.service" >> ${D}${systemd_unitdir}/system/domu.service
     fi
 
+    if ${@bb.utils.contains('DISTRO_FEATURES', 'enable_virtio', 'false', 'true', d)}; then
+        echo "device_tree = \"/usr/lib/xen/boot/domu.dtb\"" >> ${CFG_FILE}
+    fi
+
     if ${@bb.utils.contains('DISTRO_FEATURES', 'virtio', 'true', 'false', d)}; then
         sed -i 's/3, xvda1/3, xvda1, virtio/' ${CFG_FILE}
 
