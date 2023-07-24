@@ -456,18 +456,6 @@ parameters:
   # Machines
   MACHINE:
     desc: "RCAR Gen3-based device"
-    salvator-x-m3:
-      overrides:
-        variables:
-          MACHINE: "salvator-x"
-          SOC_FAMILY: "r8a7796"
-          XT_DOMD_CONFIG_NAME: "domd-salvator-x-m3.cfg"
-          XT_DOMU_CONFIG_NAME: "domu-salvator-x-m3.cfg"
-          XT_DOMA_CONFIG_NAME: "NO-DOMA-CONFIG-FOR-M3-4GB"
-          XT_OP_TEE_FLAVOUR: "salvator_m3"
-          XT_DOMD_DTB_NAME: "r8a77960-%{MACHINE}-domd.dtb"
-          XT_XEN_DTB_NAME: "r8a77960-%{MACHINE}-xen.dtb"
-          XT_MACHINEOVERRIDES_RAM: "mem4gb"
     salvator-xs-m3-2x4g:
       # This is not misprint. This machine has 2x4 memory config
       overrides:
@@ -549,18 +537,6 @@ parameters:
           XT_OP_TEE_FLAVOUR: "salvator_h3_4x2g"
           XT_DOMD_DTB_NAME: "r8a77951-h3ulcb-4x2g-ab-domd.dtb"
           XT_XEN_DTB_NAME: "r8a77951-h3ulcb-4x2g-ab-xen.dtb"
-    m3ulcb:
-      overrides:
-        variables:
-          MACHINE: "m3ulcb"
-          SOC_FAMILY: "r8a7796"
-          XT_DOMD_CONFIG_NAME: "domd-m3ulcb.cfg"
-          XT_DOMU_CONFIG_NAME: "domu-m3ulcb.cfg"
-          XT_DOMA_CONFIG_NAME: "NO-DOMA-CONFIG-FOR-M3-4GB"
-          XT_OP_TEE_FLAVOUR: "salvator_m3"
-          XT_DOMD_DTB_NAME: "r8a7796-m3ulcb-domd.dtb"
-          XT_XEN_DTB_NAME: "r8a7796-m3ulcb-xen.dtb"
-          XT_MACHINEOVERRIDES_RAM: "mem4gb"
 
   ENABLE_ANDROID:
     desc: "Build Android as a guest VM"
