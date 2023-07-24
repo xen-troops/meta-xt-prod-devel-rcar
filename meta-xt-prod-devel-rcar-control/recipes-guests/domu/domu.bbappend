@@ -32,18 +32,6 @@ do_install:append() {
         echo "device_tree = \"/usr/lib/xen/boot/domu.dtb\"" >> ${CFG_FILE}
     fi
 
-    if ${@bb.utils.contains('DISTRO_FEATURES', 'virtio', 'true', 'false', d)}; then
-        sed -i 's/3, xvda1/3, xvda1, virtio/' ${CFG_FILE}
-
-        # Update root by changing xvda1 to vda
-        sed -i 's/root=\/dev\/xvda1/root=\/dev\/vda/' ${CFG_FILE}
-
-        # Update GUEST_DEPENDENCIES by adding dependency to the virtio
-        echo "[Unit]" >> ${D}${systemd_unitdir}/system/domu.service
-        echo "Requires=backend-ready@virtio.service" >> ${D}${systemd_unitdir}/system/domu.service
-        echo "After=backend-ready@virtio.service" >> ${D}${systemd_unitdir}/system/domu.service
-    fi
-
     # Install domu-set-root script
     install -d ${D}${libdir}/xen/bin
     install -m 0744 ${WORKDIR}/domu-set-root ${D}${libdir}/xen/bin
