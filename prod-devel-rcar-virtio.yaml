@@ -10,7 +10,6 @@ variables:
   DOMA_DIR: "android"
   DOMZ_DIR: "zephyr"
   XT_DOMD_DTB_NAME: "%{SOC_FAMILY}-%{MACHINE}-domd.dtb"
-  XT_DOMU_DTB_NAME: "salvator-generic-domu.dtb"
   XT_DOMA_DTB_NAME: "salvator-generic-doma.dtb"
   XT_XEN_DTB_NAME: "%{SOC_FAMILY}-%{MACHINE}-xen.dtb"
   XT_PVR_NUM_OSID: "2"
@@ -136,7 +135,6 @@ components:
         - [XT_DOMA_CONFIG_NAME, "%{XT_DOMA_CONFIG_NAME}"]
         - [XT_DOMZ_CONFIG_NAME, "%{XT_DOMZ_CONFIG_NAME}"]
         - [XT_DOMD_DTB_NAME, "%{XT_DOMD_DTB_NAME}"]
-        - [XT_DOMU_DTB_NAME, "%{XT_DOMU_DTB_NAME}"]
         - [XT_DOMA_DTB_NAME, "%{XT_DOMA_DTB_NAME}"]
         - [XT_DOM_NAME, "dom0"]
         - [XT_GUEST_INSTALL, "%{XT_GENERIC_DOMU_TAG} %{XT_DOMA_TAG} %{XT_DOMZ_TAG} domd"]
