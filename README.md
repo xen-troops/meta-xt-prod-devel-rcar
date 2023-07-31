@@ -13,6 +13,7 @@
     - [Creating SD card image](#creating-sd-card-image)
     - [Using rouge in standalone mode](#using-rouge-in-standalone-mode)
   - [Distro features](#distro-features)
+  - [Virtio support](#virtio-support)
 
 # Overview
 
@@ -93,7 +94,6 @@ usage: moulin prod-devel-rcar.yaml
        [--ENABLE_ZEPHYR {no,yes}] [--ENABLE_MM {no,yes}]
        [--ENABLE_AOS_VIS {no,yes}] [--PREBUILT_DDK {no,yes}]
        [--ANDROID_PREBUILT_DDK {no,yes}]
-       [--ENABLE_VIRTIO {no,yes}]
 
 Config file description: Xen-Troops development setup for Renesas RCAR Gen3
 hardware
@@ -114,9 +114,6 @@ optional arguments:
                         Use pre-built GPU drivers
   --ANDROID_PREBUILT_DDK {no,yes}
                         Use pre-built GPU drivers for Android
-  --ENABLE_VIRTIO {no,yes}
-                        Enable sharing of the devices between the driver and the guest domains,
-                        using the virtio technology ( work in progress )
 ```
 
 To build for Salvator XS M3 8GB with DomU (generic yocto-based virtual
@@ -249,5 +246,26 @@ This repository introduces the following Yocto **DISTRO_FEATURES**. They are use
 
 |Distro feature|Comment|Typical use-case|
 |---|---|---|
-|displbe|Specifies whether to build and to install [this](https://github.com/xen-troops/displ_be) implementation as a 'displbe' systemd service.|**NOT** used with the ENABLE_VIRTIO parameter|
-|sndbe|Specifies whether to build and to install [this](https://github.com/xen-troops/snd_be) implementation as a 'sndbe' systemd service.|**NOT** used with the ENABLE_VIRTIO parameter|
+|displbe|Specifies whether to build and to install [this](https://github.com/xen-troops/displ_be) implementation as a 'displbe' systemd service.|Disabled in virtio build|
+|sndbe|Specifies whether to build and to install [this](https://github.com/xen-troops/snd_be) implementation as a 'sndbe' systemd service.|Disabled in virtio build|
+|enable_virtio|Specifies, whether we are building system, in which DomD should share devices with the guest domain over the virtio specification.|Enabled in virtio build|
+
+# Virtio support
+To build the product with the support of virtio, use the [prod-devel-rcar-virtio.yaml](https://github.com/xen-troops/meta-xt-prod-devel-rcar/blob/master/prod-devel-rcar-virtio.yaml).
+
+Building with this moulin configuration will lead to the following high-level changes within the system:
+
+- Disabled displbe.service in the driver domain
+- Disabled sndbe.service in the driver domain
+- Disabled display-manager.service in the driver domain
+- Extended doma(u).service in the control domain. The extension is done through the systemd drop-in mechanism. For more details refer to the meta-xt-common->meta-xt-control-domain-virtio. Search for doma(u).bbappend
+- Modified Xen configuration for guest domains
+- Changed memory amount assigned to the driver and the guest domains
+- Changed set of the installed packages, e.g. qemu
+
+To find the majority of those differences search for the:
+
+- "enable_virtio" keyword,
+- meta-xt-...-virtio layers,
+
+in [this](https://github.com/xen-troops/meta-xt-prod-devel-rcar) and [meta-xt-common](https://github.com/xen-troops/meta-xt-common) repositories.
