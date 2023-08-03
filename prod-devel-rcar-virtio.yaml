@@ -13,7 +13,7 @@ variables:
   DOMA_DIR: "android"
   DOMZ_DIR: "zephyr"
   XT_DOMD_DTB_NAME: "%{SOC_FAMILY}-%{DOMD_MACHINE}-domd.dtb"
-  XT_DOMA_DTB_NAME: "salvator-generic-doma.dtb"
+  XT_DOMA_DTB_NAME: "salvator-generic-doma-virtio.dtb"
   XT_XEN_DTB_NAME: "%{SOC_FAMILY}-%{DOMD_MACHINE}-xen.dtb"
   XT_PVR_NUM_OSID: "2"
   XT_OP_TEE_FLAVOUR: "generic_dt"
