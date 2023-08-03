@@ -1,0 +1,29 @@
+/dts-v1/;
+
+#include <dt-bindings/interrupt-controller/arm-gic.h>
+
+/ {
+
+	#address-cells = <2>;
+	#size-cells = <2>;
+
+	passthrough {
+		compatible = "simple-bus";
+		ranges;
+		#address-cells = <2>;
+		#size-cells = <2>;
+	};
+
+	firmware {
+		android {
+			compatible = "android,firmware";
+
+			vbmeta {
+				compatible = "android,vbmeta";
+				/* partitions witch can be mount in the first stage */
+				parts = "vbmeta,boot,vendor_boot";
+				by_name_prefix="/dev/block/by-name";
+			};
+		};
+	};
+};
