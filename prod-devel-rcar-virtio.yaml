@@ -180,6 +180,7 @@ components:
         - "../meta-xt-common/meta-xt-domx"
         - "../meta-xt-common/meta-xt-dom0"
         - "../meta-xt-common/meta-xt-control-domain"
+        - "../meta-xt-common/meta-xt-control-domain-virtio"
         - "../meta-xt-common/meta-xt-qemu"
         - "../meta-xt-rcar/meta-xt-rcar-dom0"
         - "../meta-xt-prod-devel-rcar/meta-xt-domx-gen3"
@@ -273,6 +274,7 @@ components:
         - "../meta-openembedded/meta-gnome"
         - "../meta-xt-common/meta-xt-domx"
         - "../meta-xt-common/meta-xt-driver-domain"
+        - "../meta-xt-common/meta-xt-driver-domain-virtio"
         - "../meta-xt-common/meta-xt-qemu"
         - "../meta-xt-rcar/meta-oe-fixups"
         - "../meta-xt-rcar/meta-xt-rcar-fixups"
@@ -315,6 +317,7 @@ components:
         - "../meta-openembedded/meta-networking"
         - "../meta-openembedded/meta-gnome"
         - "../meta-xt-common/meta-xt-domu"
+        - "../meta-xt-common/meta-xt-domu-virtio"
         - "../meta-xt-prod-devel-rcar/meta-xt-domu-gen3"
       build_target: core-image-weston
       target_images:
