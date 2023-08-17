@@ -1,6 +1,6 @@
 FILESEXTRAPATHS:prepend := "${THISDIR}/files:"
 
-RDEPENDS:${PN} = "backend-ready"
+RDEPENDS:${PN} += " backend-ready"
 SRC_URI += "\
     file://domu-vdevices.cfg \
     file://domu-pvcamera.cfg \
