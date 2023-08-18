@@ -1,6 +1,12 @@
 #!/bin/sh
 # Change domain configuration to boot from storage configured by u-boot
 
+# This script gets the 'MODE' parameter, which is not used right now.
+# It was added to cover the 'virito' diff logic. Being kept even
+# without the usage to have similar aproach in both DomU and DomA.
+# In 'domu-set-root' it is used for real.
+MODE="$1"
+
 DOMA_CFG_FILE="/etc/xen/doma.cfg"
 
 # detect boot storage device
