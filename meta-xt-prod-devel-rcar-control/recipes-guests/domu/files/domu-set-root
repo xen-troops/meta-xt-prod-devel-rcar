@@ -1,6 +1,8 @@
 #!/bin/sh
 # Change domain configuration to boot from storage configured by u-boot
 
+MODE="$1"
+
 DOMU_CFG_FILE="/etc/xen/domu.cfg"
 
 # detect boot storage device
@@ -29,8 +31,20 @@ if [ $BOOT_STORAGE = nfs ] ; then
     BOOT_STR=`echo "${BOOT_STR}" | sed "s/\//\\\\\\\\\//g"`
 
     echo "Mangling domain configuration: setting storage to network boot"
-    sed -i "s/xvda1/${BOOT_STR}/" $DOMU_CFG_FILE
+
+    REPLACE_DEVICE="xvda1"
+    if [ "$MODE" == "enable_virtio" ]; then
+        REPLACE_DEVICE="vda"
+    fi
+
+    sed -i "s/${REPLACE_DEVICE}/${BOOT_STR}/" $DOMU_CFG_FILE
     sed -i "s/disk = /# disk = /" $DOMU_CFG_FILE
+
+    if [ "$MODE" == "enable_virtio" ]; then
+        sed -i "/\[VIRTIO_DRIVE_CONFIGURATION\]/d" $DOMU_CFG_FILE
+        sed -i "/\[QEMU_DRIVE_CONFIGURATION\]/d" $DOMU_CFG_FILE
+    fi
+
     exit 0
 fi
 
@@ -40,6 +54,13 @@ if echo "${BOOT_STORAGE}" | grep -q 'mmc' ; then
    PART_PREFIX="p"
 fi
 STORAGE_PART="${BOOT_STORAGE}${PART_PREFIX}"
+
+if [ "$MODE" == "enable_virtio" ]; then
+    echo "Mangling QEMU configuration: setting up block device"
+    sed -i "s/\[VIRTIO_DRIVE_CONFIGURATION\]/'backend=DomD, type=virtio,device, transport=pci, bdf=0000:00:05.0, grant_usage=1, backend_type=qemu'/g" $DOMU_CFG_FILE
+    sed -i "s/\[QEMU_DRIVE_CONFIGURATION\]/'-device', 'virtio-blk-pci,scsi=off,disable-legacy=on,iommu_platform=on,bus=pcie.0,addr=5,drive=image',\n\
+'-drive', 'if=none,id=image,format=raw,file=\/dev\/STORAGE_PART3',/g" $DOMU_CFG_FILE
+fi
 
 # now make up the configuration
 echo "Mangling domain configuration: setting storage to ${BOOT_STORAGE}"

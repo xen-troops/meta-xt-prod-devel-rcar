@@ -1,6 +1,8 @@
 #!/bin/sh
 # Change domain configuration to boot from storage configured by u-boot
 
+MODE="$1"
+
 DOMA_CFG_FILE="/etc/xen/doma.cfg"
 
 # detect boot storage device
