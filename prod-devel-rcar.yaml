@@ -352,6 +352,7 @@ components:
       lunch_target: xenvm-userdebug
       target_images:
         - "out/target/product/xenvm/boot.img"
+        - "out/target/product/xenvm/vendor_boot.img"
         - "out/target/product/xenvm/super.img"
         - "out/target/product/xenvm/userdata.img"
         - "out/target/product/xenvm/vbmeta.img"
@@ -538,6 +539,15 @@ parameters:
                 image_path: "%{DOMA_DIR}/out/target/product/xenvm/boot.img"
               boot_b:
                 gpt_type: 20117F86-E985-4357-B9EE-374BC1D8487D # Android boot 2
+                type: empty
+                size: 30 MiB
+              vendor_boot_a:
+                gpt_type: DF24E5ED-8C96-4B86-B00B-79667DC6DE11 # Android sparse 1
+                type: raw_image
+                size: 30 MiB
+                image_path: "android/out/target/product/xenvm/vendor_boot.img"
+              vendor_boot_b:
+                gpt_type: 7C29D3AD-78B9-452E-9DEB-D098D542F092 # Android sparse 2
                 type: empty
                 size: 30 MiB
               vbmeta_a:
