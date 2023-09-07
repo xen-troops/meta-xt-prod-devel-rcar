@@ -57,9 +57,11 @@ STORAGE_PART="${BOOT_STORAGE}${PART_PREFIX}"
 
 if [ "$MODE" == "enable_virtio" ]; then
     echo "Mangling QEMU configuration: setting up block device"
+    # Both [VIRTIO_DRIVE_CONFIGURATION] and [QEMU_DRIVE_CONFIGURATION]
+    # are last entries in corresponding properties.
     sed -i "s/\[VIRTIO_DRIVE_CONFIGURATION\]/'backend=DomD, type=virtio,device, transport=pci, bdf=0000:00:05.0, grant_usage=1, backend_type=qemu'/g" $DOMU_CFG_FILE
     sed -i "s/\[QEMU_DRIVE_CONFIGURATION\]/'-device', 'virtio-blk-pci,scsi=off,disable-legacy=on,iommu_platform=on,bus=pcie.0,addr=5,drive=image',\n\
-'-drive', 'if=none,id=image,format=raw,file=\/dev\/STORAGE_PART3',/g" $DOMU_CFG_FILE
+'-drive', 'if=none,id=image,format=raw,file=\/dev\/STORAGE_PART3'/g" $DOMU_CFG_FILE
 fi
 
 # now make up the configuration
