@@ -265,6 +265,14 @@ Building with this moulin configuration will lead to the following high-level ch
 - Changed memory amount assigned to the driver and the guest domains
 - Changed set of the installed packages, e.g. qemu
 
+It should be mentioned that there is one private repo for now:
+https://github.com/xen-troops/meta-xt-vhost.git
+And if there is no chance to obtain an access to that repo, we suggest removing
+"../meta-xt-vhost" inclusion from domd's layers in prod-devel-rcar-virtio.yaml.
+This way the build will pass and the system will still remain functional
+except vhost vsock and vhost net (fallback on userspace virtio will be used for
+the net device).
+
 To find the majority of those differences search for the:
 
 - "enable_virtio" keyword,
