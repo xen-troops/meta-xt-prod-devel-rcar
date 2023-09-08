@@ -207,6 +207,9 @@ components:
       - type: git
         url: "https://github.com/xen-troops/meta-xt-prod-devel-rcar.git"
         rev: "master"
+      - type: git
+        url: ssh://git@github.com/xen-troops/meta-xt-vhost.git
+        rev: main
     builder:
       type: yocto
       work_dir: "%{DOMD_BUILD_DIR}"
@@ -284,6 +287,7 @@ components:
         - "../meta-xt-prod-devel-rcar/meta-xt-domx-gen3"
         - "../meta-xt-prod-devel-rcar/meta-xt-prod-devel-rcar-driver-domain"
         - "../meta-xt-prod-devel-rcar/meta-xt-domd-gen3"
+        - "../meta-xt-vhost"
       target_images:
         - "tmp/deploy/images/%{DOMD_MACHINE}/Image"
         - "tmp/deploy/images/%{DOMD_MACHINE}/xen-%{DOMD_MACHINE}.uImage"
