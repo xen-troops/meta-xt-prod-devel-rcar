@@ -33,5 +33,8 @@ do_install:append() {
         echo "" >> ${CFG_FILE}
         echo "driver_domain = 1" >> ${CFG_FILE}
         sed -i "s/pvrsrvkm.DriverMode=0/pvrsrvkm.DriverMode=0x7fffffff/g" ${CFG_FILE}
+        sed -i "s/\[VIRTIO_EXTRA_PARAMETERS\]/ vhost_xen.nogrant=0/g" ${CFG_FILE}
+    else
+        sed -i "s/\[VIRTIO_EXTRA_PARAMETERS\]//" ${CFG_FILE}
     fi
 }
