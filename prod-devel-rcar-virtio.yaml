@@ -315,6 +315,7 @@ components:
         - "../meta-openembedded/meta-gnome"
         - "../meta-xt-common/meta-xt-domu"
         - "../meta-xt-common/meta-xt-domu-virtio"
+        - "../meta-xt-prod-devel-rcar/meta-xt-domx-gen3"
         - "../meta-xt-prod-devel-rcar/meta-xt-domu-gen3"
       build_target: core-image-weston
       target_images:
