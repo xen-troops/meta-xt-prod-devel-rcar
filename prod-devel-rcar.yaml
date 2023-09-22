@@ -303,6 +303,7 @@ components:
         - "../meta-xt-rcar/meta-xt-rcar-fixups"
         - "../meta-xt-rcar/meta-xt-rcar-domu"
         - "../meta-xt-rcar/meta-xt-rcar-gles_common"
+        - "../meta-xt-prod-devel-rcar/meta-xt-domx-gen3"
         - "../meta-xt-prod-devel-rcar/meta-xt-domu-gen3"
       build_target: core-image-weston
       target_images:
