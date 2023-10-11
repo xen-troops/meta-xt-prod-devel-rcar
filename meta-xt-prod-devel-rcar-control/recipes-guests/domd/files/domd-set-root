@@ -41,7 +41,7 @@ if [ $BOOT_STORAGE = nfs ] ; then
 
     if [ "$MODE" == "enable_virtio" ]; then
         echo "Mangling virtio configuration: setting up virtio-specific parameters"
-        sed -i "s/\[VIRTIO_EXTRA_PARAMETERS\]/ vhost_xen.nogrant=0/g" $DOMD_CFG_FILE
+        sed -i "s/\[VIRTIO_EXTRA_PARAMETERS\]/ vhost_xen.nogrant=1/g" $DOMD_CFG_FILE
     else
         sed -i "s/\[VIRTIO_EXTRA_PARAMETERS\]//" $DOMD_CFG_FILE
     fi
@@ -62,7 +62,7 @@ sed -i "s/STORAGE_PART/${STORAGE_PART}/g" $DOMD_CFG_FILE
 
 if [ "$MODE" == "enable_virtio" ]; then
     echo "Mangling virtio configuration: setting up virtio-specific parameters"
-    sed -i "s/\[VIRTIO_EXTRA_PARAMETERS\]/ vhost_xen.nogrant=0/g" $DOMD_CFG_FILE
+    sed -i "s/\[VIRTIO_EXTRA_PARAMETERS\]/ vhost_xen.nogrant=1/g" $DOMD_CFG_FILE
 else
     sed -i "s/\[VIRTIO_EXTRA_PARAMETERS\]//" $DOMD_CFG_FILE
 fi
