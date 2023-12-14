@@ -707,47 +707,27 @@ parameters:
             builder:
               env:
                 - "XT_USE_VIS_SERVER=true"
-  PREBUILT_DDK:
-    desc: "Use pre-built GPU drivers"
-    "no":
-      default: true
-      overrides:
-        components:
-          domd:
-            *DDK_SOURCE_OVERRIDES
-          domu:
-            *DDK_SOURCE_OVERRIDES
-    "yes":
-      # Folder with prebuilt graphics package, i.e. file ${SOC_NAME}_linux_gsx_binaries_gles.tar.gz
-      # is provided as XT_PREBUILT_GSX_DIR variable to components
+  GRAPHICS:
+    desc: "Select how to use the GFX (3D hardware accelerator)"
+    "binaries":
       overrides:
         variables:
+          # for the linux
+          # Directory containing ${SOC_NAME}_linux_gsx_binaries_gles.tar.gz
           XT_PREBUILT_GSX_DIR: "${TOPDIR}/../../../prebuilt_gsx"
-        components:
-          domd:
-            builder:
-              conf:
-                - [XT_PREBUILT_GSX_DIR, "%{XT_PREBUILT_GSX_DIR}"]
-          domu:
-            builder:
-              conf:
-                - [XT_PREBUILT_GSX_DIR, "%{XT_PREBUILT_GSX_DIR}"]
-  ANDROID_PREBUILT_DDK:
-    desc: "Use pre-built GPU drivers for Android"
-    "no":
-      default: true
-      overrides:
-        variables:
-          XT_DOMA_DDK_KM_PREBUILT_MODULE: "../%{ANDROID_KERNEL_DIR}/out/android12-5.4/staging/vendor/lib/modules/pvrsrvkm.ko"
-          XT_DOMA_KERNEL_EXTRA_MODULES: "imagination"
-          XT_DOMA_SOURCE_GROUP: "all"
-    "yes":
-      overrides:
-        variables:
+          # for the android
           XT_DOMA_DDK_KM_PREBUILT_MODULE: "eva/pvr-km/pvrsrvkm.ko"
           XT_DOMA_KERNEL_EXTRA_MODULES: ""
           XT_DOMA_SOURCE_GROUP: "default"
         components:
+          domd:
+            builder:
+              conf:
+                - [XT_PREBUILT_GSX_DIR, "%{XT_PREBUILT_GSX_DIR}"]
+          domu:
+            builder:
+              conf:
+                - [XT_PREBUILT_GSX_DIR, "%{XT_PREBUILT_GSX_DIR}"]
           doma:
             sources:
               - type: unpack
@@ -757,3 +737,18 @@ parameters:
             builder:
               env:
                 - "DDK_UM_PREBUILDS=eva/pvr-um"
+
+    "sources":
+      default: true
+      overrides:
+        # for the linux
+        components:
+          domd:
+            *DDK_SOURCE_OVERRIDES
+          domu:
+            *DDK_SOURCE_OVERRIDES
+        # for the android
+        variables:
+          XT_DOMA_DDK_KM_PREBUILT_MODULE: "../%{ANDROID_KERNEL_DIR}/out/android12-5.4/staging/vendor/lib/modules/pvrsrvkm.ko"
+          XT_DOMA_KERNEL_EXTRA_MODULES: "imagination"
+          XT_DOMA_SOURCE_GROUP: "all"

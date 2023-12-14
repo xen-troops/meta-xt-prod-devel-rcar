@@ -729,11 +729,24 @@ parameters:
               env:
                 - "XT_USE_VIS_SERVER=true"
 
-  PREBUILT_DDK:
-    desc: "Use pre-built GPU drivers"
-    "no":
+  GRAPHICS:
+    desc: "Select how to use the GFX (3D hardware accelerator)"
+    "binaries":
+      overrides:
+        variables:
+          # for the linux
+          # Directory containing ${SOC_NAME}_linux_gsx_binaries_gles.tar.gz
+          XT_PREBUILT_GSX_DIR: "${TOPDIR}/../../../prebuilt_gsx"
+        components:
+          domd:
+            builder:
+              conf:
+                - [XT_PREBUILT_GSX_DIR, "%{XT_PREBUILT_GSX_DIR}"]
+
+    "sources":
       default: true
       overrides:
+        # for the linux
         components:
           domd:
             sources:
@@ -742,19 +755,7 @@ parameters:
               conf:
                 # gles-um-compile.bb still requires python2
                 - [I_SWEAR_TO_MIGRATE_TO_PYTHON3, "yes"]
-
               layers:
                 - "../meta-python2"
                 - "../meta-clang"
                 - "../meta-xt-rcar/meta-xt-rcar-proprietary"
-    "yes":
-      # Folder with prebuilt graphics package, i.e. file ${SOC_NAME}_linux_gsx_binaries_gles.tar.gz
-      # is provided as XT_PREBUILT_GSX_DIR variable to components
-      overrides:
-        variables:
-          XT_PREBUILT_GSX_DIR: "${TOPDIR}/../../../prebuilt_gsx"
-        components:
-          domd:
-            builder:
-              conf:
-                - [XT_PREBUILT_GSX_DIR, "%{XT_PREBUILT_GSX_DIR}"]
