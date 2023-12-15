@@ -6,12 +6,15 @@ variables:
   DOM0_BUILD_DIR: "build-dom0"
   DOMD_BUILD_DIR: "build-domd"
   DOMU_BUILD_DIR: "build-domu"
+  DOM0_MACHINE: "generic-armv8-xt"
+  DOMD_MACHINE: "%{MACHINE}"
+  DOMU_MACHINE: "%{MACHINE}"
   ANDROID_KERNEL_DIR: "android_kernel"
   DOMA_DIR: "android"
-  XT_DOMD_DTB_NAME: "%{SOC_FAMILY}-%{MACHINE}-domd.dtb"
+  XT_DOMD_DTB_NAME: "%{SOC_FAMILY}-%{DOMD_MACHINE}-domd.dtb"
   XT_DOMU_DTB_NAME: "salvator-generic-domu.dtb"
   XT_DOMA_DTB_NAME: ""
-  XT_XEN_DTB_NAME: "%{SOC_FAMILY}-%{MACHINE}-xen.dtb"
+  XT_XEN_DTB_NAME: "%{SOC_FAMILY}-%{DOMD_MACHINE}-xen.dtb"
   XT_PVR_NUM_OSID: "2"
   XT_OP_TEE_FLAVOUR: "generic_dt"
   XT_GENERIC_DOMU_TAG: ""
@@ -22,6 +25,7 @@ variables:
   XT_MULTIMEDIA_EVA_DIR : ""
   XT_PREBUILT_GSX_DIR: ""
   XT_MACHINEOVERRIDES_RAM: "mem8gb"
+  ANDROID_DEVICE: "xenvm"
 common_data:
   # Sources used by all yocto-based domains
   sources: &COMMON_SOURCES
@@ -62,7 +66,6 @@ common_data:
 
   # Conf options for domain that are built used renesas layer
   domd_domu_conf: &DOMD_DOMU_CONF
-    - [MACHINE, "%{MACHINE}"]
     - [SOC_FAMILY, "%{SOC_FAMILY}"]
 
     # Add systemd configuration
@@ -143,7 +146,7 @@ components:
       work_dir: "%{DOM0_BUILD_DIR}"
       conf:
         - *COMMON_CONF
-        - [MACHINE, "generic-armv8-xt"]
+        - [MACHINE, "%{DOM0_MACHINE}"]
         - [XT_DOMD_CONFIG_NAME, "%{XT_DOMD_CONFIG_NAME}"]
         - [XT_DOMD_DTB_NAME, "%{XT_DOMD_DTB_NAME}"]
         - [XT_DOM_NAME, "dom0"]
@@ -179,12 +182,12 @@ components:
         - "../meta-xt-prod-devel-rcar/meta-xt-prod-devel-rcar-control"
       build_target: core-image-thin-initramfs
       external_src:
-        domd: "%{YOCTOS_WORK_DIR}/%{DOMD_BUILD_DIR}/tmp/deploy/images/%{MACHINE}/"
+        domd: "%{YOCTOS_WORK_DIR}/%{DOMD_BUILD_DIR}/tmp/deploy/images/%{DOMD_MACHINE}/"
       additional_deps:
-        - "%{DOMD_BUILD_DIR}/tmp/deploy/images/%{MACHINE}/Image"
+        - "%{DOMD_BUILD_DIR}/tmp/deploy/images/%{DOMD_MACHINE}/Image"
       target_images:
-        - "tmp/deploy/images/generic-armv8-xt/Image"
-        - "tmp/deploy/images/generic-armv8-xt/uInitramfs"
+        - "tmp/deploy/images/%{DOM0_MACHINE}/Image"
+        - "tmp/deploy/images/%{DOM0_MACHINE}/uInitramfs"
 
   domd:
     build-dir: "%{YOCTOS_WORK_DIR}"
@@ -244,6 +247,7 @@ components:
       conf:
         - *COMMON_CONF
         - *DOMD_DOMU_CONF
+        - [MACHINE, "%{DOMD_MACHINE}"]
         - [XT_DOM_NAME, "domd"]
         - [XT_OP_TEE_FLAVOUR, "%{XT_OP_TEE_FLAVOUR}"]
         - [XT_DEVICE_TREES, "%{XT_DOMD_DTB_NAME} %{XT_DOMA_DTB_NAME} %{XT_XEN_DTB_NAME}"]
@@ -343,11 +347,11 @@ components:
         - "../meta-xt-prod-devel-rcar/meta-xt-prod-devel-rcar-driver-domain"
         - "../meta-xt-prod-devel-rcar/meta-agl-tune"
       target_images:
-        - "tmp/deploy/images/%{MACHINE}/Image"
-        - "tmp/deploy/images/%{MACHINE}/xen-%{MACHINE}.uImage"
-        - "tmp/deploy/images/%{MACHINE}/xenpolicy-%{MACHINE}"
-        - "tmp/deploy/images/%{MACHINE}/%{XT_XEN_DTB_NAME}"
-        - "tmp/deploy/images/%{MACHINE}/agl-demo-platform-%{MACHINE}.ext4"
+        - "tmp/deploy/images/%{DOMD_MACHINE}Image"
+        - "tmp/deploy/images/%{DOMD_MACHINE}/xen-%{DOMD_MACHINE}.uImage"
+        - "tmp/deploy/images/%{DOMD_MACHINE}/xenpolicy-%{DOMD_MACHINE}"
+        - "tmp/deploy/images/%{DOMD_MACHINE}/%{XT_XEN_DTB_NAME}"
+        - "tmp/deploy/images/%{DOMD_MACHINE}/agl-demo-platform-%{DOMD_MACHINE}.ext4"
 
   domu:
     build-dir: "%{YOCTOS_WORK_DIR}"
@@ -362,6 +366,7 @@ components:
       conf:
         - *COMMON_CONF
         - *DOMD_DOMU_CONF
+        - [MACHINE, "%{DOMU_MACHINE}"]
         - [XT_DOM_NAME, "domu"]
         - [EXTRA_IMAGEDEPENDS_remove, "arm-trusted-firmware"]
         - [EXTRA_IMAGEDEPENDS_remove, "optee-os"]
@@ -378,8 +383,8 @@ components:
         - "../meta-xt-rcar/meta-xt-rcar-gles_common"
       build_target: core-image-weston
       target_images:
-        - "tmp/deploy/images/%{MACHINE}/Image"
-        - "tmp/deploy/images/%{MACHINE}/core-image-weston-%{MACHINE}.ext4"
+        - "tmp/deploy/images/%{DOMU_MACHINE}/Image"
+        - "tmp/deploy/images/%{DOMU_MACHINE}/core-image-weston-%{DOMU_MACHINE}.ext4"
 
   doma_kernel:
     build-dir: "%{ANDROID_KERNEL_DIR}"
@@ -420,11 +425,11 @@ components:
         - "DDK_KM_PREBUILT_MODULE=%{XT_DOMA_DDK_KM_PREBUILT_MODULE}"
       lunch_target: xenvm-userdebug
       target_images:
-        - "out/target/product/xenvm/boot.img"
-        - "out/target/product/xenvm/super.img"
-        - "out/target/product/xenvm/userdata.img"
-        - "out/target/product/xenvm/vbmeta.img"
-        - "out/target/product/xenvm/system.img"
+        - "out/target/product/%{ANDROID_DEVICE}/boot.img"
+        - "out/target/product/%{ANDROID_DEVICE}/super.img"
+        - "out/target/product/%{ANDROID_DEVICE}/userdata.img"
+        - "out/target/product/%{ANDROID_DEVICE}/vbmeta.img"
+        - "out/target/product/%{ANDROID_DEVICE}/system.img"
       additional_deps:
         - "../%{ANDROID_KERNEL_DIR}/out/android12-5.4/common/arch/arm64/boot/Image"
 
@@ -438,15 +443,15 @@ images:
         type: ext4
         size: 128 MiB
         files:
-          "Image": "%{YOCTOS_WORK_DIR}/%{DOM0_BUILD_DIR}/tmp/deploy/images/generic-armv8-xt/Image"
-          "uInitramfs": "%{YOCTOS_WORK_DIR}/%{DOM0_BUILD_DIR}/tmp/deploy/images/generic-armv8-xt/uInitramfs"
-          "xen": "%{YOCTOS_WORK_DIR}/%{DOMD_BUILD_DIR}/tmp/deploy/images/%{MACHINE}/xen-%{MACHINE}.uImage"
-          "xenpolicy": "%{YOCTOS_WORK_DIR}/%{DOMD_BUILD_DIR}/tmp/deploy/images/%{MACHINE}/xenpolicy-%{MACHINE}"
-          "xen.dtb": "%{YOCTOS_WORK_DIR}/%{DOMD_BUILD_DIR}/tmp/deploy/images/%{MACHINE}/%{XT_XEN_DTB_NAME}"
+          "Image": "%{YOCTOS_WORK_DIR}/%{DOM0_BUILD_DIR}/tmp/deploy/images/%{DOM0_MACHINE}/Image"
+          "uInitramfs": "%{YOCTOS_WORK_DIR}/%{DOM0_BUILD_DIR}/tmp/deploy/images/%{DOM0_MACHINE}/uInitramfs"
+          "xen": "%{YOCTOS_WORK_DIR}/%{DOMD_BUILD_DIR}/tmp/deploy/images/%{DOMD_MACHINE}/xen-%{DOMD_MACHINE}.uImage"
+          "xenpolicy": "%{YOCTOS_WORK_DIR}/%{DOMD_BUILD_DIR}/tmp/deploy/images/%{DOMD_MACHINE}/xenpolicy-%{DOMD_MACHINE}"
+          "xen.dtb": "%{YOCTOS_WORK_DIR}/%{DOMD_BUILD_DIR}/tmp/deploy/images/%{DOMD_MACHINE}/%{XT_XEN_DTB_NAME}"
       domd_rootfs:
         gpt_type: B921B045-1DF0-41C3-AF44-4C6F280D3FAE # Linux aarch64 root
         type: raw_image
-        image_path: "%{YOCTOS_WORK_DIR}/%{DOMD_BUILD_DIR}/tmp/deploy/images/%{MACHINE}/agl-demo-platform-%{MACHINE}.ext4"
+        image_path: "%{YOCTOS_WORK_DIR}/%{DOMD_BUILD_DIR}/tmp/deploy/images/%{DOMD_MACHINE}/agl-demo-platform-%{DOMD_MACHINE}.ext4"
 
 parameters:
   # Machines
@@ -559,10 +564,10 @@ parameters:
                 - [OVERRIDES:append, ":enable_android"]
               additional_deps:
                 # This is not actually a hard dep. We just want to force Android build
-                - "../%{DOMA_DIR}/out/target/product/xenvm/boot.img"
+                - "../%{DOMA_DIR}/out/target/product/%{ANDROID_DEVICE}/boot.img"
               external_src:
                 # Android uses DTB generated by DomD
-                doma: "%{YOCTOS_WORK_DIR}/%{DOMD_BUILD_DIR}/tmp/deploy/images/%{MACHINE}/"
+                doma: "%{YOCTOS_WORK_DIR}/%{DOMD_BUILD_DIR}/tmp/deploy/images/%{DOMD_MACHINE}/"
         images:
           android_only: &ANDROID_IMAGE
             desc: "Android sub-image (this image is passed to Android VM as a separate block device)"
@@ -573,7 +578,7 @@ parameters:
                 gpt_type: 49A4D17F-93A3-45C1-A0DE-F50B2EBE2599 # Android boot 1
                 type: raw_image
                 size: 30 MiB
-                image_path: "%{DOMA_DIR}/out/target/product/xenvm/boot.img"
+                image_path: "%{DOMA_DIR}/out/target/product/%{ANDROID_DEVICE}/boot.img"
               boot_b:
                 gpt_type: 20117F86-E985-4357-B9EE-374BC1D8487D # Android boot 2
                 type: empty
@@ -582,7 +587,7 @@ parameters:
                 gpt_type: 19A710A2-B3CA-11E4-B026-10604B889DCF # Android meta
                 type: raw_image
                 size: 1 MiB
-                image_path: "%{DOMA_DIR}/out/target/product/xenvm/vbmeta.img"
+                image_path: "%{DOMA_DIR}/out/target/product/%{ANDROID_DEVICE}/vbmeta.img"
               vbmeta_b:
                 gpt_type: 19A710A2-B3CA-11E4-B026-10604B889DCF # Android meta
                 type: empty
@@ -604,11 +609,11 @@ parameters:
               super:
                 gpt_type: 4627AE27-CFEF-48A1-88FE-99C3509ADE26 # Android raw resources
                 type: android_sparse
-                image_path: "%{DOMA_DIR}/out/target/product/xenvm/super.img"
+                image_path: "%{DOMA_DIR}/out/target/product/%{ANDROID_DEVICE}/super.img"
               userdata:
                 gpt_type: 1B81E7E6-F50D-419B-A739-2AEEF8DA3335 # Android userdata
                 type: android_sparse
-                image_path: "%{DOMA_DIR}/out/target/product/xenvm/userdata.img"
+                image_path: "%{DOMA_DIR}/out/target/product/%{ANDROID_DEVICE}/userdata.img"
           full:
             partitions:
               android:
@@ -629,16 +634,16 @@ parameters:
                 - [XT_DOMU_DTB_NAME, "%{XT_DOMU_DTB_NAME}"]
                 - [XT_DOMU_CONFIG_NAME, "%{XT_DOMU_CONFIG_NAME}"]
               additional_deps:
-                - "%{DOMU_BUILD_DIR}/tmp/deploy/images/%{MACHINE}/Image"
+                - "%{DOMU_BUILD_DIR}/tmp/deploy/images/%{DOMU_MACHINE}/Image"
               external_src:
-                domu: "%{YOCTOS_WORK_DIR}/%{DOMU_BUILD_DIR}/tmp/deploy/images/%{MACHINE}/"
+                domu: "%{YOCTOS_WORK_DIR}/%{DOMU_BUILD_DIR}/tmp/deploy/images/%{DOMU_MACHINE}/"
         images:
           full:
             partitions:
               domu-rootfs:
                 type: raw_image
                 gpt_type: 0FC63DAF-8483-4772-8E79-3D69D8477DE4 # Linux filesystem data
-                image_path: "%{YOCTOS_WORK_DIR}/%{DOMU_BUILD_DIR}/tmp/deploy/images/%{MACHINE}/core-image-weston-%{MACHINE}.ext4"
+                image_path: "%{YOCTOS_WORK_DIR}/%{DOMU_BUILD_DIR}/tmp/deploy/images/%{DOMU_MACHINE}/core-image-weston-%{DOMU_MACHINE}.ext4"
 
   ENABLE_MM:
     desc: "Enable Multimedia support"
