@@ -187,8 +187,8 @@ components:
       additional_deps:
         - "%{DOMD_BUILD_DIR}/tmp/deploy/images/%{DOMD_MACHINE}/Image"
       target_images:
-        - "tmp/deploy/images/generic-armv8-xt/Image"
-        - "tmp/deploy/images/generic-armv8-xt/uInitramfs"
+        - "tmp/deploy/images/%{DOM0_MACHINE}/Image"
+        - "tmp/deploy/images/%{DOM0_MACHINE}/uInitramfs"
 
   domd:
     build-dir: "%{YOCTOS_WORK_DIR}"
@@ -413,8 +413,8 @@ images:
         type: ext4
         size: 128 MiB
         items:
-          "Image": "%{YOCTOS_WORK_DIR}/%{DOM0_BUILD_DIR}/tmp/deploy/images/generic-armv8-xt/Image"
-          "uInitramfs": "%{YOCTOS_WORK_DIR}/%{DOM0_BUILD_DIR}/tmp/deploy/images/generic-armv8-xt/uInitramfs"
+          "Image": "%{YOCTOS_WORK_DIR}/%{DOM0_BUILD_DIR}/tmp/deploy/images/%{DOM0_MACHINE}/Image"
+          "uInitramfs": "%{YOCTOS_WORK_DIR}/%{DOM0_BUILD_DIR}/tmp/deploy/images/%{DOM0_MACHINE}/uInitramfs"
           "xen": "%{YOCTOS_WORK_DIR}/%{DOMD_BUILD_DIR}/tmp/deploy/images/%{DOMD_MACHINE}/xen-%{DOMD_MACHINE}.uImage"
           "xenpolicy": "%{YOCTOS_WORK_DIR}/%{DOMD_BUILD_DIR}/tmp/deploy/images/%{DOMD_MACHINE}/xenpolicy-%{DOMD_MACHINE}"
           "xen.dtb": "%{YOCTOS_WORK_DIR}/%{DOMD_BUILD_DIR}/tmp/deploy/images/%{DOMD_MACHINE}/%{XT_XEN_DTB_NAME}"
