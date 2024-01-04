@@ -118,7 +118,7 @@ common_data:
         rev: dunfell
       - type: git
         url: "https://github.com/kraj/meta-clang.git"
-        rev: dunfell
+        rev: "3bb001d3f364bbf6588fed04b9ee2c7e74a0beba" # dunfell
       - type: git
         url: "ssh://git@gitpct.epam.com/epmd-aepr/img-proprietary"
         rev: "6ed789681c2867c7cae8b0150e093e1e2781797e"
