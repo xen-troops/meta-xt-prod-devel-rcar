@@ -196,13 +196,13 @@ components:
       - *COMMON_SOURCES
       - type: git
         url: "https://gerrit.automotivelinux.org/gerrit/AGL/meta-agl"
-        rev: "marlin"
+        rev: marlin
       - type: git
         url: "https://gerrit.automotivelinux.org/gerrit/AGL/meta-agl-demo"
-        rev: "marlin"
+        rev: marlin
       - type: git
         url: "https://gerrit.automotivelinux.org/gerrit/AGL/meta-agl-devel"
-        rev: "marlin"
+        rev: marlin
       - type: git
         url: "https://git.yoctoproject.org/meta-gplv2"
         rev: "60b251c25ba87e946a0ca4cdc8d17b1cb09292ac" # dunfell
@@ -232,10 +232,10 @@ components:
         rev: "7d59dea18a27b16b0cede7ad5143281b82dd6701" # dunfell
       - type: git
         url: "https://gerrit.automotivelinux.org/gerrit/AGL/meta-agl-refhw"
-        rev: "marlin"
+        rev: marlin
       - type: git
         url: https://github.com/renesas-rcar/meta-renesas.git
-        rev: "dunfell-dev"
+        rev: dunfell-dev
       - type: git
         url: https://git.yoctoproject.org/meta-selinux
         rev: dunfell
@@ -359,7 +359,7 @@ components:
       - *COMMON_SOURCES
       - type: git
         url: https://github.com/renesas-rcar/meta-renesas.git
-        rev: "dunfell-dev"
+        rev: dunfell-dev
     builder:
       type: yocto
       work_dir: "%{DOMU_BUILD_DIR}"
