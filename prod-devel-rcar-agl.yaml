@@ -230,9 +230,9 @@ components:
       - type: git
         url: "https://github.com/meta-flutter/meta-flutter.git"
         rev: "7d59dea18a27b16b0cede7ad5143281b82dd6701" # dunfell
+      - type: git
         url: "https://gerrit.automotivelinux.org/gerrit/AGL/meta-agl-refhw"
         rev: "marlin"
-      - type: git
       - type: git
         url: https://github.com/renesas-rcar/meta-renesas.git
         rev: "dunfell-dev"
