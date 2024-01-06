@@ -257,9 +257,6 @@ components:
 
       build_target: core-image-weston
       layers:
-        - "../poky/meta"
-        - "../poky/meta-poky"
-        - "../poky/meta-yocto-bsp"
         - "../meta-renesas/meta-rcar-gen3"
         - "../meta-virtualization"
         - "../meta-selinux"
