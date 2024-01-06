@@ -318,9 +318,6 @@ components:
         - [PREFERRED_RPROVIDER_virtual/wireplumber-config, "wireplumber-config-agl"]
       build_target: agl-demo-platform
       layers:
-        - "../poky/meta"
-        - "../poky/meta-poky"
-        - "../poky/meta-yocto-bsp"
         - "../meta-renesas/meta-rcar-gen3"
         - "../meta-virtualization"
         - "../meta-selinux"
