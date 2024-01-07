@@ -10,7 +10,7 @@ variables:
   DOMA_DIR: "android"
   XT_DOMD_DTB_NAME: "%{SOC_FAMILY}-%{MACHINE}-domd.dtb"
   XT_DOMU_DTB_NAME: "salvator-generic-domu.dtb"
-  XT_DOMA_DTB_NAME: "salvator-generic-doma.dtb"
+  XT_DOMA_DTB_NAME: ""
   XT_XEN_DTB_NAME: "%{SOC_FAMILY}-%{MACHINE}-xen.dtb"
   XT_PVR_NUM_OSID: "2"
   XT_OP_TEE_FLAVOUR: "generic_dt"
@@ -145,11 +145,7 @@ components:
         - *COMMON_CONF
         - [MACHINE, "generic-armv8-xt"]
         - [XT_DOMD_CONFIG_NAME, "%{XT_DOMD_CONFIG_NAME}"]
-        - [XT_DOMU_CONFIG_NAME, "%{XT_DOMU_CONFIG_NAME}"]
-        - [XT_DOMA_CONFIG_NAME, "%{XT_DOMA_CONFIG_NAME}"]
         - [XT_DOMD_DTB_NAME, "%{XT_DOMD_DTB_NAME}"]
-        - [XT_DOMU_DTB_NAME, "%{XT_DOMU_DTB_NAME}"]
-        - [XT_DOMA_DTB_NAME, "%{XT_DOMA_DTB_NAME}"]
         - [XT_DOM_NAME, "dom0"]
         - [XT_GUEST_INSTALL, "%{XT_GENERIC_DOMU_TAG} %{XT_DOMA_TAG} domd"]
 
@@ -546,6 +542,7 @@ parameters:
       overrides:
         variables:
           XT_DOMA_TAG: "doma"
+          XT_DOMA_DTB_NAME: "salvator-generic-doma.dtb"
         components:
           # Build and install ivi-shell in case of Android builds
           domd:
@@ -555,6 +552,8 @@ parameters:
           dom0:
             builder:
               conf:
+                - [XT_DOMA_DTB_NAME, "%{XT_DOMA_DTB_NAME}"]
+                - [XT_DOMA_CONFIG_NAME, "%{XT_DOMA_CONFIG_NAME}"]
                 # Flag, which allows to override parameters on the Yocto level.
                 # E.g. amount of used RAM for driver domain.
                 - [OVERRIDES:append, ":enable_android"]
@@ -626,6 +625,9 @@ parameters:
         components:
           dom0:
             builder:
+              conf:
+                - [XT_DOMU_DTB_NAME, "%{XT_DOMU_DTB_NAME}"]
+                - [XT_DOMU_CONFIG_NAME, "%{XT_DOMU_CONFIG_NAME}"]
               additional_deps:
                 - "%{DOMU_BUILD_DIR}/tmp/deploy/images/%{MACHINE}/Image"
               external_src:

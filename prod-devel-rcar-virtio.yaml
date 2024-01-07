@@ -13,7 +13,7 @@ variables:
   DOMA_DIR: "android"
   DOMZ_DIR: "zephyr"
   XT_DOMD_DTB_NAME: "%{SOC_FAMILY}-%{DOMD_MACHINE}-domd.dtb"
-  XT_DOMA_DTB_NAME: "salvator-generic-doma-virtio.dtb"
+  XT_DOMA_DTB_NAME: ""
   XT_XEN_DTB_NAME: "%{SOC_FAMILY}-%{DOMD_MACHINE}-xen.dtb"
   XT_PVR_NUM_OSID: "2"
   XT_OP_TEE_FLAVOUR: "generic_dt"
@@ -134,11 +134,7 @@ components:
         - *COMMON_CONF
         - [MACHINE, "%{DOM0_MACHINE}"]
         - [XT_DOMD_CONFIG_NAME, "%{XT_DOMD_CONFIG_NAME}"]
-        - [XT_DOMU_CONFIG_NAME, "%{XT_DOMU_CONFIG_NAME}"]
-        - [XT_DOMA_CONFIG_NAME, "%{XT_DOMA_CONFIG_NAME}"]
-        - [XT_DOMZ_CONFIG_NAME, "%{XT_DOMZ_CONFIG_NAME}"]
         - [XT_DOMD_DTB_NAME, "%{XT_DOMD_DTB_NAME}"]
-        - [XT_DOMA_DTB_NAME, "%{XT_DOMA_DTB_NAME}"]
         - [XT_DOM_NAME, "dom0"]
         - [XT_GUEST_INSTALL, "%{XT_GENERIC_DOMU_TAG} %{XT_DOMA_TAG} %{XT_DOMZ_TAG} domd"]
 
@@ -521,10 +517,13 @@ parameters:
       overrides:
         variables:
           XT_DOMA_TAG: "doma"
+          XT_DOMA_DTB_NAME: "salvator-generic-doma-virtio.dtb"
         components:
           dom0:
             builder:
               conf:
+                - [XT_DOMA_DTB_NAME, "%{XT_DOMA_DTB_NAME}"]
+                - [XT_DOMA_CONFIG_NAME, "%{XT_DOMA_CONFIG_NAME}"]
                 # Flag, which allows to override parameters on the Yocto level.
                 # E.g. amount of used RAM for driver domain.
                 - [OVERRIDES:append, ":enable_android"]
@@ -614,6 +613,8 @@ parameters:
         components:
           dom0:
             builder:
+              conf:
+                - [XT_DOMU_CONFIG_NAME, "%{XT_DOMU_CONFIG_NAME}"]
               additional_deps:
                 - "%{DOMU_BUILD_DIR}/tmp/deploy/images/%{DOMU_MACHINE}/Image"
               external_src:
@@ -637,6 +638,8 @@ parameters:
         components:
           dom0:
             builder:
+              conf:
+                - [XT_DOMZ_CONFIG_NAME, "%{XT_DOMZ_CONFIG_NAME}"]
               additional_deps:
                 # paths relative to dom0 build-dir
                 - "../%{DOMZ_DIR}/zephyr/build/zephyr/zephyr.bin"
