@@ -138,8 +138,10 @@ with proprietary sources. But you may use prebuilt graphics binaries.
 Please see instruction below.
 
 1. You need to have prebuilt graphic binaries. Pay attention that you
-can't use prebuilt binaries from Renesas because those packages
-do not support virtualization.
+can't use prebuilt binaries from Renesas for the non-virtio build because
+those packages do not support virtualization. For the virtio build,
+on the contrary, prebuilt binaries from Renesas must be used because of
+GPU passthrough (native mode) instead of GPU sharing is in use there.
 2. Put these binaries into `<directory_with_yaml>/../prebuilt_gsx/`.
 By default prebuilt binaries are expected to be in the dedicated folder
 on the same level as your folder with yaml. But this can be changed in
