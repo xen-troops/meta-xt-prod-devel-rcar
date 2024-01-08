@@ -32,5 +32,6 @@ do_install:append() {
     if ${@bb.utils.contains('DISTRO_FEATURES', 'enable_virtio', 'true', 'false', d)}; then
         echo "" >> ${CFG_FILE}
         echo "driver_domain = 1" >> ${CFG_FILE}
+        sed -i "s/pvrsrvkm.DriverMode=0/pvrsrvkm.DriverMode=0x7fffffff/g" ${CFG_FILE}
     fi
 }
