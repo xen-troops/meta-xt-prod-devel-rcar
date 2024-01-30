@@ -184,8 +184,8 @@ components:
         - ["RRECOMMENDS:${KERNEL_PACKAGE_NAME}-base", ""]
 
         # Build our own Xen version rather than proposed by meta-virtualization
-        - [PREFERRED_VERSION_xen, "4.18.0+git%"]
-        - [PREFERRED_VERSION_xen-tools, "4.18.0+git%"]
+        - [PREFERRED_VERSION_xen, "4.19.0+git%"]
+        - [PREFERRED_VERSION_xen-tools, "4.19.0+git%"]
 
         - [MACHINEOVERRIDES:append, ":%{XT_MACHINEOVERRIDES_RAM}"]
 
@@ -243,8 +243,8 @@ components:
         - [XT_MULTIMEDIA_EVA_DIR, "%{XT_MULTIMEDIA_EVA_DIR}"]
 
         # Build our own Xen version rather than proposed by meta-virtualization
-        - [PREFERRED_VERSION_xen, "4.18.0+git%"]
-        - [PREFERRED_VERSION_xen-tools, "4.18.0+git%"]
+        - [PREFERRED_VERSION_xen, "4.19.0+git%"]
+        - [PREFERRED_VERSION_xen-tools, "4.19.0+git%"]
 
       build_target: core-image-weston
       layers:
