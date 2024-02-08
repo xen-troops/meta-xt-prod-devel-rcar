@@ -9,6 +9,7 @@
   - [Fetching](#fetching)
   - [Building](#building)
   - [Build products](#build-products)
+  - [Building without proprietary graphics](#building-without-proprietary-graphics)
   - [Building with prebuilt graphics for DomD+DomU](#building-with-prebuilt-graphics-for-domddomu)
   - [Building with prebuilts Android graphics](#building-with-prebuilts-android-graphics)
     - [Creating SD card image](#creating-sd-card-image)
@@ -91,7 +92,7 @@ usage: moulin prod-devel-rcar.yaml
        [--MACHINE {salvator-xs-m3-2x4g,salvator-xs-h3-4x2g,salvator-x-h3-4x2g,h3ulcb-4x2g,h3ulcb-4x2g-kf,h3ulcb-4x2g-ab}]
        [--ENABLE_ANDROID {no,yes}] [--ENABLE_DOMU {no,yes}]
        [--ENABLE_ZEPHYR {no,yes}] [--ENABLE_MM {no,yes}]
-       [--ENABLE_AOS_VIS {no,yes}] [--GRAPHICS {binaries,sources}]
+       [--ENABLE_AOS_VIS {no,yes}] [--GRAPHICS {binaries,sources,console}]
 
 Config file description: Xen-Troops development setup for Renesas RCAR Gen3
 hardware
@@ -108,7 +109,7 @@ optional arguments:
   --ENABLE_MM {no,yes}  Enable Multimedia support
   --ENABLE_AOS_VIS {no,yes}
                         Enable AOS VIS service
-  --GRAPHICS {binaries,sources}]
+  --GRAPHICS {binaries,sources,console}
                         Select how to use the GFX (3D hardware accelerator)
 ```
 
@@ -147,6 +148,11 @@ After `ninja full.img`
 | android_kernel/   # Android kernel
 | android/          # Android
 ```
+## Building without proprietary graphics
+
+By default, the `--GRAPHICS` option is set to the `console`. This means
+that DomD and DomU are built without proprietary graphics drivers.
+As result both domains have only console for the interaction.
 
 ## Building with prebuilt graphics for DomD+DomU
 
