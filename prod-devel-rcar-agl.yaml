@@ -30,19 +30,19 @@ common_data:
   # Sources used by all yocto-based domains
   sources: &COMMON_SOURCES
     - type: git
-      url: "https://git.yoctoproject.org/poky"
+      url: https://git.yoctoproject.org/poky
       rev: dunfell
     - type: git
-      url: "https://git.openembedded.org/meta-openembedded"
+      url: https://git.openembedded.org/meta-openembedded
       rev: dunfell
     - type: git
-      url: "https://git.yoctoproject.org/meta-virtualization"
+      url: https://git.yoctoproject.org/meta-virtualization
       rev: dunfell
     - type: git
-      url: "https://github.com/xen-troops/meta-xt-common.git"
+      url: https://github.com/xen-troops/meta-xt-common.git
       rev: master
     - type: git
-      url: "https://github.com/xen-troops/meta-xt-rcar.git"
+      url: https://github.com/xen-troops/meta-xt-rcar.git
       rev: master
   # Common configuration options for all yocto-based domains
   conf: &COMMON_CONF
@@ -117,13 +117,13 @@ common_data:
   ddk_source_overrides: &DDK_SOURCE_OVERRIDES
     sources:
       - type: git
-        url: "https://git.openembedded.org/meta-python2"
+        url: https://git.openembedded.org/meta-python2
         rev: dunfell
       - type: git
-        url: "https://github.com/kraj/meta-clang.git"
+        url: https://github.com/kraj/meta-clang.git
         rev: "3bb001d3f364bbf6588fed04b9ee2c7e74a0beba" # dunfell
       - type: git
-        url: "ssh://git@gitpct.epam.com/epmd-aepr/img-proprietary"
+        url: ssh://git@gitpct.epam.com/epmd-aepr/img-proprietary
         rev: "6ed789681c2867c7cae8b0150e093e1e2781797e"
         dir: "proprietary"
     builder:
@@ -139,7 +139,7 @@ components:
     sources:
       - *COMMON_SOURCES
       - type: git
-        url: "https://github.com/xen-troops/meta-xt-prod-devel-rcar.git"
+        url: https://github.com/xen-troops/meta-xt-prod-devel-rcar.git
         rev: master
     builder:
       type: yocto
@@ -194,43 +194,43 @@ components:
     sources:
       - *COMMON_SOURCES
       - type: git
-        url: "https://gerrit.automotivelinux.org/gerrit/AGL/meta-agl"
+        url: https://gerrit.automotivelinux.org/gerrit/AGL/meta-agl
         rev: marlin
       - type: git
-        url: "https://gerrit.automotivelinux.org/gerrit/AGL/meta-agl-demo"
+        url: https://gerrit.automotivelinux.org/gerrit/AGL/meta-agl-demo
         rev: marlin
       - type: git
-        url: "https://gerrit.automotivelinux.org/gerrit/AGL/meta-agl-devel"
+        url: https://gerrit.automotivelinux.org/gerrit/AGL/meta-agl-devel
         rev: marlin
       - type: git
-        url: "https://git.yoctoproject.org/meta-gplv2"
+        url: https://git.yoctoproject.org/meta-gplv2
         rev: "60b251c25ba87e946a0ca4cdc8d17b1cb09292ac" # dunfell
       - type: git
-        url: "https://github.com/meta-qt5/meta-qt5.git"
+        url: https://github.com/meta-qt5/meta-qt5.git
         rev: "5ef3a0ffd3324937252790266e2b2e64d33ef34f" # dunfell
       - type: git
-        url: "https://git.yoctoproject.org/meta-security"
+        url: https://git.yoctoproject.org/meta-security
         rev: "c62970fda82acf75035243766ecd195243e0f82a" # dunfell
       - type: git
-        url: "https://github.com/dl9pf/meta-codechecker.git"
+        url: https://github.com/dl9pf/meta-codechecker.git
         rev: "f27a46feb2291d333744850a82d5c8af303e3bd5" # master
       - type: git
-        url: "https://git.yoctoproject.org/meta-spdxscanner.git"
+        url: https://git.yoctoproject.org/meta-spdxscanner.git
         rev: "23bba6f8dfafc806c187fc58b31fe2466d95772d" # dunfell
       - type: git
-        url: "https://github.com/kraj/meta-clang.git"
+        url: https://github.com/kraj/meta-clang.git
         rev: "3bb001d3f364bbf6588fed04b9ee2c7e74a0beba" # dunfell
       - type: git
-        url: "https://git.openembedded.org/meta-python2"
+        url: https://git.openembedded.org/meta-python2
         rev: dunfell
       - type: git
-        url: "https://github.com/ros/meta-ros.git"
+        url: https://github.com/ros/meta-ros.git
         rev: "7ded597103e8e54ffa979d042cdbbedb76ff7cb5" # dunfell
       - type: git
-        url: "https://github.com/meta-flutter/meta-flutter.git"
+        url: https://github.com/meta-flutter/meta-flutter.git
         rev: "7d59dea18a27b16b0cede7ad5143281b82dd6701" # dunfell
       - type: git
-        url: "https://gerrit.automotivelinux.org/gerrit/AGL/meta-agl-refhw"
+        url: https://gerrit.automotivelinux.org/gerrit/AGL/meta-agl-refhw
         rev: marlin
       - type: git
         url: https://github.com/renesas-rcar/meta-renesas.git
@@ -239,7 +239,7 @@ components:
         url: https://git.yoctoproject.org/meta-selinux
         rev: dunfell
       - type: git
-        url: "https://github.com/xen-troops/meta-xt-prod-devel-rcar.git"
+        url: https://github.com/xen-troops/meta-xt-prod-devel-rcar.git
         rev: master
     builder:
       type: yocto
@@ -515,7 +515,7 @@ parameters:
           domd:
             sources:
               - type: git
-                url: "https://github.com/xen-troops/meta-rcar.git"
+                url: https://github.com/xen-troops/meta-rcar.git
                 rev: Renesas-Yocto-v5.9-dunfell-dev
             builder:
               layers:
@@ -694,7 +694,7 @@ parameters:
           domd:
             sources:
               - type: git
-                url: "https://github.com/aoscloud/meta-aos"
+                url: https://github.com/aoscloud/meta-aos
                 rev: main
             builder:
               layers:

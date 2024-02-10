@@ -36,19 +36,19 @@ common_data:
   # Sources used by all yocto-based domains
   sources: &COMMON_SOURCES
     - type: git
-      url: "https://git.yoctoproject.org/poky"
+      url: https://git.yoctoproject.org/poky
       rev: kirkstone
     - type: git
-      url: "https://git.openembedded.org/meta-openembedded"
+      url: https://git.openembedded.org/meta-openembedded
       rev: kirkstone
     - type: git
-      url: "https://git.yoctoproject.org/meta-virtualization"
+      url: https://git.yoctoproject.org/meta-virtualization
       rev: kirkstone
     - type: git
-      url: "https://github.com/xen-troops/meta-xt-common.git"
+      url: https://github.com/xen-troops/meta-xt-common.git
       rev: master
     - type: git
-      url: "https://github.com/xen-troops/meta-xt-rcar.git"
+      url: https://github.com/xen-troops/meta-xt-rcar.git
       rev: master
   # Common configuration options for all yocto-based domains
   conf: &COMMON_CONF
@@ -108,13 +108,13 @@ common_data:
   # to build a DDK from source code
   ddk_source_overrides: &DDK_SOURCE_OVERRIDES
     - type: git
-      url: "https://git.openembedded.org/meta-python2"
+      url: https://git.openembedded.org/meta-python2
       rev: kirkstone
     - type: git
-      url: "https://github.com/kraj/meta-clang.git"
+      url: https://github.com/kraj/meta-clang.git
       rev: kirkstone
     - type: git
-      url: "ssh://git@gitpct.epam.com/epmd-aepr/img-proprietary"
+      url: ssh://git@gitpct.epam.com/epmd-aepr/img-proprietary
       rev: "6ed789681c2867c7cae8b0150e093e1e2781797e"
       dir: "proprietary"
 
@@ -125,7 +125,7 @@ components:
     sources:
       - *COMMON_SOURCES
       - type: git
-        url: "https://github.com/xen-troops/meta-xt-prod-devel-rcar.git"
+        url: https://github.com/xen-troops/meta-xt-prod-devel-rcar.git
         rev: master
     builder:
       type: yocto
@@ -195,13 +195,13 @@ components:
     sources:
       - *COMMON_SOURCES
       - type: git
-        url: "https://github.com/renesas-rcar/meta-renesas.git"
+        url: https://github.com/renesas-rcar/meta-renesas.git
         rev: kirkstone-dev
       - type: git
-        url: "https://git.yoctoproject.org/meta-selinux"
+        url: https://git.yoctoproject.org/meta-selinux
         rev: kirkstone
       - type: git
-        url: "https://github.com/xen-troops/meta-xt-prod-devel-rcar.git"
+        url: https://github.com/xen-troops/meta-xt-prod-devel-rcar.git
         rev: master
       - type: git
         url: ssh://git@github.com/xen-troops/meta-xt-vhost.git
@@ -293,7 +293,7 @@ components:
     sources:
       - *COMMON_SOURCES
       - type: git
-        url: "https://github.com/renesas-rcar/meta-renesas.git"
+        url: https://github.com/renesas-rcar/meta-renesas.git
         rev: kirkstone-dev
     builder:
       type: yocto
@@ -490,7 +490,7 @@ parameters:
           domd:
             sources:
               - type: git
-                url: "https://github.com/xen-troops/meta-rcar.git"
+                url: https://github.com/xen-troops/meta-rcar.git
                 rev: xt-master
             builder:
               layers:
@@ -538,7 +538,7 @@ parameters:
           domd:
             sources:
               - type: git
-                url: "https://github.com/kraj/meta-clang.git"
+                url: https://github.com/kraj/meta-clang.git
                 rev: kirkstone
             builder:
               layers:
@@ -715,7 +715,7 @@ parameters:
           domd:
             sources:
               - type: git
-                url: "https://github.com/aoscloud/meta-aos"
+                url: https://github.com/aoscloud/meta-aos
                 rev: main
             builder:
               layers:
