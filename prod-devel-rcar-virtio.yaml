@@ -691,7 +691,7 @@ parameters:
           #   - use yocto's internal variable ${TOPDIR};
           #   - or moulin's variable like %{DOMD_BUILD_DIR}.
           #     Pay attention to usage of % instead of $.
-          XT_MULTIMEDIA_EVA_DIR: "/mnt/download/eva_mm"
+          XT_MULTIMEDIA_EVA_DIR: "${TOPDIR}/../../../eva_mm"
         components:
           domd:
             builder:
