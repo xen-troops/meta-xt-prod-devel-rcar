@@ -546,7 +546,7 @@ parameters:
                 gpt_type: DF24E5ED-8C96-4B86-B00B-79667DC6DE11 # Android sparse 1
                 type: raw_image
                 size: 30 MiB
-                image_path: "android/out/target/product/%{ANDROID_DEVICE}/vendor_boot.img"
+                image_path: "%{DOMA_DIR}/out/target/product/%{ANDROID_DEVICE}/vendor_boot.img"
               vendor_boot_b:
                 gpt_type: 7C29D3AD-78B9-452E-9DEB-D098D542F092 # Android sparse 2
                 type: empty
