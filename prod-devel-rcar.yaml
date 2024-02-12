@@ -148,6 +148,7 @@ common_data:
         - "../meta-python2"
         - "../meta-clang"
         - "../meta-xt-rcar/meta-xt-rcar-proprietary"
+        - "../meta-xt-rcar/meta-xt-rcar-gles_common"
 
 components:
   dom0:
@@ -262,7 +263,6 @@ components:
         - "../meta-xt-rcar/meta-xt-rcar-fixups"
         - "../meta-xt-rcar/meta-xt-rcar-driver-domain"
         - "../meta-xt-rcar/meta-xt-rcar-domx"
-        - "../meta-xt-rcar/meta-xt-rcar-gles_common"
         - "../meta-xt-prod-devel-rcar/meta-xt-domx-gen3"
         - "../meta-xt-prod-devel-rcar/meta-xt-prod-devel-rcar-driver-domain"
         - "../meta-xt-prod-devel-rcar/meta-xt-domd-gen3"
@@ -305,7 +305,6 @@ components:
         - "../meta-xt-common/meta-xt-domu"
         - "../meta-xt-rcar/meta-xt-rcar-fixups"
         - "../meta-xt-rcar/meta-xt-rcar-domu"
-        - "../meta-xt-rcar/meta-xt-rcar-gles_common"
         - "../meta-xt-prod-devel-rcar/meta-xt-domx-gen3"
         - "../meta-xt-prod-devel-rcar/meta-xt-domu-gen3"
       build_target: core-image-weston
@@ -720,10 +719,14 @@ parameters:
             builder:
               conf:
                 - [XT_PREBUILT_GSX_DIR, "%{XT_PREBUILT_GSX_DIR}"]
+              layers:
+                - "../meta-xt-rcar/meta-xt-rcar-gles_common"
           domu:
             builder:
               conf:
                 - [XT_PREBUILT_GSX_DIR, "%{XT_PREBUILT_GSX_DIR}"]
+              layers:
+                - "../meta-xt-rcar/meta-xt-rcar-gles_common"
           doma:
             sources:
               - type: unpack
