@@ -124,10 +124,7 @@ common_data:
     # Install some apps to test GPU/Display
     - [IMAGE_INSTALL:append, " glmark2 kmscube"]
 
-
-  # The same set of layers and configs is used both in DomD and DomU
-  # to build a DDK from source code
-  ddk_source_overrides: &DDK_SOURCE_OVERRIDES
+  gfx_sources: &GFX_SOURCES
     - type: git
       url: https://git.openembedded.org/meta-python2
       rev: kirkstone
@@ -138,6 +135,12 @@ common_data:
       url: ssh://git@gitpct.epam.com/epmd-aepr/img-proprietary
       rev: "6ed789681c2867c7cae8b0150e093e1e2781797e"
       dir: "proprietary"
+
+  gfx_layers: &GFX_LAYERS
+    - "../meta-python2"
+    - "../meta-clang"
+    - "../meta-xt-rcar/meta-xt-rcar-proprietary"
+    - "../meta-xt-rcar/meta-xt-rcar-gles_common"
 
 components:
   dom0:
@@ -760,17 +763,14 @@ parameters:
         components:
           domd:
             sources:
-              *DDK_SOURCE_OVERRIDES
+              - *GFX_SOURCES
             builder:
               conf:
                 - *GFX_CONF
                 # gles-um-compile.bb still requires python2
                 - [I_SWEAR_TO_MIGRATE_TO_PYTHON3, "yes"]
               layers:
-                - "../meta-python2"
-                - "../meta-clang"
-                - "../meta-xt-rcar/meta-xt-rcar-proprietary"
-                - "../meta-xt-rcar/meta-xt-rcar-gles_common"
+                - *GFX_LAYERS
           domu:
             builder:
               conf:
