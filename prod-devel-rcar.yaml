@@ -126,31 +126,23 @@ common_data:
     - [BBMASK:append, " ${@bb.utils.contains('XT_USE_DDK1_11', '1', '', 'meta-xt-rcar-fixups/recipes-graphics/gles-module/gles-user-module.bbappend', d)}"]
     - [BBMASK:append, " ${@bb.utils.contains('XT_USE_DDK1_11', '1', '', 'meta-xt-rcar-fixups/recipes-graphics/packagegroups/packagegroup-graphic-renesas.bbappend', d)}"]
 
-  # The same set of layers and configs is used both in DomD and DomU
-  # to build a DDK from source code
-  ddk_source_overrides: &DDK_SOURCE_OVERRIDES
-    sources:
-      - type: git
-        url: https://git.openembedded.org/meta-python2
-        rev: kirkstone
-      - type: git
-        url: https://github.com/kraj/meta-clang.git
-        rev: kirkstone
-      - type: git
-        url: ssh://git@gitpct.epam.com/epmd-aepr/img-proprietary
-        rev: "6ed789681c2867c7cae8b0150e093e1e2781797e"
-        dir: "proprietary"
-    builder:
-      conf:
-        - *GFX_CONF
-        # gles-um-compile.bb still requires python2
-        - [I_SWEAR_TO_MIGRATE_TO_PYTHON3, "yes"]
+  gfx_sources: &GFX_SOURCES
+    - type: git
+      url: https://git.openembedded.org/meta-python2
+      rev: kirkstone
+    - type: git
+      url: https://github.com/kraj/meta-clang.git
+      rev: kirkstone
+    - type: git
+      url: ssh://git@gitpct.epam.com/epmd-aepr/img-proprietary
+      rev: "6ed789681c2867c7cae8b0150e093e1e2781797e"
+      dir: "proprietary"
 
-      layers:
-        - "../meta-python2"
-        - "../meta-clang"
-        - "../meta-xt-rcar/meta-xt-rcar-proprietary"
-        - "../meta-xt-rcar/meta-xt-rcar-gles_common"
+  gfx_layers: &GFX_LAYERS
+    - "../meta-python2"
+    - "../meta-clang"
+    - "../meta-xt-rcar/meta-xt-rcar-proprietary"
+    - "../meta-xt-rcar/meta-xt-rcar-gles_common"
 
 components:
   dom0:
@@ -747,9 +739,25 @@ parameters:
         # for the linux
         components:
           domd:
-            *DDK_SOURCE_OVERRIDES
+            sources:
+              - *GFX_SOURCES
+            builder:
+              conf:
+                - *GFX_CONF
+                # gfx sources still require python2
+                - [I_SWEAR_TO_MIGRATE_TO_PYTHON3, "yes"]
+              layers:
+                - *GFX_LAYERS
           domu:
-            *DDK_SOURCE_OVERRIDES
+            sources:
+              - *GFX_SOURCES
+            builder:
+              conf:
+                - *GFX_CONF
+                # gfx sources still require python2
+                - [I_SWEAR_TO_MIGRATE_TO_PYTHON3, "yes"]
+              layers:
+                - *GFX_LAYERS
         # for the android
         variables:
           XT_DOMA_DDK_KM_PREBUILT_MODULE: "../%{ANDROID_KERNEL_DIR}/out/android12-5.4/staging/vendor/lib/modules/pvrsrvkm.ko"
