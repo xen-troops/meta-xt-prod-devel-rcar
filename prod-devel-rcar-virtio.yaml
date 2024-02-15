@@ -61,9 +61,6 @@ common_data:
     # Use hypervisor console on all guests
     - [SERIAL_CONSOLES, "115200;hvc0"]
 
-    # Configure number of supported GPU virtual guests
-    - [XT_PVR_NUM_OSID, "%{XT_PVR_NUM_OSID}"]
-
     # Remove features that we are not using
     - [DISTRO_FEATURES:remove, "x11 gtk gobject-introspection-data wifi nfc bluetooth irda zeroconf 3g sysvinit"]
 
@@ -76,10 +73,6 @@ common_data:
 
     # add the static lib to SDK toolchain
     - [SDKIMAGE_FEATURES:append, " staticdev-pkgs"]
-
-    # for Wayland/Weston
-    - [DISTRO_FEATURES_NATIVESDK:append, " wayland"]
-    - [DISTRO_FEATURES:append, " pam"]
 
     # Add for gstreamer plugins ugly
     - [LICENSE_FLAGS_ACCEPTED, "commercial"]
@@ -99,6 +92,34 @@ common_data:
 
     # Additional testing and debug tools
     - [IMAGE_INSTALL:append, " expect ltrace evtest"]
+
+  gfx_conf: &GFX_CONF
+    # Configure number of supported GPU virtual guests
+    - [XT_PVR_NUM_OSID, "%{XT_PVR_NUM_OSID}"]
+
+    # for Wayland/Weston
+    - [DISTRO_FEATURES_NATIVESDK:append, " wayland"]
+    - [DISTRO_FEATURES:append, " pam"]
+
+    # Enable Gfx Pkgs
+    - [MACHINE_FEATURES:append, " gsx"]
+    - [BB_MULTI_PROVIDER_ALLOWED:append," virtual/libgl virtual/egl virtual/libgles1 virtual/libgles2"]
+    - [PREFERRED_PROVIDER_virtual/libgles1, ""]
+    - [PREFERRED_PROVIDER_virtual/libgles2, "gles-user-module"]
+    - [PREFERRED_PROVIDER_virtual/libgles3, "gles-user-module"]
+    - [PREFERRED_PROVIDER_virtual/egl, "libegl"]
+    - [PREFERRED_PROVIDER_virtual/libgl, ""]
+    - [PREFERRED_PROVIDER_virtual/mesa, ""]
+    - [PREFERRED_PROVIDER_virtual/libgbm, "libgbm"]
+    - [PREFERRED_PROVIDER_libgbm-dev, "libgbm"]
+    - [BBMASK:append, " mesa-gl"]
+
+    - [XT_USE_DDK1_11, "%{XT_USE_DDK1_11}"]
+
+    # The bbappends below are only used for old DDK v1.11
+    - [BBMASK:append, " ${@bb.utils.contains('XT_USE_DDK1_11', '1', '', 'meta-xt-rcar-fixups/recipes-kernel/kernel-module-gles/kernel-module-gles.bbappend', d)}"]
+    - [BBMASK:append, " ${@bb.utils.contains('XT_USE_DDK1_11', '1', '', 'meta-xt-rcar-fixups/recipes-graphics/gles-module/gles-user-module.bbappend', d)}"]
+    - [BBMASK:append, " ${@bb.utils.contains('XT_USE_DDK1_11', '1', '', 'meta-xt-rcar-fixups/recipes-graphics/packagegroups/packagegroup-graphic-renesas.bbappend', d)}"]
 
     # Install some apps to test GPU/Display
     - [IMAGE_INSTALL:append, " glmark2 kmscube"]
@@ -212,28 +233,6 @@ components:
       conf:
         - *COMMON_CONF
         - *DOMD_DOMU_CONF
-
-        # Enable Gfx Pkgs
-        - [MACHINE_FEATURES:append, " gsx"]
-        - [BB_MULTI_PROVIDER_ALLOWED:append," virtual/libgl virtual/egl virtual/libgles1 virtual/libgles2"]
-
-        # for Wayland/Weston
-        - [PREFERRED_PROVIDER_virtual/libgles1, ""]
-        - [PREFERRED_PROVIDER_virtual/libgles2, "gles-user-module"]
-        - [PREFERRED_PROVIDER_virtual/libgles3, "gles-user-module"]
-        - [PREFERRED_PROVIDER_virtual/egl, "libegl"]
-        - [PREFERRED_PROVIDER_virtual/libgl, ""]
-        - [PREFERRED_PROVIDER_virtual/mesa, ""]
-        - [PREFERRED_PROVIDER_virtual/libgbm, "libgbm"]
-        - [PREFERRED_PROVIDER_libgbm-dev, "libgbm"]
-        - [BBMASK:append, " mesa-gl"]
-
-        - [XT_USE_DDK1_11, "%{XT_USE_DDK1_11}"]
-
-        # The bbappends below are only used for old DDK v1.11
-        - [BBMASK:append, " ${@bb.utils.contains('XT_USE_DDK1_11', '1', '', 'meta-xt-rcar-fixups/recipes-kernel/kernel-module-gles/kernel-module-gles.bbappend', d)}"]
-        - [BBMASK:append, " ${@bb.utils.contains('XT_USE_DDK1_11', '1', '', 'meta-xt-rcar-fixups/recipes-graphics/gles-module/gles-user-module.bbappend', d)}"]
-        - [BBMASK:append, " ${@bb.utils.contains('XT_USE_DDK1_11', '1', '', 'meta-xt-rcar-fixups/recipes-graphics/packagegroups/packagegroup-graphic-renesas.bbappend', d)}"]
 
         - [MACHINE, "%{DOMD_MACHINE}"]
         - [XT_DOM_NAME, "domd"]
@@ -743,9 +742,16 @@ parameters:
           domd:
             builder:
               conf:
+                - *GFX_CONF
                 - [XT_PREBUILT_GSX_DIR, "%{XT_PREBUILT_GSX_DIR}"]
               layers:
                 - "../meta-xt-rcar/meta-xt-rcar-gles_common"
+          domu:
+            builder:
+              conf:
+              # for Wayland/Weston
+              - [DISTRO_FEATURES_NATIVESDK:append, " wayland"]
+              - [DISTRO_FEATURES:append, " pam"]
 
     "sources":
       default: true
@@ -757,6 +763,7 @@ parameters:
               *DDK_SOURCE_OVERRIDES
             builder:
               conf:
+                - *GFX_CONF
                 # gles-um-compile.bb still requires python2
                 - [I_SWEAR_TO_MIGRATE_TO_PYTHON3, "yes"]
               layers:
@@ -764,3 +771,9 @@ parameters:
                 - "../meta-clang"
                 - "../meta-xt-rcar/meta-xt-rcar-proprietary"
                 - "../meta-xt-rcar/meta-xt-rcar-gles_common"
+          domu:
+            builder:
+              conf:
+              # for Wayland/Weston
+              - [DISTRO_FEATURES_NATIVESDK:append, " wayland"]
+              - [DISTRO_FEATURES:append, " pam"]
