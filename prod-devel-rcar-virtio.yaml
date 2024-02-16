@@ -767,7 +767,7 @@ parameters:
             builder:
               conf:
                 - *GFX_CONF
-                # gles-um-compile.bb still requires python2
+                # gfx sources still require python2
                 - [I_SWEAR_TO_MIGRATE_TO_PYTHON3, "yes"]
               layers:
                 - *GFX_LAYERS
