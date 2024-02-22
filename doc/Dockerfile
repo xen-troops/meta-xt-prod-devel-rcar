@@ -16,10 +16,14 @@ RUN apt-get update && apt-get install -y \
     gcc-multilib g++-multilib libc6-dev-i386 lib32ncurses5-dev \
     x11proto-core-dev libx11-dev lib32z1-dev ccache libgl1-mesa-dev \
     libxml2-utils xsltproc unzip bc ninja-build simg2img lz4 zstd \
-    python3-pyelftools python3-crypto libncurses5 libssl-dev && \
+    python3-pyelftools python3-crypto libncurses5 libssl-dev \
+    udev sudo expect graphviz adb aapt libgtk-3-dev simg2img \
+    protobuf-compiler dosfstools python3-pygit2 && \
     apt-get install --reinstall -y ca-certificates && \
-    pip3 install pycryptodomex && \
-    apt-get clean && rm -rf /tmp/* /var/tmp/*
+    pip3 install pycryptodomex west protobuf grpcio-tools && \
+    apt-get clean && rm -rf /tmp/* /var/tmp/* && \
+    update-alternatives --install /usr/bin/python python /usr/bin/python3 1 && \
+    update-alternatives --set python /usr/bin/python3
 
 # Install repo
 RUN curl https://storage.googleapis.com/git-repo-downloads/repo > /usr/bin/repo && chmod a+x /usr/bin/repo
