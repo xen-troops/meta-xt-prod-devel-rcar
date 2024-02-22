@@ -7,7 +7,7 @@ RUN ln -snf /usr/share/zoneinfo/$TZ /etc/localtime && echo $TZ > /etc/timezone
 # Install necessary for build packages
 RUN apt-get update && apt-get install -y \
     apt-utils cpio python python3 python3-pip python3-pexpect xz-utils debianutils iputils-ping \
-    python3-jinja2 libegl1-mesa pylint3 xterm \
+    python3-jinja2 pylint3 \
     vim locales devscripts debhelper \
     gawk wget diffstat texinfo chrpath socat libsdl1.2-dev \
     python-crypto checkpolicy python3-git python3-github \
@@ -16,7 +16,7 @@ RUN apt-get update && apt-get install -y \
     gcc-multilib g++-multilib libc6-dev-i386 lib32ncurses5-dev \
     x11proto-core-dev libx11-dev lib32z1-dev ccache libgl1-mesa-dev \
     libxml2-utils xsltproc unzip bc ninja-build simg2img lz4 zstd \
-    python3-pyelftools python3-crypto libncurses5 libssl-dev -y && \
+    python3-pyelftools python3-crypto libncurses5 libssl-dev && \
     apt-get install --reinstall -y ca-certificates && \
     pip3 install pycryptodomex && \
     apt-get clean && rm -rf /tmp/* /var/tmp/*
