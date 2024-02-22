@@ -1,5 +1,7 @@
 FROM ubuntu:20.04
 
+SHELL ["/bin/bash", "-c"]
+
 # Fix for tzdata for docker image build
 ENV TZ=UTC
 RUN ln -snf /usr/share/zoneinfo/$TZ /etc/localtime && echo $TZ > /etc/timezone
@@ -58,3 +60,4 @@ ENV BUILD_DIR /home/$USER_NAME/workspace
 WORKDIR $BUILD_DIR
 RUN pip3 install --no-warn-script-location --user git+https://github.com/xen-troops/moulin
 ENV PATH ~/.local/bin:$PATH
+RUN echo "export PATH=${PATH}" >> /home/$USER_NAME/.bashrc
