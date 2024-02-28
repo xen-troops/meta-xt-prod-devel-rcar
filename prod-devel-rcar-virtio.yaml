@@ -12,6 +12,8 @@ variables:
   ANDROID_KERNEL_DIR: "android_kernel"
   DOMA_DIR: "android"
   DOMZ_DIR: "zephyr"
+  BUILD_TARGET_DOMD: "core-image-weston"
+  BUILD_TARGET_DOMU: "core-image-weston"
   XT_DOMD_DTB_NAME: "%{SOC_FAMILY}-%{DOMD_MACHINE}-domd.dtb"
   XT_DOMA_DTB_NAME: ""
   XT_XEN_DTB_NAME: "%{SOC_FAMILY}-%{DOMD_MACHINE}-xen.dtb"
@@ -251,7 +253,7 @@ components:
         - [DISTRO_FEATURES:append, " xen vmsep"]
         - [QEMUVERSION, "7.0%"]
 
-      build_target: core-image-weston
+      build_target: "%{BUILD_TARGET_DOMD}"
       layers:
         - "../meta-renesas/meta-rcar-gen3"
         - "../meta-virtualization"
@@ -278,7 +280,7 @@ components:
         - "tmp/deploy/images/%{DOMD_MACHINE}/xen-%{DOMD_MACHINE}.uImage"
         - "tmp/deploy/images/%{DOMD_MACHINE}/xenpolicy-%{DOMD_MACHINE}"
         - "tmp/deploy/images/%{DOMD_MACHINE}/%{XT_XEN_DTB_NAME}"
-        - "tmp/deploy/images/%{DOMD_MACHINE}/core-image-weston-%{DOMD_MACHINE}.ext4"
+        - "tmp/deploy/images/%{DOMD_MACHINE}/%{BUILD_TARGET_DOMD}-%{DOMD_MACHINE}.ext4"
 
   domu:
     build-dir: "%{YOCTOS_WORK_DIR}"
@@ -309,10 +311,10 @@ components:
         - "../meta-xt-common/meta-xt-domu-virtio"
         - "../meta-xt-prod-devel-rcar/meta-xt-domx-gen3"
         - "../meta-xt-prod-devel-rcar/meta-xt-domu-gen3"
-      build_target: core-image-weston
+      build_target: "%{BUILD_TARGET_DOMU}"
       target_images:
         - "tmp/deploy/images/%{DOMU_MACHINE}/Image"
-        - "tmp/deploy/images/%{DOMU_MACHINE}/core-image-weston-%{DOMU_MACHINE}.ext4"
+        - "tmp/deploy/images/%{DOMU_MACHINE}/%{BUILD_TARGET_DOMU}-%{DOMU_MACHINE}.ext4"
 
   doma_kernel:
     build-dir: "%{ANDROID_KERNEL_DIR}"
@@ -416,7 +418,7 @@ images:
       domd_rootfs:
         gpt_type: B921B045-1DF0-41C3-AF44-4C6F280D3FAE # Linux aarch64 root
         type: raw_image
-        image_path: "%{YOCTOS_WORK_DIR}/%{DOMD_BUILD_DIR}/tmp/deploy/images/%{DOMD_MACHINE}/core-image-weston-%{DOMD_MACHINE}.ext4"
+        image_path: "%{YOCTOS_WORK_DIR}/%{DOMD_BUILD_DIR}/tmp/deploy/images/%{DOMD_MACHINE}/%{BUILD_TARGET_DOMD}-%{DOMD_MACHINE}.ext4"
 
 parameters:
   # Machines
@@ -633,7 +635,7 @@ parameters:
               domu-rootfs:
                 type: raw_image
                 gpt_type: 0FC63DAF-8483-4772-8E79-3D69D8477DE4 # Linux filesystem data
-                image_path: "%{YOCTOS_WORK_DIR}/%{DOMU_BUILD_DIR}/tmp/deploy/images/%{DOMU_MACHINE}/core-image-weston-%{DOMU_MACHINE}.ext4"
+                image_path: "%{YOCTOS_WORK_DIR}/%{DOMU_BUILD_DIR}/tmp/deploy/images/%{DOMU_MACHINE}/%{BUILD_TARGET_DOMU}-%{DOMU_MACHINE}.ext4"
 
   ENABLE_ZEPHYR:
     desc: "Build Zephyr as guest domain"
