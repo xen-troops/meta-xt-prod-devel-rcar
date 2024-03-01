@@ -1,7 +1,7 @@
+require common_install.inc
+
 IMAGE_INSTALL:append = " \
     ${@bb.utils.contains('DISTRO_FEATURES', 'pvcamera', 'camerabe', '', d)} \
-    ${@bb.utils.contains('DISTRO_FEATURES', 'vis', 'aos-vis', '', d)} \
-    ${@bb.utils.contains('DISTRO_FEATURES', 'sndbe', 'sndbe', '', d)} \
     ${@bb.utils.contains('DISTRO_FEATURES', 'displbe', 'displbe', '', d)} \
 "
 
