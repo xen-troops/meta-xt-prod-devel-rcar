@@ -168,7 +168,7 @@ components:
         # Remove unused DISTRO_FEATURES
         - [DISTRO_FEATURES:remove, "acl alsa argp pcmcia usbgadget
                 usbhost opengl ptest multiarch wayland vulkan
-                sysvinit"]
+                sysvinit pulseaudio"]
 
         # Enable systemd on dom0
         - [INIT_MANAGER, "systemd"]
