@@ -93,9 +93,6 @@ common_data:
     # HACK: force ipk instead of rpm b/c it makes troubles to PVR UM build otherwise
     - [PACKAGE_CLASSES, "package_ipk"]
 
-    # Additional testing and debug tools
-    - [IMAGE_INSTALL:append, " expect ltrace evtest"]
-
   gfx_conf: &GFX_CONF
     # Configure number of supported GPU virtual guests
     - [XT_PVR_NUM_OSID, "%{XT_PVR_NUM_OSID}"]
@@ -123,9 +120,6 @@ common_data:
     - [BBMASK:append, " ${@bb.utils.contains('XT_USE_DDK1_11', '1', '', 'meta-xt-rcar-fixups/recipes-kernel/kernel-module-gles/kernel-module-gles.bbappend', d)}"]
     - [BBMASK:append, " ${@bb.utils.contains('XT_USE_DDK1_11', '1', '', 'meta-xt-rcar-fixups/recipes-graphics/gles-module/gles-user-module.bbappend', d)}"]
     - [BBMASK:append, " ${@bb.utils.contains('XT_USE_DDK1_11', '1', '', 'meta-xt-rcar-fixups/recipes-graphics/packagegroups/packagegroup-graphic-renesas.bbappend', d)}"]
-
-    # Install some apps to test GPU/Display
-    - [IMAGE_INSTALL:append, " glmark2 kmscube"]
 
   gfx_sources: &GFX_SOURCES
     - type: git
