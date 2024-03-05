@@ -11,8 +11,12 @@ SRC_URI += "\
     ${@bb.utils.contains('DISTRO_FEATURES', 'displbe', 'file://displbe-backend.conf', '', d)} \
     file://virtio.cfg \
     file://doma-vdevices-virtio.cfg \
-    file://pvr-${XT_DOMA_CONFIG_NAME} \
 "
+
+python () {
+    if d.getVar('XT_DOMA_CONFIG_NAME'):
+        d.appendVar('SRC_URI', ' file://pvr-${XT_DOMA_CONFIG_NAME} ')
+}
 
 FILES:${PN} += " \
     ${libdir}/xen/bin/doma-set-root \
