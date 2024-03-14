@@ -6,6 +6,7 @@ SRC_URI += "\
     file://domu-pvcamera.cfg \
     file://virtio.cfg \
     file://domu-vdevices-virtio.cfg \
+    file://domu-vdevices-virtio-nogsx.cfg \
     file://domu-set-root \
     file://domu-set-root.conf \
     file://domu-set-root-virtio.conf \
@@ -37,7 +38,11 @@ do_install:append() {
 
     if ${@bb.utils.contains('DISTRO_FEATURES', 'enable_virtio', 'true', 'false', d)}; then
         cat ${WORKDIR}/virtio.cfg >> ${CFG_FILE}
-        cat ${WORKDIR}/domu-vdevices-virtio.cfg >> ${CFG_FILE}
+        if ${@bb.utils.contains('MACHINE_FEATURES', 'gsx', 'true', 'false', d)}; then
+            cat ${WORKDIR}/domu-vdevices-virtio.cfg >> ${CFG_FILE}
+        else
+            cat ${WORKDIR}/domu-vdevices-virtio-nogsx.cfg >> ${CFG_FILE}
+        fi
     else
         cat ${WORKDIR}/domu-vdevices.cfg >> ${CFG_FILE}
         cat ${WORKDIR}/pvr-${XT_DOMU_CONFIG_NAME} >> ${CFG_FILE}
