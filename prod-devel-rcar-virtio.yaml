@@ -733,6 +733,12 @@ parameters:
           # Directory containing ${SOC_NAME}_linux_gsx_binaries_gles.tar.gz
           XT_PREBUILT_GSX_DIR: "${TOPDIR}/../../../prebuilt_gsx"
         components:
+          dom0:
+            builder:
+              conf:
+                # this machine feature is required to select proper
+                # configuration for DomU
+                - [MACHINE_FEATURES:append, " gsx"]
           domd:
             builder:
               conf:
@@ -752,6 +758,12 @@ parameters:
       overrides:
         # for the linux
         components:
+          dom0:
+            builder:
+              conf:
+                # this machine feature is required to select proper
+                # configuration for DomU
+                - [MACHINE_FEATURES:append, " gsx"]
           domd:
             sources:
               - *GFX_SOURCES
