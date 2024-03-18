@@ -31,7 +31,7 @@ variables:
   ANDROID_KERNEL_BUILD_CONFIG: "//common-modules/xen-virtual-device:xen_virtual_device_aarch64_dist"
   ANDROID_KERNEL_DEPLOY_DIR: "out/deploy/common-modules/xen-virtual-device/xen_virtual_device_aarch64"
   ANDROID_DEVICE: "xenvm_trout_arm64"
-  ANDROID_LUNCH_TARGET: "aosp_xenvm_trout_arm64-eng"
+  ANDROID_LUNCH_TARGET: "aosp_xenvm_trout_arm64-userdebug"
 common_data:
   # Sources used by all yocto-based domains
   sources: &COMMON_SOURCES
