@@ -342,7 +342,7 @@ components:
     sources:
       - type: repo
         url: https://github.com/xen-troops/android_manifest.git
-        rev: android-12-xenvm-trout-main
+        rev: android-14-xenvm-trout-main
         manifest: default.xml
         depth: 1
         groups: "%{XT_DOMA_SOURCE_GROUP}"
@@ -357,6 +357,7 @@ components:
       target_images:
         - "out/target/product/%{ANDROID_DEVICE}/boot.img"
         - "out/target/product/%{ANDROID_DEVICE}/vendor_boot.img"
+        - "out/target/product/%{ANDROID_DEVICE}/vendor_dlkm.img"
         - "out/target/product/%{ANDROID_DEVICE}/vbmeta.img"
         - "out/target/product/%{ANDROID_DEVICE}/vbmeta_system.img"
         - "out/target/product/%{ANDROID_DEVICE}/userdata.img"
