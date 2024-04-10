@@ -12,12 +12,8 @@ SRC_URI += "\
     file://domu-set-root-virtio.conf \
     ${@bb.utils.contains('DISTRO_FEATURES', 'sndbe', 'file://sndbe-backend.conf', '', d)} \
     ${@bb.utils.contains('DISTRO_FEATURES', 'displbe', 'file://displbe-backend.conf', '', d)} \
+    file://gsx-common.cfg \
 "
-
-python () {
-    if d.getVar('XT_DOMU_CONFIG_NAME'):
-        d.appendVar('SRC_URI', ' file://pvr-${XT_DOMU_CONFIG_NAME}')
-}
 
 FILES:${PN} += " \
     ${libdir}/xen/bin/domu-set-root \
@@ -30,6 +26,12 @@ FILES:${PN} += " \
 
 # It is used a lot in the do_install, so variable will be handy
 CFG_FILE="${D}${sysconfdir}/xen/domu.cfg"
+
+DTDEV_H3 = 'dtdev = [\"/soc/gsx_pv0_domu\", \"/soc/gsx_pv1_domu\", \"/soc/gsx_pv2_domu\", \"/soc/gsx_pv3_domu\"]'
+DTDEV_M3 = 'dtdev = [\"/soc/gsx_pv0_domu\", \"/soc/gsx_pv1_domu\"]'
+
+EXTRA_LINE_GSX = 'extra = \"root=/dev/xvda1 rw rootwait console=hvc0 cma=256M pvrsrvkm.DriverMode=1\"'
+EXTRA_LINE     = 'extra = \"root=/dev/xvda1 rw rootwait console=hvc0 cma=32M\"'
 
 do_install:append() {
 
@@ -49,7 +51,19 @@ do_install:append() {
         fi
     else
         cat ${WORKDIR}/domu-vdevices.cfg >> ${CFG_FILE}
-        cat ${WORKDIR}/pvr-${XT_DOMU_CONFIG_NAME} >> ${CFG_FILE}
+
+        if ${@bb.utils.contains('MACHINE_FEATURES', 'gsx', 'true', 'false', d)}; then
+            echo "\n${EXTRA_LINE_GSX}\n" >> ${CFG_FILE}
+            cat ${WORKDIR}/gsx-common.cfg >> ${CFG_FILE}
+            if ${@bb.utils.contains('XT_DOMU_CONFIG_NAME', 'domu-generic-h3-4x2g.cfg', 'true', 'false', d)}; then
+                echo "\n${DTDEV_H3}\n" >> ${CFG_FILE}
+            fi
+            if ${@bb.utils.contains('XT_DOMU_CONFIG_NAME', 'domu-generic-m3-2x4g.cfg', 'true', 'false', d)}; then
+                echo "\n${DTDEV_M3}\n" >> ${CFG_FILE}
+            fi
+        else
+            echo "\n${EXTRA_LINE}\n" >> ${CFG_FILE}
+        fi
     fi
 
     # Install domu-set-root script

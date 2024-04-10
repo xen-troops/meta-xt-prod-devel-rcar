@@ -700,6 +700,12 @@ parameters:
           XT_DOMA_KERNEL_EXTRA_MODULES: ""
           XT_DOMA_SOURCE_GROUP: "default"
         components:
+          dom0:
+            builder:
+              conf:
+                # this machine feature is required to select proper
+                # configuration for DomU
+                - [MACHINE_FEATURES:append, " gsx"]
           domd:
             builder:
               conf:
@@ -728,6 +734,12 @@ parameters:
       overrides:
         # for the linux
         components:
+          dom0:
+            builder:
+              conf:
+                # this machine feature is required to select proper
+                # configuration for DomU
+                - [MACHINE_FEATURES:append, " gsx"]
           domd:
             sources:
               - *GFX_SOURCES
