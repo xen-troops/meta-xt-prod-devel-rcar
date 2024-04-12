@@ -221,7 +221,7 @@ components:
         url: https://git.yoctoproject.org/meta-selinux
         rev: kirkstone
       - type: git
-        url: ssh://git@github.com/xen-troops/meta-xt-vhost.git
+        url: https://github.com/xen-troops/meta-xt-vhost.git
         rev: main
     builder:
       type: yocto
