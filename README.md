@@ -61,7 +61,7 @@ Features that are present but not tested:
 
 1. Ubuntu 18.0+ or any other Linux distribution which is supported by Poky/OE
 2. Development packages for Yocto. Refer to [Yocto
-   manual](https://www.yoctoproject.org/docs/current/mega-manual/mega-manual.html#brief-build-system-packages).
+   manual](https://docs.yoctoproject.org/ref-manual/system-requirements.html#required-packages-for-the-build-host).
 3. You need `Moulin` installed in your PC. Recommended way is to
    install it for your user only: `pip3 install --user
    git+https://github.com/xen-troops/moulin`. Make sure that your
@@ -261,14 +261,6 @@ Building with this moulin configuration will lead to the following high-level ch
 - Modified Xen configuration for guest domains
 - Changed memory amount assigned to the driver and the guest domains
 - Changed set of the installed packages, e.g. qemu
-
-It should be mentioned that there is one private repo for now:
-https://github.com/xen-troops/meta-xt-vhost.git
-And if there is no chance to obtain an access to that repo, we suggest removing
-"../meta-xt-vhost" inclusion from domd's layers in prod-devel-rcar-virtio.yaml.
-This way the build will pass and the system will still remain functional
-except vhost vsock and vhost net (fallback on userspace virtio will be used for
-the net device).
 
 To find the majority of those differences search for the:
 
