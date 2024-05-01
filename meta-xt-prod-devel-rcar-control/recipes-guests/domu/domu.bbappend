@@ -12,7 +12,7 @@ SRC_URI += "\
     file://domu-set-root-virtio.conf \
     ${@bb.utils.contains('DISTRO_FEATURES', 'sndbe', 'file://sndbe-backend.conf', '', d)} \
     ${@bb.utils.contains('DISTRO_FEATURES', 'displbe', 'file://displbe-backend.conf', '', d)} \
-    file://pvr-${XT_DOMU_CONFIG_NAME} \
+    file://gsx-common.cfg \
 "
 
 FILES:${PN} += " \
@@ -26,6 +26,30 @@ FILES:${PN} += " \
 
 # It is used a lot in the do_install, so variable will be handy
 CFG_FILE="${D}${sysconfdir}/xen/domu.cfg"
+
+# This function is used to determine `dtdev` block for GSX.
+# Pay attention, that single quote char ' have to be used
+# inside `dtdev = []` construction because we will use
+# linux's echo command to put multiline string into domu.cfg
+python () {
+    if d.getVar("XT_DOMU_CONFIG_NAME", True) == "domu-generic-h3-4x2g.cfg":
+        d.setVar("GSX_DTDEV",
+'''
+dtdev = [
+    '/soc/gsx_pv0_domu',
+    '/soc/gsx_pv1_domu',
+    '/soc/gsx_pv2_domu',
+    '/soc/gsx_pv3_domu',
+]''')
+
+    if d.getVar("XT_DOMU_CONFIG_NAME", True) == "domu-generic-m3-2x4g.cfg":
+        d.setVar("GSX_DTDEV",
+'''
+dtdev = [
+    "/soc/gsx_pv0_domu",
+    "/soc/gsx_pv1_domu",
+]''')
+}
 
 do_install:append() {
 
@@ -45,7 +69,11 @@ do_install:append() {
         fi
     else
         cat ${WORKDIR}/domu-vdevices.cfg >> ${CFG_FILE}
-        cat ${WORKDIR}/pvr-${XT_DOMU_CONFIG_NAME} >> ${CFG_FILE}
+        if ${@bb.utils.contains('MACHINE_FEATURES', 'gsx', 'true', 'false', d)}; then
+            cat ${WORKDIR}/gsx-common.cfg >> ${CFG_FILE}
+            sed -i "s/cma=32M/cma=256M pvrsrvkm.DriverMode=1/g" ${CFG_FILE}
+            echo "${GSX_DTDEV}" >> ${CFG_FILE}
+        fi
     fi
 
     # Install domu-set-root script
