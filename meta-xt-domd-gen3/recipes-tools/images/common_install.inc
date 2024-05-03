@@ -1,5 +1,5 @@
 IMAGE_INSTALL:append = " \
-    lisot \
+    ${@bb.utils.contains('DISTRO_FEATURES', 'enable_virtio', 'lisot', '', d)} \
     expect \
     ltrace \
     evtest \
