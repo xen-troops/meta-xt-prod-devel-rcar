@@ -1,6 +1,6 @@
 DESCRIPTION = "Linux socket test tool"
 SECTION = "extras"
-LICENSE = "MIT"
+LICENSE = "Apache-2.0"
 PR = "r0"
 
 S = "${WORKDIR}/git"
@@ -9,7 +9,7 @@ SRC_URI = " \
     git://github.com/dterletskiy/lisot.git;protocol=https;branch=main \
 "
 
-LIC_FILES_CHKSUM = "file://LICENSE;md5=70f43a6798ce05aa97a93b0392832ee9"
+LIC_FILES_CHKSUM = "file://LICENSE;md5=86d3f3a95c324c9479bd8986968f4327"
 
 SRCREV = "${AUTOREV}"
 
