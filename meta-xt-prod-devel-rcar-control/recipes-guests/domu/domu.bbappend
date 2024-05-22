@@ -12,8 +12,12 @@ SRC_URI += "\
     file://domu-set-root-virtio.conf \
     ${@bb.utils.contains('DISTRO_FEATURES', 'sndbe', 'file://sndbe-backend.conf', '', d)} \
     ${@bb.utils.contains('DISTRO_FEATURES', 'displbe', 'file://displbe-backend.conf', '', d)} \
-    file://pvr-${XT_DOMU_CONFIG_NAME} \
 "
+
+python () {
+    if d.getVar('XT_DOMU_CONFIG_NAME'):
+        d.appendVar('SRC_URI', ' file://pvr-${XT_DOMU_CONFIG_NAME}')
+}
 
 FILES:${PN} += " \
     ${libdir}/xen/bin/domu-set-root \
