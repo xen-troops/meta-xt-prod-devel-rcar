@@ -690,6 +690,7 @@ parameters:
   GRAPHICS:
     desc: "Select how to use the GFX (3D hardware accelerator)"
     "binaries":
+      default: true
       overrides:
         variables:
           # for the linux
@@ -725,7 +726,6 @@ parameters:
                 - "DDK_UM_PREBUILDS=eva/pvr-um"
 
     "sources":
-      default: true
       overrides:
         # for the linux
         components:
