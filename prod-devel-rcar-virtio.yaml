@@ -723,6 +723,7 @@ parameters:
   GRAPHICS:
     desc: "Select how to use the GFX (3D hardware accelerator)"
     "binaries":
+      default: true
       overrides:
         variables:
           # for the linux
@@ -750,7 +751,6 @@ parameters:
               - [DISTRO_FEATURES:append, " pam"]
 
     "sources":
-      default: true
       overrides:
         # for the linux
         components:
