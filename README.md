@@ -89,7 +89,7 @@ of additional options. You can use check them with
 ```
 # moulin prod-devel-rcar.yaml --help-config
 usage: moulin prod-devel-rcar.yaml
-       [--MACHINE {salvator-x-m3,salvator-xs-m3-2x4g,salvator-xs-h3-4x2g,salvator-x-h3-4x2g,h3ulcb-4x2g,h3ulcb-4x2g-kf,h3ulcb-4x2g-ab,m3ulcb}]
+       [--MACHINE {salvator-xs-m3-2x4g,salvator-xs-h3-4x2g,salvator-x-h3-4x2g,h3ulcb-4x2g,h3ulcb-4x2g-kf,h3ulcb-4x2g-ab}]
        [--ENABLE_ANDROID {no,yes}] [--ENABLE_DOMU {no,yes}]
        [--ENABLE_ZEPHYR {no,yes}] [--ENABLE_MM {no,yes}]
        [--ENABLE_AOS_VIS {no,yes}] [--GRAPHICS {binaries,sources}]
@@ -98,7 +98,7 @@ Config file description: Xen-Troops development setup for Renesas RCAR Gen3
 hardware
 
 optional arguments:
-  --MACHINE {salvator-x-m3,salvator-xs-m3-2x4g,salvator-xs-h3-4x2g,salvator-x-h3-4x2g,h3ulcb-4x2g,h3ulcb-4x2g-kf,h3ulcb-4x2g-ab,m3ulcb}
+  --MACHINE {salvator-xs-m3-2x4g,salvator-xs-h3-4x2g,salvator-x-h3-4x2g,h3ulcb-4x2g,h3ulcb-4x2g-kf,h3ulcb-4x2g-ab}
                         RCAR Gen3-based device
   --ENABLE_ANDROID {no,yes}
                         Build Android as a guest VM
@@ -113,18 +113,18 @@ optional arguments:
                         Select how to use the GFX (3D hardware accelerator)
 ```
 
-To build for Salvator XS M3 8GB with DomU (generic yocto-based virtual
+To build for StarterKit H3 8GB with DomU (generic yocto-based virtual
 machine) use the following command line: `moulin prod-devel-rcar.yaml
---MACHINE salvator-xs-m3-2x4g --ENABLE_DOMU yes`.
+--MACHINE h3ulcb-4x2g --ENABLE_DOMU yes`.
 
 Moulin will generate `build.ninja` file. After that - run `ninja` to
 build the images. This will take some time and disk space, as it will
 built 3 separate Yocto images. Depending on internet speed, this will
 take 2-4 hours on Intel i7 with 32GB of RAM and 100 GB SSD.
 
-To built for Salvator XS H3 8GB with Android VM use the following
+To build for StarterKit H3 8GB with Android VM use the following
 command line: `moulin prod-devel-rcar.yaml --MACHINE
-salvator-xs-h3-4x2g --ENABLE_ANDROID yes`.
+h3ulcb-4x2g --ENABLE_ANDROID yes`.
 
 This will require even more time and space, as Android is quite big.
 
