@@ -197,7 +197,7 @@ components:
         - "../meta-xt-common/meta-xt-qemu"
         - "../meta-xt-rcar/meta-xt-rcar-dom0"
         - "../../layers/meta-xt-domx-gen3"
-        - "../../layers/meta-xt-prod-devel-rcar-control"
+        - "../../layers/meta-xt-dom0-gen3"
       build_target: core-image-thin-initramfs
       external_src:
         domd: "%{YOCTOS_WORK_DIR}/%{DOMD_BUILD_DIR}/tmp/deploy/images/%{DOMD_MACHINE}/"
@@ -266,7 +266,6 @@ components:
         - "../meta-xt-rcar/meta-xt-rcar-fixups"
         - "../meta-xt-rcar/meta-xt-rcar-driver-domain"
         - "../../layers/meta-xt-domx-gen3"
-        - "../../layers/meta-xt-prod-devel-rcar-driver-domain"
         - "../../layers/meta-xt-domd-gen3"
       target_images:
         - "tmp/deploy/images/%{DOMD_MACHINE}/Image"
