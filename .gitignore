@@ -6,3 +6,6 @@ yocto/
 zephyr/
 android/
 android_kernel/
+*.img
+*.img.gz
+*.img.bmap
