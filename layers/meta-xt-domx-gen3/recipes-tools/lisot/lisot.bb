@@ -11,7 +11,7 @@ SRC_URI = " \
 
 LIC_FILES_CHKSUM = "file://LICENSE;md5=86d3f3a95c324c9479bd8986968f4327"
 
-SRCREV = "${AUTOREV}"
+SRCREV = "ea3da7cd2fd18059701ea67293d96f797f9ac39b"
 
 do_compile() {
     oe_runmake SYSROOT=${RECIPE_SYSROOT}
