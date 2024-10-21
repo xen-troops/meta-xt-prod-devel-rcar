@@ -57,6 +57,6 @@ echo "DOCKER_IMAGE_NAME : $DOCKER_IMAGE_NAME"
 docker run \
 	--network=host \
 	-v "$HOME"/.ssh:/home/builder/.ssh \
-	-v "$HOME"/.gitconfig:/home/builder/.gitconfig \
+	--mount type=bind,source="$HOME"/.gitconfig,target=/home/builder/.gitconfig \
 	-v "${WORKSPACE}":/home/builder/workspace \
 	-ti --rm "$DOCKER_IMAGE_NAME"
