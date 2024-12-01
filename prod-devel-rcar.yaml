@@ -700,6 +700,12 @@ parameters:
           XT_DOMA_KERNEL_EXTRA_MODULES: ""
           XT_DOMA_SOURCE_GROUP: "default"
         components:
+          dom0:
+            builder:
+              conf:
+                # this machine feature is required to select proper
+                # configuration for DomU
+                - [MACHINE_FEATURES:append, " gsx"]
           domd:
             builder:
               conf:
@@ -728,6 +734,12 @@ parameters:
       overrides:
         # for the linux
         components:
+          dom0:
+            builder:
+              conf:
+                # this machine feature is required to select proper
+                # configuration for DomU
+                - [MACHINE_FEATURES:append, " gsx"]
           domd:
             sources:
               - *GFX_SOURCES
@@ -753,3 +765,25 @@ parameters:
           XT_DOMA_DDK_KM_PREBUILT_MODULE: "../%{ANDROID_KERNEL_DIR}/out/android12-5.4/staging/vendor/lib/modules/pvrsrvkm.ko"
           XT_DOMA_KERNEL_EXTRA_MODULES: "imagination"
           XT_DOMA_SOURCE_GROUP: "all"
+
+    "console":
+      default: true
+      overrides:
+        components:
+          dom0:
+            builder:
+              conf:
+                - [DISTRO_FEATURES:remove, "displbe"]
+          domd:
+            builder:
+              conf:
+                - [DISTRO_FEATURES:remove, "displbe"]
+                - [BBMASK:append, " kernel-module-gles"]
+          domu:
+            builder:
+              conf:
+                - [DISTRO_FEATURES:remove, "displbe"]
+                - [BBMASK:append, " kernel-module-gles"]
+        variables:
+          BUILD_TARGET_DOMD: "core-image-minimal"
+          BUILD_TARGET_DOMU: "core-image-minimal"
