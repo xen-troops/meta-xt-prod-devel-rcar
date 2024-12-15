@@ -33,7 +33,7 @@ variables:
   ANDROID_KERNEL_BUILD_CONFIG: "//common-modules/xen-virtual-device:xen_virtual_device_aarch64_dist"
   ANDROID_KERNEL_DEPLOY_DIR: "out/deploy/common-modules/xen-virtual-device/xen_virtual_device_aarch64"
   ANDROID_DEVICE: "xenvm_trout_arm64"
-  ANDROID_LUNCH_TARGET: "aosp_xenvm_trout_arm64-userdebug"
+  ANDROID_LUNCH_TARGET: "aosp_xenvm_trout_arm64-trunk_staging-userdebug"
 common_data:
   # Sources used by all yocto-based domains
   sources: &COMMON_SOURCES
@@ -48,7 +48,7 @@ common_data:
       rev: "e0cd09e3b8367e2745a27db2e7ff1f8452c8cf41" # kirkstone
     - type: git
       url: https://github.com/xen-troops/meta-xt-common.git
-      rev: "09d7a4c5fd4ebff2f78129f6798af1f4d699b26d" # master
+      rev: "101f6a449ee237e3125a006e4a80196a2c70e949" # kirkstone
     - type: git
       url: https://github.com/xen-troops/meta-xt-rcar.git
       rev: "abc6c8bae27293ca2d04c7810006df4bb984cf8f" # master
@@ -313,7 +313,7 @@ components:
     sources:
       - type: repo
         url: https://github.com/xen-troops/android_kernel_manifest.git
-        rev: "9b9d0fbc1045ef2184427f3548446237fdd57c44" # common-android14-6.1-xenvm-trout-main
+        rev: "88fde711b5c2c379cbdb361c63f7653bd6352aee" # common-android14-6.1-xenvm-trout-main
         manifest: default.xml
         depth: 1
         groups: "%{XT_DOMA_SOURCE_GROUP}"
@@ -336,7 +336,7 @@ components:
     sources:
       - type: repo
         url: https://github.com/xen-troops/android_manifest.git
-        rev: "493c9a919949262095c598cbb6c5cd0258dfc58f" # android-14-xenvm-trout-main
+        rev: "3a56c9f5852184e0105c0bd5746c04db1669219a" # android-15-xenvm-trout-main
         manifest: default.xml
         depth: 1
         groups: "%{XT_DOMA_SOURCE_GROUP}"
