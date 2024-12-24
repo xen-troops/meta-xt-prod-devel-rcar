@@ -323,6 +323,7 @@ components:
       tool: "tools/bazel"
       command: run
       args:
+        - "--config=stamp"
         - "--verbose_failures"
         - "--sandbox_debug"
       target: "%{ANDROID_KERNEL_BUILD_CONFIG}"
