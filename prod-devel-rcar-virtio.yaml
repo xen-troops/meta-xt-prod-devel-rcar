@@ -590,7 +590,7 @@ parameters:
               metadata:
                 gpt_type: 20AC26BE-20B7-11E3-84C5-6CFDB94711E9 # Android metadata
                 type: ext4
-                size: 11 MiB
+                size: 20 MiB
               rpmbemul:
                 gpt_type: DC76DDA9-5AC1-491C-AF42-A82591580C0D # Android data
                 type: empty
