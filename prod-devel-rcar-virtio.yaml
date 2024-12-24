@@ -350,6 +350,7 @@ components:
       lunch_target: "%{ANDROID_LUNCH_TARGET}"
       target_images:
         - "out/target/product/%{ANDROID_DEVICE}/boot.img"
+        - "out/target/product/%{ANDROID_DEVICE}/init_boot.img"
         - "out/target/product/%{ANDROID_DEVICE}/vendor_boot.img"
         - "out/target/product/%{ANDROID_DEVICE}/vendor_dlkm.img"
         - "out/target/product/%{ANDROID_DEVICE}/vbmeta.img"
@@ -549,6 +550,14 @@ parameters:
                 gpt_type: 20117F86-E985-4357-B9EE-374BC1D8487D # Android boot 2
                 type: empty
                 size: 70 MiB
+              init_boot_a:
+                gpt_type: 49A4D17F-93A3-45C1-A0DE-F50B2EBE2599 # Android boot 1
+                type: raw_image
+                image_path: "%{DOMA_DIR}/out/target/product/%{ANDROID_DEVICE}/init_boot.img"
+              init_boot_b:
+                gpt_type: 20117F86-E985-4357-B9EE-374BC1D8487D # Android boot 2
+                type: empty
+                size: 10 MiB
               vendor_boot_a:
                 gpt_type: DF24E5ED-8C96-4B86-B00B-79667DC6DE11 # Android sparse 1
                 type: raw_image
