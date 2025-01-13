@@ -356,6 +356,8 @@ components:
         - "out/target/product/%{ANDROID_DEVICE}/vendor_dlkm.img"
         - "out/target/product/%{ANDROID_DEVICE}/vbmeta.img"
         - "out/target/product/%{ANDROID_DEVICE}/vbmeta_system.img"
+        - "out/target/product/%{ANDROID_DEVICE}/vbmeta_system_dlkm.img"
+        - "out/target/product/%{ANDROID_DEVICE}/vbmeta_vendor_dlkm.img"
         - "out/target/product/%{ANDROID_DEVICE}/userdata.img"
         - "out/target/product/%{ANDROID_DEVICE}/super.img"
       additional_deps:
@@ -580,6 +582,22 @@ parameters:
                 type: raw_image
                 image_path: "%{DOMA_DIR}/out/target/product/%{ANDROID_DEVICE}/vbmeta_system.img"
               vbmeta_system_b:
+                gpt_type: E7C06570-9FDC-11E8-8C15-0A580A200C13 # Android meta
+                type: empty
+                size: 1 MiB
+              vbmeta_system_dlkm_a:
+                gpt_type: E7C06570-9FDC-11E8-8C15-0A580A200C13 # Android meta
+                type: raw_image
+                image_path: "%{DOMA_DIR}/out/target/product/%{ANDROID_DEVICE}/vbmeta_system_dlkm.img"
+              vbmeta_system_dlkm_b:
+                gpt_type: E7C06570-9FDC-11E8-8C15-0A580A200C13 # Android meta
+                type: empty
+                size: 1 MiB
+              vbmeta_vendor_dlkm_a:
+                gpt_type: E7C06570-9FDC-11E8-8C15-0A580A200C13 # Android meta
+                type: raw_image
+                image_path: "%{DOMA_DIR}/out/target/product/%{ANDROID_DEVICE}/vbmeta_vendor_dlkm.img"
+              vbmeta_vendor_dlkm_b:
                 gpt_type: E7C06570-9FDC-11E8-8C15-0A580A200C13 # Android meta
                 type: empty
                 size: 1 MiB
