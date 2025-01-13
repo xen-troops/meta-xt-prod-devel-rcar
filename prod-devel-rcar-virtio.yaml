@@ -313,7 +313,7 @@ components:
     sources:
       - type: repo
         url: https://github.com/xen-troops/android_kernel_manifest.git
-        rev: "f068d73e6ba7e8b7406d65e0d16419b660eb1dca" # common-android14-6.1-xenvm-trout-main
+        rev: "23e08b76317bfb41d4ec4f68a891fb00bf591b0b" # common-android14-6.1-xenvm-trout-main
         manifest: default.xml
         depth: 1
         groups: "%{XT_DOMA_SOURCE_GROUP}"
@@ -337,7 +337,7 @@ components:
     sources:
       - type: repo
         url: https://github.com/xen-troops/android_manifest.git
-        rev: "3a56c9f5852184e0105c0bd5746c04db1669219a" # android-15-xenvm-trout-main
+        rev: "acb3d62bd5caaffc5185e7faa483c8583c10c12b" # android-15-xenvm-trout-main
         manifest: default.xml
         depth: 1
         groups: "%{XT_DOMA_SOURCE_GROUP}"
