@@ -10,7 +10,7 @@
   - [Building](#building)
   - [Build products](#build-products)
   - [Building with prebuilt graphics for DomD+DomU](#building-with-prebuilt-graphics-for-domddomu)
-  - [Building with prebuilts Android graphics](#building-with-prebuilts-android-graphics)
+  - [Building with prebuilt graphics and Android guest](#building-with-prebuilt-graphics-and-android-guest)
     - [Creating SD card image](#creating-sd-card-image)
     - [Using rouge in standalone mode](#using-rouge-in-standalone-mode)
   - [Distro features](#distro-features)
@@ -187,13 +187,62 @@ prebuilt_gsx/
 
 Run build as usual with `ninja`.
 
-## Building with prebuilts Android graphics
+## Building with prebuilt graphics and Android guest
 
-Prior to running moulin, you need to place android graphics prebuilts
-archive `rcar-prebuilts-graphics-xt-doma.tar.gz` in the same directory
-as yaml file.
+### Preparation
 
-Use `--GRAPHICS binaries` command line option for moulin.
+You need to prepare prebuilt graphic binaries before building. Since Android
+guest is supported only in the virtio-based build, we use prebuilt graphic
+binaries without virtualization.
+
+1. Create a folder for the prebuilt binaries
+`<directory_with_yaml>/../prebuilt_gsx/domd/`. You may use any other folder,
+but it should be specified inside the `prod-devel-rcar-virtio.yaml` variable
+`XT_PREBUILT_GSX_DIR`.
+
+2. Download the "R-Car Gen3 Evaluation Software Package for Linux for Yocto v5.9.0"
+from Renesas site:
+https://www.renesas.com/us/en/application/automotive/r-car-h3-m3-h2-m2-e2-documents-software
+(registration may be required).
+
+Two files are required:
+- [R-Car_Gen3_Series_Evaluation_Software_Package_for_Linux-20220121.zip](https://www.renesas.com/en/document/swo/r-cargen3seriesevaluationsoftwarepackageforlinux-20220121?r=1245356)
+- [R-Car_Gen3_Series_Evaluation_Software_Package_of_Linux_Drivers-20220121.zip](https://www.renesas.com/en/document/swo/r-cargen3seriesevaluationsoftwarepackageoflinuxdrivers-20220121?r=1245356)
+
+3. Extract the required drivers from the downloaded pack of archives.
+
+- From `R-Car_Gen3_Series_Evaluation_Software_Package_of_Linux_Drivers-20220121.zip`
+get `RCH3G001L5101ZDO_4_2_1.zip`. From that last archive,
+get `GSX_KM_H3.tar.bz2`, and put it into the folder `prebuilt_gsx/domd/`
+created in step 1.
+
+- From `R-Car_Gen3_Series_Evaluation_Software_Package_for_Linux-20220121.zip`
+get `INFRTM8RC7795ZG300Q10JPL3E_4_2_1.zip`. From that last archive, get
+`INF_r8a77951_linux_gsx_binaries_gles.tar.bz2`.
+
+Rename `INF_r8a77951_linux_gsx_binaries_gles.tar.bz2` to
+`r8a77951_linux_gsx_binaries_gles.tar.bz2`, and put it into the folder
+`prebuilt_gsx/domd/`  created in step 1.
+
+As the result of these operations, you should have `prebuilt_gsx/domd/` folder
+with the following files:
+```
+prebuilt_gsx/
+  domd/
+    GSX_KM_H3.tar.bz2
+    r8a77951_linux_gsx_binaries_gles.tar.bz2
+<your work directory with prod-devel-rcar-virtio.yaml>
+  prod-devel-rcar-virtio.yaml
+  <... other build related files and directories ...>
+```
+
+### Build
+
+Use `--GRAPHICS binaries` command line option for moulin:
+```
+moulin prod-evel-rcar-virtio.yaml --MACHINE h3ulcb-4x2g --ENABLE_ANDROID yes --GRAPHICS binaries
+ninja full.img
+```
 
 ## Creating SD card image
 
