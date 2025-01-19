@@ -30,6 +30,8 @@ RUN apt-get update && apt-get install -y \
 # Install repo
 RUN curl https://storage.googleapis.com/git-repo-downloads/repo > /usr/bin/repo && chmod a+x /usr/bin/repo
 
+RUN pip3 install meson
+
 # Set the locale for fix this:
 # "Please use a locale setting which supports UTF-8 (such as LANG=en_US.UTF-8)."
 RUN locale-gen en_US.UTF-8
@@ -59,5 +61,6 @@ RUN mkdir -p /home/$USER_NAME/workspace && chown $USER_NAME:$USER_NAME /home/$US
 ENV BUILD_DIR /home/$USER_NAME/workspace
 WORKDIR $BUILD_DIR
 RUN pip3 install --no-warn-script-location --user git+https://github.com/xen-troops/moulin
+RUN pip3 install --user mako
 ENV PATH="/home/${USER_NAME}/.local/bin:$PATH"
 RUN echo "export PATH=${PATH}" >> /home/$USER_NAME/.bashrc
