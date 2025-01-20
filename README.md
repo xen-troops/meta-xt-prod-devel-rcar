@@ -78,6 +78,14 @@ meta-layers, and `android/` directory depending on the build options.
 
 ## Building
 
+For the proper build of this product, we need to install the long list
+of host tools. To prevent possible conflicts and issues that are hard
+to explain during the build, we use the dedicated build container
+located in the `doc/` directory.
+This container is the ONLY supported and tested way to build the product.
+Please follow the steps in the `doc/Docker.md` to set up and use
+the build container.
+
 Moulin is used to generate Ninja build file: `moulin
 prod-devel-rcar.yaml`. This project provides a number
 of additional options. You can use check them with
