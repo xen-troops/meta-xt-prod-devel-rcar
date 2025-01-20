@@ -48,7 +48,6 @@ Work is still in progress, but right now the following features are tested and w
 * Multimedia (HW-assisted video decoding/encoding) support
 * SD or eMMC boot
 * Android VM support
-* Zephyr OS as guest
 
 Features that are present but not tested:
 
@@ -75,8 +74,7 @@ You can clone this whole repository, or download it as an archive.
 During the build few directories will be created and additional
 dependencies will be fetched into them.
 The build system will create build directory `yocto/` for yocto's
-meta-layers, and `zephyr/` and/or `android/` directories,
-depending on the build options.
+meta-layers, and `android/` directory depending on the build options.
 
 ## Building
 
@@ -90,8 +88,8 @@ of additional options. You can use check them with
 usage: moulin prod-devel-rcar.yaml
        [--MACHINE {salvator-xs-m3-2x4g,salvator-xs-h3-4x2g,salvator-x-h3-4x2g,h3ulcb-4x2g,h3ulcb-4x2g-kf,h3ulcb-4x2g-ab}]
        [--ENABLE_ANDROID {no,yes}] [--ENABLE_DOMU {no,yes}]
-       [--ENABLE_ZEPHYR {no,yes}] [--ENABLE_MM {no,yes}]
-       [--ENABLE_AOS_VIS {no,yes}] [--GRAPHICS {binaries,sources}]
+       [--ENABLE_MM {no,yes}] [--ENABLE_AOS_VIS {no,yes}]
+       [--GRAPHICS {binaries,sources}]
 
 Config file description: Xen-Troops development setup for Renesas RCAR Gen3
 hardware
@@ -103,8 +101,6 @@ optional arguments:
                         Build Android as a guest VM
   --ENABLE_DOMU {no,yes}
                         Build generic Yocto-based DomU
-  --ENABLE_ZEPHYR {no,yes}
-                        Build Zephyr as guest domain
   --ENABLE_MM {no,yes}  Enable Multimedia support
   --ENABLE_AOS_VIS {no,yes}
                         Enable AOS VIS service
@@ -143,7 +139,6 @@ After `ninja full.img`
 | yocto/            # Linux-based domains
   | build_dom?/
   | <fetched meta layers>/
-| zephyr/           # Zephyr-based domains
 | android_kernel/   # Android kernel
 | android/          # Android
 ```
