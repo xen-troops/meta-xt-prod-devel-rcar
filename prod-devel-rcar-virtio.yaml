@@ -796,3 +796,20 @@ parameters:
               # for Wayland/Weston
               - [DISTRO_FEATURES_NATIVESDK:append, " wayland"]
               - [DISTRO_FEATURES:append, " pam"]
+
+    "console":
+      default: true
+      overrides:
+        components:
+          domd:
+            builder:
+              conf:
+                - [DISTRO_FEATURES:remove, "opengl wayland"]
+                - [BBMASK:append, " kernel-module-gles"]
+          domu:
+            builder:
+              conf:
+                - [DISTRO_FEATURES:remove, "opengl wayland"]
+        variables:
+          BUILD_TARGET_DOMD: "core-image-minimal"
+          BUILD_TARGET_DOMU: "core-image-minimal"
