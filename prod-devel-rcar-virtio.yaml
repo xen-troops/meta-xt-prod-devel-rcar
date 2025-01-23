@@ -681,30 +681,6 @@ parameters:
                 - [DISTRO_FEATURES:append, " aaclcdec_lib aaclcdec_mdw aaclcenc_lib aaclcenc_mdw h264dec_lib h264enc_lib"]
                 - ["HOSTTOOLS:append", " unzip "]
 
-  ENABLE_AOS_VIS:
-    desc: "Enable AOS VIS service"
-    "no":
-      default: true
-    "yes":
-      overrides:
-        components:
-          domd:
-            sources:
-              - type: git
-                url: https://github.com/aoscloud/meta-aos
-                rev: "c56f0106dddae3a58080a6602db050a3fe095d9b" # main
-            builder:
-              layers:
-                - "../meta-aos"
-              conf:
-                - [AOS_VIS_PLUGINS, "storageadapter"]
-                - [AOS_VIS_DATA_PROVIDER, "telemetryemulatoradapter"]
-                - [DISTRO_FEATURES:append, " vis"]
-          doma:
-            builder:
-              env:
-                - "XT_USE_VIS_SERVER=true"
-
   GRAPHICS:
     desc: "Select how to use the GFX (3D hardware accelerator)"
     "binaries":
