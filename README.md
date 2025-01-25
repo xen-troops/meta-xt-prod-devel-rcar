@@ -79,13 +79,34 @@ meta-layers, and `android/` directory depending on the build options.
 ## Building
 
 Moulin is used to generate Ninja build file: `moulin
-prod-devel-rcar.yaml`. This project provides a number
+prod-devel-rcar.yaml` or `moulin
+prod-devel-rcar-virtio.yaml`.
+
+This project provides a number
 of additional options. You can use check them with
 `--help-config` command line option:
 
 ```
 # moulin prod-devel-rcar.yaml --help-config
 usage: moulin prod-devel-rcar.yaml
+       [--MACHINE {salvator-xs-m3-2x4g,salvator-xs-h3-4x2g,salvator-x-h3-4x2g,h3ulcb-4x2g,h3ulcb-4x2g-kf,h3ulcb-4x2g-ab}]
+       [--ENABLE_DOMU {no,yes}] [--ENABLE_MM {no,yes}]
+       [--GRAPHICS {binaries,sources}]
+
+Config file description: Xen-Troops development setup for Renesas RCAR Gen3
+hardware
+
+optional arguments:
+  --MACHINE {salvator-xs-m3-2x4g,salvator-xs-h3-4x2g,salvator-x-h3-4x2g,h3ulcb-4x2g,h3ulcb-4x2g-kf,h3ulcb-4x2g-ab}
+                        RCAR Gen3-based device
+  --ENABLE_DOMU {no,yes}
+                        Build generic Yocto-based DomU
+  --ENABLE_MM {no,yes}  Enable Multimedia support
+  --GRAPHICS {binaries,sources}]
+                        Select how to use the GFX (3D hardware accelerator)
+
+# moulin prod-devel-rcar-virtio.yaml --help-config
+usage: moulin prod-devel-rcar-virtio.yaml
        [--MACHINE {salvator-xs-m3-2x4g,salvator-xs-h3-4x2g,salvator-x-h3-4x2g,h3ulcb-4x2g,h3ulcb-4x2g-kf,h3ulcb-4x2g-ab}]
        [--ENABLE_ANDROID {no,yes}] [--ENABLE_DOMU {no,yes}]
        [--ENABLE_MM {no,yes}] [--GRAPHICS {binaries,sources}]
@@ -107,6 +128,7 @@ optional arguments:
 
 To build for StarterKit H3 8GB with DomU (generic yocto-based virtual
 machine) use the following command line: `moulin prod-devel-rcar.yaml
+--MACHINE h3ulcb-4x2g --ENABLE_DOMU yes` or `moulin prod-devel-rcar-virtio.yaml
 --MACHINE h3ulcb-4x2g --ENABLE_DOMU yes`.
 
 Moulin will generate `build.ninja` file. After that - run `ninja` to
@@ -115,7 +137,7 @@ built 3 separate Yocto images. Depending on internet speed, this will
 take 2-4 hours on Intel i7 with 32GB of RAM and 100 GB SSD.
 
 To build for StarterKit H3 8GB with Android VM use the following
-command line: `moulin prod-devel-rcar.yaml --MACHINE
+command line: `moulin prod-devel-rcar-virtio.yaml --MACHINE
 h3ulcb-4x2g --ENABLE_ANDROID yes`.
 
 This will require even more time and space, as Android is quite big.
@@ -124,12 +146,21 @@ This will require even more time and space, as Android is quite big.
 
 During the build the following artifacts will be created.
 
-After `moulin prod-devel-rcar.yaml`:
+After `moulin prod-devel-rcar.yaml` or `moulin prod-devel-rcar-virtio.yaml`:
 ```
 | build.ninja
 ```
 
 After `ninja full.img`
+For `moulin prod-devel-rcar.yaml`:
+```
+| .stamps/
+| .ninja_*
+| yocto/            # Linux-based domains
+  | build_dom?/
+  | <fetched meta layers>/
+```
+For `moulin prod-devel-rcar-virtio.yaml`:
 ```
 | .stamps/
 | .ninja_*

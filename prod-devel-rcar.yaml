@@ -9,26 +9,18 @@ variables:
   DOM0_MACHINE: "generic-armv8-xt"
   DOMD_MACHINE: "%{MACHINE}"
   DOMU_MACHINE: "%{MACHINE}"
-  ANDROID_KERNEL_DIR: "android_kernel"
-  DOMA_DIR: "android"
   BUILD_TARGET_DOMD: "core-image-weston"
   BUILD_TARGET_DOMU: "core-image-weston"
   XT_DOMD_DTB_NAME: "%{SOC_FAMILY}-%{DOMD_MACHINE}-domd.dtb"
   XT_DOMU_DTB_NAME: "salvator-generic-domu.dtb"
-  XT_DOMA_DTB_NAME: ""
   XT_XEN_DTB_NAME: "%{SOC_FAMILY}-%{DOMD_MACHINE}-xen.dtb"
   XT_PVR_NUM_OSID: "2"
   XT_OP_TEE_FLAVOUR: "generic_dt"
   XT_GENERIC_DOMU_TAG: ""
-  XT_DOMA_TAG: ""
-  XT_DOMA_DDK_KM_PREBUILT_MODULE: ""
-  XT_DOMA_KERNEL_EXTRA_MODULES: ""
-  XT_DOMA_SOURCE_GROUP: ""
   XT_MULTIMEDIA_EVA_DIR : ""
   XT_PREBUILT_GSX_DIR: ""
   XT_USE_DDK1_11: "0"
   XT_MACHINEOVERRIDES_RAM: "mem8gb"
-  ANDROID_DEVICE: "xenvm"
 common_data:
   # Sources used by all yocto-based domains
   sources: &COMMON_SOURCES
@@ -151,7 +143,7 @@ components:
         - [XT_DOMD_CONFIG_NAME, "%{XT_DOMD_CONFIG_NAME}"]
         - [XT_DOMD_DTB_NAME, "%{XT_DOMD_DTB_NAME}"]
         - [XT_DOM_NAME, "dom0"]
-        - [XT_GUEST_INSTALL, "%{XT_GENERIC_DOMU_TAG} %{XT_DOMA_TAG} domd"]
+        - [XT_GUEST_INSTALL, "%{XT_GENERIC_DOMU_TAG} domd"]
 
         # Disable HWDB which quite huge (around 15MB) and is not required at all
         - [BAD_RECOMMENDATIONS:append, " udev-hwdb"]
@@ -214,8 +206,8 @@ components:
         - [MACHINE, "%{DOMD_MACHINE}"]
         - [XT_DOM_NAME, "domd"]
         - [XT_OP_TEE_FLAVOUR, "%{XT_OP_TEE_FLAVOUR}"]
-        - [XT_DEVICE_TREES, "%{XT_DOMD_DTB_NAME} %{XT_DOMA_DTB_NAME} %{XT_XEN_DTB_NAME}"]
-        - [XT_GUEST_INSTALL, "%{XT_GENERIC_DOMU_TAG} %{XT_DOMA_TAG}"]
+        - [XT_DEVICE_TREES, "%{XT_DOMD_DTB_NAME} %{XT_XEN_DTB_NAME}"]
+        - [XT_GUEST_INSTALL, "%{XT_GENERIC_DOMU_TAG}"]
         # Machine feature 'multimedia' is used to enable (VSP in domd) and (LOSSY build option in ATF)
         - [MACHINE_FEATURES:append, " multimedia"]
 
@@ -289,54 +281,6 @@ components:
         - "tmp/deploy/images/%{DOMU_MACHINE}/Image"
         - "tmp/deploy/images/%{DOMU_MACHINE}/%{BUILD_TARGET_DOMU}-%{DOMU_MACHINE}.ext4"
 
-  doma_kernel:
-    build-dir: "%{ANDROID_KERNEL_DIR}"
-    sources:
-      - type: repo
-        url: https://github.com/xen-troops/android_kernel_manifest.git
-        rev: "558225e69a399afd84a824522a3cfb2ed5b5efe5" # common-android12-5.4-xt-master
-        manifest: default.xml
-        depth: 1
-        groups: "%{XT_DOMA_SOURCE_GROUP}"
-        dir: "."
-    builder:
-      type: android_kernel
-      env:
-        - "TARGET_BOARD_PLATFORM=%{SOC_FAMILY}"
-        - "BUILD_CONFIG=common/build.config.xenvm"
-        - "SKIP_MRPROPER=1"
-        - "EXT_MODULES=%{XT_DOMA_KERNEL_EXTRA_MODULES}"
-      target_images:
-        - "out/android12-5.4/common/arch/arm64/boot/Image"
-        - "out/android12-5.4/staging/vendor/lib/modules/pvrsrvkm.ko"
-
-  doma:
-    build-dir: "%{DOMA_DIR}"
-    sources:
-      - type: repo
-        url: https://github.com/xen-troops/android_manifest.git
-        rev: "54c99538db4bf20053052eb861739f29bd592ea8" # android-12-master
-        manifest: doma.xml
-        depth: 1
-        groups: "%{XT_DOMA_SOURCE_GROUP}"
-        dir: "."
-    builder:
-      type: android
-      env:
-        - "TARGET_BOARD_PLATFORM=%{SOC_FAMILY}"
-        - "TARGET_PREBUILT_KERNEL=../%{ANDROID_KERNEL_DIR}/out/android12-5.4/common/arch/arm64/boot/Image"
-        - "DDK_KM_PREBUILT_MODULE=%{XT_DOMA_DDK_KM_PREBUILT_MODULE}"
-      lunch_target: xenvm-userdebug
-      target_images:
-        - "out/target/product/%{ANDROID_DEVICE}/boot.img"
-        - "out/target/product/%{ANDROID_DEVICE}/vendor_boot.img"
-        - "out/target/product/%{ANDROID_DEVICE}/super.img"
-        - "out/target/product/%{ANDROID_DEVICE}/userdata.img"
-        - "out/target/product/%{ANDROID_DEVICE}/vbmeta.img"
-        - "out/target/product/%{ANDROID_DEVICE}/system.img"
-      additional_deps:
-        - "../%{ANDROID_KERNEL_DIR}/out/android12-5.4/common/arch/arm64/boot/Image"
-
   pack-ipl:
     build-dir: "."
     builder:
@@ -391,7 +335,6 @@ parameters:
           SOC_FAMILY: "r8a7796"
           XT_DOMD_CONFIG_NAME: "domd-salvator-xs-m3-2x4g.cfg"
           XT_DOMU_CONFIG_NAME: "domu-generic-m3-2x4g.cfg"
-          XT_DOMA_CONFIG_NAME: "doma-generic-m3-2x4g.cfg"
           XT_OP_TEE_FLAVOUR: "salvator_m3_2x4g"
           XT_DOMD_DTB_NAME: "r8a77961-salvator-xs-2x4g-domd.dtb"
           XT_XEN_DTB_NAME: "r8a77961-salvator-xs-2x4g-xen.dtb"
@@ -402,7 +345,6 @@ parameters:
           SOC_FAMILY: "r8a7795"
           XT_DOMD_CONFIG_NAME: "domd-salvator-xs-h3-4x2g.cfg"
           XT_DOMU_CONFIG_NAME: "domu-generic-h3-4x2g.cfg"
-          XT_DOMA_CONFIG_NAME: "doma-generic-h3-4x2g.cfg"
           XT_OP_TEE_FLAVOUR: "salvator_h3_4x2g"
           XT_DOMD_DTB_NAME: "r8a7795-salvator-xs-4x2g-domd.dtb"
           XT_XEN_DTB_NAME: "r8a7795-salvator-xs-4x2g-xen.dtb"
@@ -413,7 +355,6 @@ parameters:
           SOC_FAMILY: "r8a7795"
           XT_DOMD_CONFIG_NAME: "domd-salvator-x-h3-4x2g.cfg"
           XT_DOMU_CONFIG_NAME: "domu-generic-h3-4x2g.cfg"
-          XT_DOMA_CONFIG_NAME: "doma-generic-h3-4x2g.cfg"
           XT_OP_TEE_FLAVOUR: "salvator_h3_4x2g"
           XT_DOMD_DTB_NAME: "r8a7795-salvator-x-4x2g-domd.dtb"
           XT_XEN_DTB_NAME: "r8a7795-salvator-x-4x2g-xen.dtb"
@@ -425,7 +366,6 @@ parameters:
           SOC_FAMILY: "r8a7795"
           XT_DOMD_CONFIG_NAME: "domd-h3ulcb-4x2g.cfg"
           XT_DOMU_CONFIG_NAME: "domu-generic-h3-4x2g.cfg"
-          XT_DOMA_CONFIG_NAME: "doma-generic-h3-4x2g.cfg"
           XT_OP_TEE_FLAVOUR: "salvator_h3_4x2g"
           XT_DOMD_DTB_NAME: "r8a77951-h3ulcb-4x2g-domd.dtb"
           XT_XEN_DTB_NAME: "r8a77951-h3ulcb-4x2g-xen.dtb"
@@ -436,7 +376,6 @@ parameters:
           SOC_FAMILY: "r8a7795"
           XT_DOMD_CONFIG_NAME: "domd-h3ulcb-4x2g-kf.cfg"
           XT_DOMU_CONFIG_NAME: "domu-generic-h3-4x2g.cfg"
-          XT_DOMA_CONFIG_NAME: "doma-generic-h3-4x2g.cfg"
           XT_OP_TEE_FLAVOUR: "salvator_h3_4x2g"
           XT_DOMD_DTB_NAME: "r8a77951-h3ulcb-4x2g-kf-domd.dtb"
           XT_XEN_DTB_NAME: "r8a77951-h3ulcb-4x2g-kf-xen.dtb"
@@ -460,103 +399,9 @@ parameters:
           SOC_FAMILY: "r8a7795"
           XT_DOMD_CONFIG_NAME: "domd-h3ulcb-4x2g-ab.cfg"
           XT_DOMU_CONFIG_NAME: "domu-generic-h3-4x2g.cfg"
-          XT_DOMA_CONFIG_NAME: "doma-generic-h3-4x2g.cfg"
           XT_OP_TEE_FLAVOUR: "salvator_h3_4x2g"
           XT_DOMD_DTB_NAME: "r8a77951-h3ulcb-4x2g-ab-domd.dtb"
           XT_XEN_DTB_NAME: "r8a77951-h3ulcb-4x2g-ab-xen.dtb"
-
-  ENABLE_ANDROID:
-    desc: "Build Android as a guest VM"
-    "no":
-      default: true
-    "yes":
-      overrides:
-        variables:
-          XT_DOMA_TAG: "doma"
-          XT_USE_DDK1_11: "1"
-          XT_DOMA_DTB_NAME: "salvator-generic-doma.dtb"
-        components:
-          # Build and install ivi-shell in case of Android builds
-          domd:
-            builder:
-              conf:
-                - [DISTRO_FEATURES:append, " ivi-shell"]
-          dom0:
-            builder:
-              conf:
-                - [XT_DOMA_DTB_NAME, "%{XT_DOMA_DTB_NAME}"]
-                - [XT_DOMA_CONFIG_NAME, "%{XT_DOMA_CONFIG_NAME}"]
-                # Flag, which allows to override parameters on the Yocto level.
-                # E.g. amount of used RAM for driver domain.
-                - [OVERRIDES:append, ":enable_android"]
-              additional_deps:
-                # This is not actually a hard dep. We just want to force Android build
-                - "../%{DOMA_DIR}/out/target/product/%{ANDROID_DEVICE}/boot.img"
-              external_src:
-                # Android uses DTB generated by DomD
-                doma: "%{YOCTOS_WORK_DIR}/%{DOMD_BUILD_DIR}/tmp/deploy/images/%{DOMD_MACHINE}/"
-        images:
-          android_only: &ANDROID_IMAGE
-            desc: "Android sub-image (this image is passed to Android VM as a separate block device)"
-            gpt_type:  A326898F-C893-4A64-9990-6F6B7BFDEF18 # GPT type for the upper GPT
-            type: gpt
-            partitions:
-              boot_a:
-                gpt_type: 49A4D17F-93A3-45C1-A0DE-F50B2EBE2599 # Android boot 1
-                type: raw_image
-                size: 30 MiB
-                resize: false
-                image_path: "%{DOMA_DIR}/out/target/product/%{ANDROID_DEVICE}/boot.img"
-              boot_b:
-                gpt_type: 20117F86-E985-4357-B9EE-374BC1D8487D # Android boot 2
-                type: empty
-                size: 30 MiB
-              vendor_boot_a:
-                gpt_type: DF24E5ED-8C96-4B86-B00B-79667DC6DE11 # Android sparse 1
-                type: raw_image
-                size: 30 MiB
-                resize: false
-                image_path: "%{DOMA_DIR}/out/target/product/%{ANDROID_DEVICE}/vendor_boot.img"
-              vendor_boot_b:
-                gpt_type: 7C29D3AD-78B9-452E-9DEB-D098D542F092 # Android sparse 2
-                type: empty
-                size: 30 MiB
-              vbmeta_a:
-                gpt_type: 19A710A2-B3CA-11E4-B026-10604B889DCF # Android meta
-                type: raw_image
-                size: 1 MiB
-                resize: false
-                image_path: "%{DOMA_DIR}/out/target/product/%{ANDROID_DEVICE}/vbmeta.img"
-              vbmeta_b:
-                gpt_type: 19A710A2-B3CA-11E4-B026-10604B889DCF # Android meta
-                type: empty
-                size: 1 MiB
-              misc:
-                gpt_type: EF32A33B-A409-486C-9141-9FFB711F6266 # Android misc
-                type: empty
-                filled: zeroes
-                size: 1 MiB
-              metadata:
-                gpt_type: 20AC26BE-20B7-11E3-84C5-6CFDB94711E9 # Android metadata
-                type: ext4
-                size: 11 MiB
-              rpmbemul:
-                gpt_type: DC76DDA9-5AC1-491C-AF42-A82591580C0D # Android data
-                type: empty
-                filled: zeroes
-                size: 1 MiB
-              super:
-                gpt_type: 4627AE27-CFEF-48A1-88FE-99C3509ADE26 # Android raw resources
-                type: android_sparse
-                image_path: "%{DOMA_DIR}/out/target/product/%{ANDROID_DEVICE}/super.img"
-              userdata:
-                gpt_type: 1B81E7E6-F50D-419B-A739-2AEEF8DA3335 # Android userdata
-                type: android_sparse
-                image_path: "%{DOMA_DIR}/out/target/product/%{ANDROID_DEVICE}/userdata.img"
-          full:
-            partitions:
-              android:
-                *ANDROID_IMAGE
 
   ENABLE_DOMU:
     desc: "Build generic Yocto-based DomU"
@@ -636,10 +481,6 @@ parameters:
           # for the linux
           # Directory containing ${SOC_NAME}_linux_gsx_binaries_gles.tar.gz
           XT_PREBUILT_GSX_DIR: "${TOPDIR}/../../../prebuilt_gsx"
-          # for the android
-          XT_DOMA_DDK_KM_PREBUILT_MODULE: "eva/pvr-km/pvrsrvkm.ko"
-          XT_DOMA_KERNEL_EXTRA_MODULES: ""
-          XT_DOMA_SOURCE_GROUP: "default"
         components:
           domd:
             builder:
@@ -655,15 +496,6 @@ parameters:
                 - [XT_PREBUILT_GSX_DIR, "%{XT_PREBUILT_GSX_DIR}"]
               layers:
                 - "../meta-xt-rcar/meta-xt-rcar-gles_common"
-          doma:
-            sources:
-              - type: unpack
-                file: rcar-prebuilts-graphics-xt-doma.tar.gz
-                dir: eva
-                archive_type: tar
-            builder:
-              env:
-                - "DDK_UM_PREBUILDS=eva/pvr-um"
 
     "sources":
       overrides:
@@ -689,8 +521,3 @@ parameters:
                 - [I_SWEAR_TO_MIGRATE_TO_PYTHON3, "yes"]
               layers:
                 - *GFX_LAYERS
-        # for the android
-        variables:
-          XT_DOMA_DDK_KM_PREBUILT_MODULE: "../%{ANDROID_KERNEL_DIR}/out/android12-5.4/staging/vendor/lib/modules/pvrsrvkm.ko"
-          XT_DOMA_KERNEL_EXTRA_MODULES: "imagination"
-          XT_DOMA_SOURCE_GROUP: "all"
