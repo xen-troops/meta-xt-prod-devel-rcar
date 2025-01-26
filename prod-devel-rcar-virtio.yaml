@@ -24,7 +24,6 @@ variables:
   XT_DOMA_SOURCE_GROUP: ""
   XT_MULTIMEDIA_EVA_DIR : ""
   XT_PREBUILT_GSX_DIR: ""
-  XT_USE_DDK1_11: "0"
   XT_MACHINEOVERRIDES_RAM: "mem8gb"
   ANDROID_KERNEL_BUILD_CONFIG: "//common-modules/xen-virtual-device:xen_virtual_device_aarch64_dist"
   ANDROID_KERNEL_DEPLOY_DIR: "out/deploy/common-modules/xen-virtual-device/xen_virtual_device_aarch64"
@@ -108,13 +107,6 @@ common_data:
     - [PREFERRED_PROVIDER_virtual/libgbm, "libgbm"]
     - [PREFERRED_PROVIDER_libgbm-dev, "libgbm"]
     - [BBMASK:append, " mesa-gl"]
-
-    - [XT_USE_DDK1_11, "%{XT_USE_DDK1_11}"]
-
-    # The bbappends below are only used for old DDK v1.11
-    - [BBMASK:append, " ${@bb.utils.contains('XT_USE_DDK1_11', '1', '', 'meta-xt-rcar-fixups/recipes-kernel/kernel-module-gles/kernel-module-gles.bbappend', d)}"]
-    - [BBMASK:append, " ${@bb.utils.contains('XT_USE_DDK1_11', '1', '', 'meta-xt-rcar-fixups/recipes-graphics/gles-module/gles-user-module.bbappend', d)}"]
-    - [BBMASK:append, " ${@bb.utils.contains('XT_USE_DDK1_11', '1', '', 'meta-xt-rcar-fixups/recipes-graphics/packagegroups/packagegroup-graphic-renesas.bbappend', d)}"]
 
   gfx_sources: &GFX_SOURCES
     - type: git
