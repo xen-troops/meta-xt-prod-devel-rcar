@@ -37,7 +37,7 @@ common_data:
       rev: "09d7a4c5fd4ebff2f78129f6798af1f4d699b26d" # master
     - type: git
       url: https://github.com/xen-troops/meta-xt-rcar.git
-      rev: "abc6c8bae27293ca2d04c7810006df4bb984cf8f" # master
+      rev: "f5b31e9cb4e3521bece7f3f1dd7473c60a17df7a" # kirkstone
   # Common configuration options for all yocto-based domains
   conf: &COMMON_CONF
     - [SSTATE_DIR, "${TOPDIR}/../common_data/sstate"]
