@@ -124,7 +124,7 @@ setenv flash_bootparam_sa0 'tftp 0x48000000 bootparam_sa0.bin; mmc dev 1 1; mmc 
 setenv flash_bl2 'tftp 0x48000000 bl2.bin; mmc dev 1 1; mmc write 0x48000000 0x1E 0x162;'
 setenv flash_cert_header_sa6 'tftp 0x48000000 cert_header_sa6_emmc.bin; mmc dev 1 1; mmc write 0x48000000 0x180 0x80;'
 setenv flash_bl31 'tftp 0x48000000 bl31.bin; mmc dev 1 1; mmc write 0x48000000 0x200 0xE00;'
-setenv flash_tee 'tftp 0x48000000 tee.bin; mmc dev 1 1; mmc write 0x48000000 0x1000 0x600;'
+setenv flash_tee 'tftp 0x48000000 tee-raw.bin; mmc dev 1 1; mmc write 0x48000000 0x1000 0x600;'
 setenv flash_u_boot 'tftp 0x48000000 u-boot.bin; mmc dev 1 2; mmc write 0x48000000 0x0 0x800;'
 setenv flash_z_loaders 'run flash_bootparam_sa0; run flash_bl2; run flash_cert_header_sa6; run flash_bl31; run flash_tee; run flash_u_boot;'
 ```
@@ -135,7 +135,7 @@ setenv flash_hf_bootparam_sa0 'tftp 0x48000000 bootparam_sa0.bin; erase 0x080000
 setenv flash_hf_bl2 'tftp 0x48000000 bl2.bin; erase 0x08040000 +0x${filesize}; cp.b 0x48000000 0x08040000 0x${filesize};'
 setenv flash_hf_cert_header_sa6 'tftp 0x48000000 cert_header_sa6.bin; erase 0x08180000 +0x${filesize}; cp.b 0x48000000 0x08180000 0x${filesize};'
 setenv flash_hf_bl31 'tftp 0x48000000 bl31.bin; erase 0x081C0000 +0x${filesize}; cp.b 0x48000000 0x081C0000 0x${filesize};'
-setenv flash_hf_tee 'tftp 0x48000000 tee.bin; erase 0x08200000 +0x${filesize}; cp.b 0x48000000 0x08200000 0x${filesize};'
+setenv flash_hf_tee 'tftp 0x48000000 tee-raw.bin; erase 0x08200000 +0x${filesize}; cp.b 0x48000000 0x08200000 0x${filesize};'
 setenv flash_hf_u_boot 'tftp 0x48000000 u-boot.bin; erase 0x08640000 +0x${filesize}; cp.b 0x48000000 0x08640000 0x${filesize};'
 setenv flash_hf_loaders 'run flash_hf_bootparam_sa0; run flash_hf_bl2; run flash_hf_cert_header_sa6; run flash_hf_bl31; run flash_hf_tee; run flash_hf_u_boot;'
 ```
