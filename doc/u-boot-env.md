@@ -18,6 +18,7 @@ Boot device is selected by setting 'bootcmd' variable. E.g. `setenv bootcmd run 
 ## Common settings, recommended for any boot device
 ```
 setenv bootargs
+setenv bootm_size
 setenv ethact ravb
 setenv ipaddr 192.168.1.10
 setenv serverip 192.168.1.100
