@@ -36,7 +36,7 @@ common_data:
       url: https://git.yoctoproject.org/poky
       rev: "e938b18b5342bd28eadb44ad39dbf1f5cf5be09b" # kirkstone
     - type: git
-      url: https://git.openembedded.org/meta-openembedded
+      url: https://github.com/openembedded/meta-openembedded
       rev: "9a24b7679810628b594cc5a9b52f77f53d37004f" # kirkstone
     - type: git
       url: https://git.yoctoproject.org/meta-virtualization
