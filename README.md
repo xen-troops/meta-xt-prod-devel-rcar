@@ -3,268 +3,84 @@
 # Table of contents
 
 - [Overview](#overview)
-- [Moulin project file](#moulin-project-file)
-- [Building the project](#building-the-project)
-  - [Requirements](#requirements)
-  - [Fetching](#fetching)
-  - [Building](#building)
-  - [Build products](#build-products)
-  - [Building with prebuilt graphics for DomD+DomU](#building-with-prebuilt-graphics-for-domddomu)
-  - [Building with prebuilt graphics and Android guest](#building-with-prebuilt-graphics-and-android-guest)
-    - [Creating SD card image](#creating-sd-card-image)
-    - [Using rouge in standalone mode](#using-rouge-in-standalone-mode)
-  - [Distro features](#distro-features)
-  - [Virtio support](#virtio-support)
+- [Prerequirements](#prerequirements)
+- [Build the product](#build-the-product)
+- [Flash the board](#flash-the-board)
 
 # Overview
 
-This repository contains Renesas RCAR Gen3-specific Yocto layers for
-Xen Troops distro and `moulin` project file to build it. Layers in this
-repository provide final recipes to build meta-xt-prod-devel-rcar
-distro. This distro is the main Xen Troops product, that we use to
-develop and integrate new features
+This repository contains Renesas RCAR Gen3-specific Yocto layers for Xen Troops
+distro and [moulin](https://github.com/xen-troops/moulin) project file to
+build it. Layers in this repository provide final recipes to build the
+meta-xt-prod-devel-rcar distro.
 
-Those layers *may* be added and used manually, but they were written
-with [Moulin](https://moulin.readthedocs.io/en/latest/) build system,
-as Moulin-based project files provide correct entries in local.conf
+Supported boards:
+- Renesas Starter Kit Premier 8GB (H3 ES3.0)
+- Renesas Starter Kit Premier 8GB with Kingfisher (H3 ES3.0)
+- Renesas Salvator-XS M3 with 8GB
+- Renesas Salvator-X H3 with 8GB
+- AosBox with Starter Kit Premier 8GB board
 
-# Moulin project file
+The following features are tested:
+- GPU sharing between domains
+- Linux guest domain
+- Android guest domain
+- Hardware 3D graphics in multiple domains
+- Networking in Linux and Android
+- Network (NFS) boot for Linux domains
+- OP-TEE client in the Linux guest
+- Virtualized OP-TEE
+- ARM-TF that boots into EL2
+- Multimedia (HW-assisted video decoding/encoding) support
+- SD or eMMC boot
+- Audio playback and recording
 
-Work is still in progress, but right now the following features are tested and working:
+Boards that are supported but not tested:
+- Renesas Salvator-XS M3 with 4GB memory
+- Renesas Salvator-XS H3 with 8GB memory
+- Renesas Starter Kit Pro (M3ULCB)
 
-* Renesas Salvator-XS M3 with 8GB memory is supported
-* Renesas Salvator-X H3 with 8GB memory is supported
-* Renesas Starter Kit Premier 8GB (H3 ES3.0)
-* Kingfisher with Starter Kit Premier 8GB board
-* AosBox with Starter Kit Premier 8GB board
-* GPU sharing between domains
-* 3 domains are being built: Linux based Dom0, DomD and DomU
-* Graphics back-end in DomD
-* Networking in DomD and DomU
-* Network (NFS) boot for DomD and DomU
-* OP-TEE client in DomU
-* Virtualized OP-TEE build
-* ARM-TF that boots into EL2
-* Multimedia (HW-assisted video decoding/encoding) support
-* SD or eMMC boot
-* Android VM support
 
-Features that are present but not tested:
+## Prerequirements
 
-* Renesas Salvator-XS M3 with 4GB memory
-* Renesas Salvator-XS H3 with 8GB memory
-* Renesas Starter Kit Pro (M3ULCB)
-* Audio back-end
+### hardware
+The x86 host machine, an SSD drive with 150GB of free space for the Linux guest,
+or 500GB for the Android guest.
 
-# Building the project
-## Requirements
-
-1. Ubuntu 18.0+ or any other Linux distribution which is supported by Poky/OE
-2. Development packages for Yocto. Refer to [Yocto
-   manual](https://docs.yoctoproject.org/ref-manual/system-requirements.html#required-packages-for-the-build-host).
-3. You need `Moulin` installed in your PC. Recommended way is to
-   install it for your user only: `pip3 install --user
-   git+https://github.com/xen-troops/moulin`. Make sure that your
-   `PATH` environment variable includes `${HOME}/.local/bin`.
-4. Ninja build system: `sudo apt install ninja-build` on Ubuntu
-
-## Fetching
-
-You can clone this whole repository, or download it as an archive.
-During the build few directories will be created and additional
-dependencies will be fetched into them.
-The build system will create build directory `yocto/` for yocto's
-meta-layers, and `android/` directory depending on the build options.
-
-## Building
-
-For the proper build of this product, we need to install the long list
-of host tools. To prevent possible conflicts and issues that are hard
-to explain during the build, we use the dedicated build container
-located in the `doc/` directory.
-This container is the ONLY supported and tested way to build the product.
-Please follow the steps in the `doc/Docker.md` to set up and use
-the build container.
-
-Moulin is used to generate Ninja build file: `moulin
-prod-devel-rcar.yaml` or `moulin
-prod-devel-rcar-virtio.yaml`.
-
-This project provides a number
-of additional options. You can use check them with
-`--help-config` command line option:
-
+### git
+Install `git` and create `~/.gitconfig` file
 ```
-# moulin prod-devel-rcar.yaml --help-config
-usage: moulin prod-devel-rcar.yaml
-       [--MACHINE {salvator-xs-m3-2x4g,salvator-xs-h3-4x2g,salvator-x-h3-4x2g,h3ulcb-4x2g,h3ulcb-4x2g-kf,h3ulcb-4x2g-ab}]
-       [--ENABLE_DOMU {no,yes}] [--ENABLE_MM {no,yes}]
-       [--GRAPHICS {binaries,sources}]
-
-Config file description: Xen-Troops development setup for Renesas RCAR Gen3
-hardware
-
-optional arguments:
-  --MACHINE {salvator-xs-m3-2x4g,salvator-xs-h3-4x2g,salvator-x-h3-4x2g,h3ulcb-4x2g,h3ulcb-4x2g-kf,h3ulcb-4x2g-ab}
-                        RCAR Gen3-based device
-  --ENABLE_DOMU {no,yes}
-                        Build generic Yocto-based DomU
-  --ENABLE_MM {no,yes}  Enable Multimedia support
-  --GRAPHICS {binaries,sources}]
-                        Select how to use the GFX (3D hardware accelerator)
-
-# moulin prod-devel-rcar-virtio.yaml --help-config
-usage: moulin prod-devel-rcar-virtio.yaml
-       [--MACHINE {salvator-xs-m3-2x4g,salvator-xs-h3-4x2g,salvator-x-h3-4x2g,h3ulcb-4x2g,h3ulcb-4x2g-kf,h3ulcb-4x2g-ab}]
-       [--ENABLE_ANDROID {no,yes}] [--ENABLE_DOMU {no,yes}]
-       [--ENABLE_MM {no,yes}] [--GRAPHICS {binaries,sources}]
-
-Config file description: Xen-Troops development setup for Renesas RCAR Gen3
-hardware
-
-optional arguments:
-  --MACHINE {salvator-xs-m3-2x4g,salvator-xs-h3-4x2g,salvator-x-h3-4x2g,h3ulcb-4x2g,h3ulcb-4x2g-kf,h3ulcb-4x2g-ab}
-                        RCAR Gen3-based device
-  --ENABLE_ANDROID {no,yes}
-                        Build Android as a guest VM
-  --ENABLE_DOMU {no,yes}
-                        Build generic Yocto-based DomU
-  --ENABLE_MM {no,yes}  Enable Multimedia support
-  --GRAPHICS {binaries,sources}]
-                        Select how to use the GFX (3D hardware accelerator)
+sudo apt install git
+git config --global user.name "your name"
+git config --global user.email "your e-mail"
 ```
 
-To build for StarterKit H3 8GB with DomU (generic yocto-based virtual
-machine) use the following command line: `moulin prod-devel-rcar.yaml
---MACHINE h3ulcb-4x2g --ENABLE_DOMU yes` or `moulin prod-devel-rcar-virtio.yaml
---MACHINE h3ulcb-4x2g --ENABLE_DOMU yes`.
-
-Moulin will generate `build.ninja` file. After that - run `ninja` to
-build the images. This will take some time and disk space, as it will
-built 3 separate Yocto images. Depending on internet speed, this will
-take 2-4 hours on Intel i7 with 32GB of RAM and 100 GB SSD.
-
-To build for StarterKit H3 8GB with Android VM use the following
-command line: `moulin prod-devel-rcar-virtio.yaml --MACHINE
-h3ulcb-4x2g --ENABLE_ANDROID yes`.
-
-This will require even more time and space, as Android is quite big.
-
-## Build products
-
-During the build the following artifacts will be created.
-
-After `moulin prod-devel-rcar.yaml` or `moulin prod-devel-rcar-virtio.yaml`:
+### docker
+Install Docker and add yourself to the `docker` group to run it without `sudo`
 ```
-| build.ninja
+sudo apt install docker-ce docker-ce-cli containerd.io docker-buildx-plugin docker-compose-plugin
+sudo groupadd docker
+sudo usermod -aG docker $USER
 ```
+Log out and log in again to properly apply the new group.
+Follow https://docs.docker.com/engine/install/linux-postinstall/ in case of any
+issue.
 
-After `ninja full.img`
-For `moulin prod-devel-rcar.yaml`:
+### prebuilt graphics binaries
+This product requires proprietary prebuilt binaries for graphics.
+Depending of the backends used (PV or virtio) you need different packages.
+
+If you are going to use virtio-based backends (prod-devel-rcar-virtio.yaml), you
+have to download Kirkstone-based packages
+- R-Car_Gen3_Series_Evaluation_Software_Package_for_Linux-20220121
+- R-Car_Gen3_Series_Evaluation_Software_Package_of_Linux_Drivers-20220121
+from https://www.renesas.com/en/products/automotive-products/automotive-system-chips-socs/r-car-h3-m3-documents-software.
+Find and extract `GSX_KM_H3.tar.bz2` and
+`INF_r8a77951_linux_gsx_binaries_gles.tar.bz2`. Rename one of the files
 ```
-| .stamps/
-| .ninja_*
-| yocto/            # Linux-based domains
-  | build_dom?/
-  | <fetched meta layers>/
+mv INF_r8a77951_linux_gsx_binaries_gles.tar.bz2 r8a77951_linux_gsx_binaries_gles.tar.bz2
 ```
-For `moulin prod-devel-rcar-virtio.yaml`:
-```
-| .stamps/
-| .ninja_*
-| yocto/            # Linux-based domains
-  | build_dom?/
-  | <fetched meta layers>/
-| android_kernel/   # Android kernel
-| android/          # Android
-```
-
-## Building with prebuilt graphics for DomD+DomU
-
-Regular build, as described above, requires access to closed repo
-with proprietary sources. But you may use prebuilt graphics binaries.
-Please see instruction below.
-
-1. You need to have prebuilt graphic binaries. Pay attention that you
-can't use prebuilt binaries from Renesas for the non-virtio build because
-those packages do not support virtualization. For the virtio build,
-on the contrary, prebuilt binaries from Renesas must be used because of
-GPU passthrough (native mode) instead of GPU sharing is in use there.
-2. Put these binaries into `<directory_with_yaml>/../prebuilt_gsx/`.
-By default prebuilt binaries are expected to be in the dedicated folder
-on the same level as your folder with yaml. But this can be changed in
-yaml file. Provide your directory in line
-```
-          XT_PREBUILT_GSX_DIR: "${TOPDIR}/../../../prebuilt_gsx"
-```
-Here we use the yocto variable `${TOPDIR}`. You may use yaml's variables
-like `%{YOCTOS_WORK_DIR}`, but pay attention that `%` should be used when
-referring to variables defined inside yaml. Also, you may provide an
-absolute path on your build host.
-
-During build each domain will look for its binaries inside the directory
-with its name - "domd" or "domu". This name is specified by variable
-`%{XT_DOM_NAME}` in yaml for each domain.
-
-So, by default, you should have `domd` and `domu` folders with archives
-under `prebuilt_gsx`. It looks like this:
-```
-prebuilt_gsx/
-  domd/
-    GSX_KM_H3.tar.bz2
-    r8a77951_linux_gsx_binaries_gles.tar.bz2
-  domu/
-    GSX_KM_H3.tar.bz2
-    r8a77951_linux_gsx_binaries_gles.tar.bz2
-<your work directory with prod-devel-rcar.yaml and build.ninja generated by moulin>
-  prod-devel-rcar.yaml
-  build.ninja
-  <... other build related files and directories ...>
-```
-
-3. Use `--GRAPHICS binaries` command line option for moulin.
-
-Run build as usual with `ninja`.
-
-## Building with prebuilt graphics and Android guest
-
-### Preparation
-
-You need to prepare prebuilt graphic binaries before building. Since Android
-guest is supported only in the virtio-based build, we use prebuilt graphic
-binaries without virtualization.
-
-1. Create a folder for the prebuilt binaries
-`<directory_with_yaml>/../prebuilt_gsx/domd/`. You may use any other folder,
-but it should be specified inside the `prod-devel-rcar-virtio.yaml` variable
-`XT_PREBUILT_GSX_DIR`.
-
-2. Download the "R-Car Gen3 Evaluation Software Package for Linux for Yocto v5.9.0"
-from Renesas site:
-https://www.renesas.com/us/en/application/automotive/r-car-h3-m3-h2-m2-e2-documents-software
-(registration may be required).
-
-Two files are required:
-- [R-Car_Gen3_Series_Evaluation_Software_Package_for_Linux-20220121.zip](https://www.renesas.com/en/document/swo/r-cargen3seriesevaluationsoftwarepackageforlinux-20220121?r=1245356)
-- [R-Car_Gen3_Series_Evaluation_Software_Package_of_Linux_Drivers-20220121.zip](https://www.renesas.com/en/document/swo/r-cargen3seriesevaluationsoftwarepackageoflinuxdrivers-20220121?r=1245356)
-
-3. Extract the required drivers from the downloaded pack of archives.
-
-- From `R-Car_Gen3_Series_Evaluation_Software_Package_of_Linux_Drivers-20220121.zip`
-get `RCH3G001L5101ZDO_4_2_1.zip`. From that last archive,
-get `GSX_KM_H3.tar.bz2`, and put it into the folder `prebuilt_gsx/domd/`
-created in step 1.
-
-- From `R-Car_Gen3_Series_Evaluation_Software_Package_for_Linux-20220121.zip`
-get `INFRTM8RC7795ZG300Q10JPL3E_4_2_1.zip`. From that last archive, get
-`INF_r8a77951_linux_gsx_binaries_gles.tar.bz2`.
-
-Rename `INF_r8a77951_linux_gsx_binaries_gles.tar.bz2` to
-`r8a77951_linux_gsx_binaries_gles.tar.bz2`, and put it into the folder
-`prebuilt_gsx/domd/`  created in step 1.
-
-As the result of these operations, you should have `prebuilt_gsx/domd/` folder
-with the following files:
+and put both of them like this
 ```
 prebuilt_gsx/
   domd/
@@ -272,99 +88,142 @@ prebuilt_gsx/
     r8a77951_linux_gsx_binaries_gles.tar.bz2
 <your work directory with prod-devel-rcar-virtio.yaml>
   prod-devel-rcar-virtio.yaml
-  <... other build related files and directories ...>
+  <... other build-related files and directories ...>
 ```
 
-### Build
+If you plan to use PV backends (prod-devel-rcar.yaml), please contact Renesas
+to obtain graphics with virtualization support. Please note that these are not
+the same package that can be downloaded from the Renesas website.
 
-Use `--GRAPHICS binaries` command line option for moulin:
+### TFTP server
+Install TFTP server
 ```
-moulin prod-evel-rcar-virtio.yaml --MACHINE h3ulcb-4x2g --ENABLE_ANDROID yes --GRAPHICS binaries
+sudo apt-get install tftp tftpd-hpa
+```
+
+### flashing tools
+Get `rcar_flash` and `xt_imager`.
+
+```
+https://github.com/xen-troops/rcar_flash.git
+curl -O https://raw.githubusercontent.com/xen-troops/xt-imager/refs/heads/main/xt_imager.py
+chmod +x ./xt_imager.py
+```
+
+You need to install a few Python3 packages for these tools, and set proper
+access rights
+```
+sudo apt install python3-serial python3-ftdi
+sudo usermod -aG dialout $USER
+```
+See https://github.com/xen-troops/rcar_flash/blob/main/README.md#initial-setup
+for details.
+
+
+## Build the product
+Get the sources
+```
+git clone https://github.com/xen-troops/meta-xt-prod-devel-rcar.git
+cd meta-xt-prod-devel-rcar
+export WORK_DIR=`pwd`
+```
+
+Create the build container
+```
+docker build . -f ./doc/Dockerfile --build-arg "USER_ID=$(id -u)" --build-arg "USER_GID=$(id -g)" -t u20
+```
+Start the build container
+```
+./doc/run_docker.sh -w . -d u20
+```
+Create the product configuration, selecting PV/virtio backends, machine, and
+guests depending on your requirements.
+
+Here are some examples.
+
+Starterkit Premier H3 8GB (h3ulcb-4x2g), Linux guest
+```
+moulin prod-devel-rcar.yaml --ENABLE_DOMU yes
+```
+Starterkit Premier H3 8GB with Kingfisher (h3ulcb-4x2g-kf), Linux guest
+```
+moulin prod-devel-rcar.yaml --MACHINE h3ulcb-4x2g-kf --ENABLE_DOMU yes
+```
+Starterkit Premier H3 8GB with Kingfisher (h3ulcb-4x2g-kf), Android guest, use
+multimedia codecs
+```
+moulin prod-devel-rcar.yaml --MACHINE h3ulcb-4x2g-kf --ENABLE_ANDROID yes --ENABLE_MM yes
+```
+
+Start the build
+```
 ninja full.img
 ```
 
-## Creating SD card image
+Building takes up to 5-8 hours, or more, depending on your host's hardware and
+internet bandwidth.
 
-Image file can be created with `rouge` tool. This is a companion
-application for `moulin`.
 
-It can be invoked either as a standalone tool, or via Ninja.
+## Flash the board
 
-### Creating image(s) via Ninja
+Examples below are provided for the StarterKit Premier (h3ulcb-4x2g) with the
+product running from the eMMC. For other cases, please see manuals for
+corresponding tools and boards.
 
-Newer versions of `moulin` (>= 0.5) will generate two additional Ninja
-targets:
+### loaders
+We use [rcar_flash](https://github.com/xen-troops/rcar_flash) for flashing
+loaders.
 
- - `image-full`
- - `image-android_only` (if building with `--ENABLE_ANDROID=yes`)
-
-Thus, you can just run `ninja image-full` or `ninja full.img` which
-will generate the `full.img` in your build directory.
-
-Then you can use `dd` to write this image to your SD card. Don't
-forget `conv=sparse` option for `dd` to speed up writing.
-
-### Using `rouge` in standalone mode
-
-In this mode you can write image right to SD card. But it requires
-additional options.
-
-In standalone mode`rouge` accepts the same parameters like
-`--MACHINE`, `--ENABLE_ANDROID`, `--ENABLE_DOMU` as `moulin` do.
-
-This XT product provides two images: `full` and `android_only`. Latter
-is available only when `--ENABLE_ANDROID=yes`.
-
-You can prepare image by running
-
+All of the loaders (IPLs - Initial Program Loaders) are located in the
+`${WORK_DIR}/yocto/build-domd/tmp/deploy/images/h3ulcb/` except one file.
+You need to copy it manually
 ```
-# rouge prod-devel-rcar.yaml --ENABLE_DOMU=yes --ENABLE_ANDROID=no -i full
+cp ${WORK_DIR}/yocto/build-domd/tmp/deploy/images/h3ulcb/optee/tee-h3ulcb.srec ${WORK_DIR}/yocto/build-domd/tmp/deploy/images/h3ulcb/
 ```
 
-This will create file `full.img` in your current directory.
-
-Also you can write image directly to a SD card by running
-
+Flash the IPLs with the following command
 ```
-# sudo rouge prod-devel-rcar.yaml --ENABLE_DOMU=yes --ENABLE_ANDROID=no -i full -so /dev/sdX
+./rcar_flash.py flash -c -f -b h3ulcb_4x2 -s /dev/ttyUSB0 -p ${WORK_DIR}/yocto/build-domd/tmp/deploy/images/h3ulcb/firmware all
 ```
 
-**BE SURE TO PROVIDE CORRECT DEVICE NAME**. `rouge` have no
-interactive prompts and will overwrite your device right away.
-**ALL DATA WILL BE LOST**.
+### u-boot env
+Connect to the board using `picocom` or another terminal. Reboot the board and
+press any key to stop u-boot.
 
-If you want to generate only Android sub-image use `-i android_only`
-option.
+Set the MAC according to the sticker on the Ethernet connector. Set the board
+IP and server IP.
+```
+setenv ethaddr __:__:__:__:__:__
+setenv ipaddr __.__.__.__
+setenv serverip __.__.__.__
+```
 
-For more information about `rouge` check its
-[manual](https://moulin.readthedocs.io/en/latest/rouge.html).
+Set commands required for the proper work of the u-boot.
 
-# Distro features
+For the h3ulcb-4x2g with the product running on the eMMC
+```
+env delete bootargs
+env delete bootm_size
 
-This repository introduces the following Yocto **DISTRO_FEATURES**. They are used, or not used, depending on the moulin build parameters.
+setenv bootcmd_emmc=run emmc_xen_load; run emmc_dtb_load; run emmc_kernel_load; run emmc_xenpolicy_load; run emmc_initramfs_load; bootm 0x48080000 0x84000000 0x48000000
+setenv emmc_dtb_load=ext2load mmc 1:1 0x48000000 xen.dtb; fdt addr 0x48000000; fdt resize; fdt mknode / boot_dev; fdt set /boot_dev device mmcblk0
+setenv emmc_initramfs_load=ext2load mmc 1:1 0x84000000 uInitramfs
+setenv emmc_kernel_load=ext2load mmc 1:1 0x8a000000 Image
+setenv emmc_xen_load=ext2load mmc 1:1 0x48080000 xen
+setenv emmc_xenpolicy_load=ext2load mmc 1:1 0x8c000000 xenpolicy
+saveenv
+```
 
-|Distro feature|Comment|Typical use-case|
-|---|---|---|
-|displbe|Specifies whether to build and to install [this](https://github.com/xen-troops/displ_be) implementation as a 'displbe' systemd service.|Disabled in virtio build|
-|sndbe|Specifies whether to build and to install [this](https://github.com/xen-troops/snd_be) implementation as a 'sndbe' systemd service.|Disabled in virtio build|
-|enable_virtio|Specifies, whether we are building system, in which DomD should share devices with the guest domain over the virtio specification.|Enabled in virtio build|
+In case of the usage of TFTP/NFS or SD cards, please see [doc/u-boot-env.md].
 
-# Virtio support
-To build the product with the support of virtio, use the [prod-devel-rcar-virtio.yaml](https://github.com/xen-troops/meta-xt-prod-devel-rcar/blob/master/prod-devel-rcar-virtio.yaml).
+### image
+Use `xt_imager` to flash the image to the eMMC
 
-Building with this moulin configuration will lead to the following high-level changes within the system:
+```
+xt_imager.py -s /dev/ttyUSB0 -b 115200 -t /srv/tftp/ ${WORK_DIR}/full.img
+```
+Specify the proper serial device and the root of the TFTP server.
 
-- Disabled displbe.service in the driver domain
-- Disabled sndbe.service in the driver domain
-- Disabled display-manager.service in the driver domain
-- Extended doma(u).service in the control domain. The extension is done through the systemd drop-in mechanism. For more details refer to the meta-xt-common->meta-xt-control-domain-virtio. Search for doma(u).bbappend
-- Modified Xen configuration for guest domains
-- Changed memory amount assigned to the driver and the guest domains
-- Changed set of the installed packages, e.g. qemu
+After reboot, the board will start loading xen with all domains from the eMMC.
+The demo is installed and ready for work.
 
-To find the majority of those differences search for the:
-
-- "enable_virtio" keyword,
-- meta-xt-...-virtio layers,
-
-in [this](https://github.com/xen-troops/meta-xt-prod-devel-rcar) and [meta-xt-common](https://github.com/xen-troops/meta-xt-common) repositories.
