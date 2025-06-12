@@ -1,5 +1,9 @@
 # meta-xt-prod-devel-rcar #
 
+# Support for this product has been DISCONTINUED.
+# As well as the development of the new features and fixes.
+# In case of any needs or support requests, please contact Renesas' sales team.
+
 # Table of contents
 
 - [Overview](#overview)
