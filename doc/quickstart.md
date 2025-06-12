@@ -35,17 +35,18 @@ The following features are tested:
 - SD or eMMC boot
 - Audio playback and recording
 
-Boards that are supported but not tested:
-- Renesas Salvator-XS M3 with 4GB memory
-- Renesas Salvator-XS H3 with 8GB memory
-- Renesas Starter Kit Pro (M3ULCB)
+
+To simplify the document, this quicktart guide assumes that the build is
+performed on the x86 Ubuntu host, inside the Docker container.
 
 
 ## Prerequirements
 
 ### hardware
-The x86 host machine, an SSD drive with 150GB of free space for the Linux guest,
-or 500GB for the Android guest.
+It is strogly recommended to have an SSD drive and 32GB of RAM due to significant
+usage of the resources during the build.
+At least 150GB of free space is expected for the Linux guest, and 500GB for
+the Android guest.
 
 ### git
 Install `git` and create `~/.gitconfig` file
@@ -54,6 +55,7 @@ sudo apt install git
 git config --global user.name "your name"
 git config --global user.email "your e-mail"
 ```
+The `~/.gitconfig` is required due to limitations of the existing `Dockerfile`.
 
 ### docker
 Install Docker and add yourself to the `docker` group to run it without `sudo`
@@ -76,7 +78,8 @@ have to download Kirkstone-based packages
 - R-Car_Gen3_Series_Evaluation_Software_Package_of_Linux_Drivers-20220121
 from https://www.renesas.com/en/products/automotive-products/automotive-system-chips-socs/r-car-h3-m3-documents-software.
 Find and extract `GSX_KM_H3.tar.bz2` and
-`INF_r8a77951_linux_gsx_binaries_gles.tar.bz2`. Rename one of the files
+`INF_r8a77951_linux_gsx_binaries_gles.tar.bz2`.
+Rename INF_r8a77951_linux_gsx_binaries_gles.tar.bz2.
 ```
 mv INF_r8a77951_linux_gsx_binaries_gles.tar.bz2 r8a77951_linux_gsx_binaries_gles.tar.bz2
 ```
@@ -96,7 +99,7 @@ to obtain graphics with virtualization support. Please note that these are not
 the same package that can be downloaded from the Renesas website.
 
 ### TFTP server
-Install TFTP server
+Install TFTP server. It is required for the `xt_imager` tool to flash IPLs.
 ```
 sudo apt-get install tftp tftpd-hpa
 ```
@@ -139,20 +142,21 @@ Start the build container
 Create the product configuration, selecting PV/virtio backends, machine, and
 guests depending on your requirements.
 
-Here are some examples.
+Here are some examples. Use `moulin prod-devel-rcar-virtio.yaml --help-config`
+to see other available build options.
 
 Starterkit Premier H3 8GB (h3ulcb-4x2g), Linux guest
 ```
-moulin prod-devel-rcar.yaml --ENABLE_DOMU yes
+moulin prod-devel-rcar-virtio.yaml --ENABLE_DOMU yes
 ```
 Starterkit Premier H3 8GB with Kingfisher (h3ulcb-4x2g-kf), Linux guest
 ```
-moulin prod-devel-rcar.yaml --MACHINE h3ulcb-4x2g-kf --ENABLE_DOMU yes
+moulin prod-devel-rcar-virtio.yaml --MACHINE h3ulcb-4x2g-kf --ENABLE_DOMU yes
 ```
 Starterkit Premier H3 8GB with Kingfisher (h3ulcb-4x2g-kf), Android guest, use
 multimedia codecs
 ```
-moulin prod-devel-rcar.yaml --MACHINE h3ulcb-4x2g-kf --ENABLE_ANDROID yes --ENABLE_MM yes
+moulin prod-devel-rcar-virtio.yaml --MACHINE h3ulcb-4x2g-kf --ENABLE_ANDROID yes --ENABLE_MM yes
 ```
 
 Start the build
@@ -160,11 +164,19 @@ Start the build
 ninja full.img
 ```
 
-Building takes up to 5-8 hours, or more, depending on your host's hardware and
-internet bandwidth.
+Building takes up to 5-8 hours, or more, on the regular Intel i7 CPU, depending
+on your host's hardware and internet bandwidth.
+
+After the successful building, you may quit the container.
 
 
 ## Flash the board
+
+The flashing is performed on the host (not in the container).
+
+For the simplicity of this guide, we assume that only one board is connected
+to the host, with `/dev/ttyUSB0` as the serial device used as the console.
+The TFTP server on the host has `/srv/tftp` as TFTP root directory.
 
 Examples below are provided for the StarterKit Premier (h3ulcb-4x2g) with the
 product running from the eMMC. For other cases, please see manuals for
@@ -175,7 +187,8 @@ We use [rcar_flash](https://github.com/xen-troops/rcar_flash) for flashing
 loaders.
 
 All of the loaders (IPLs - Initial Program Loaders) are located in the
-`${WORK_DIR}/yocto/build-domd/tmp/deploy/images/h3ulcb/` except one file.
+`${WORK_DIR}/yocto/build-domd/tmp/deploy/images/h3ulcb/` except one file, due to
+the known to us issue in the yocto recipes.
 You need to copy it manually
 ```
 cp ${WORK_DIR}/yocto/build-domd/tmp/deploy/images/h3ulcb/optee/tee-h3ulcb.srec ${WORK_DIR}/yocto/build-domd/tmp/deploy/images/h3ulcb/

@@ -28,6 +28,10 @@ Those layers *may* be added and used manually, but they were written
 with [Moulin](https://moulin.readthedocs.io/en/latest/) build system,
 as Moulin-based project files provide correct entries in local.conf
 
+As a quick start, you can check [doc/quickstart.md](doc/quickstart.md)
+that provides steps for building and running the virtio-based product
+on the H3 StarterKit with eMMC boot.
+
 # Moulin project file
 
 Work is still in progress, but right now the following features are tested and working:
