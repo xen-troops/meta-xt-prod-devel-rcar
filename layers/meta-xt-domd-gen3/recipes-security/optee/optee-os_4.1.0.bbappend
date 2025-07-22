@@ -17,3 +17,9 @@ EXTRA_OEMAKE += "${@bb.utils.contains('XT_GUEST_INSTALL', 'doma', '${ANDROID_EXT
 do_install:append() {
     install -m 644 ${B}/core/tee.srec ${D}${nonarch_base_libdir}/firmware/tee-${MACHINE}.srec
 }
+
+do_deploy:append() {
+    if [ -f "${DEPLOYDIR}/optee/tee-${MACHINE}.srec" ]; then
+        ln -sfr "${DEPLOYDIR}/optee/tee-${MACHINE}.srec" "${DEPLOYDIR}/tee-${MACHINE}.srec"
+    fi
+}
