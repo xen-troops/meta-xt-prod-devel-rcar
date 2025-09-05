@@ -355,7 +355,7 @@ components:
     build-dir: "."
     builder:
       type: archive
-      base_dir: "%{YOCTOS_WORK_DIR}/%{DOMD_BUILD_DIR}/tmp/deploy/images/%{DOMD_MACHINE}/firmware/"
+      base_dir: "%{YOCTOS_WORK_DIR}/%{DOMD_BUILD_DIR}/tmp/deploy/images/%{DOMD_MACHINE}/"
       name: "ipl-%{DOMD_MACHINE}.tar.bz2"
       items:
         - "bl2-%{DOMD_MACHINE}-4x2g.bin"
@@ -368,8 +368,8 @@ components:
         - "cert_header_sa6-4x2g.srec"
         - "cert_header_sa6_emmc.bin"
         - "cert_header_sa6_emmc.srec"
-        - "../optee/tee-raw.bin"
-        - "../optee/tee-%{DOMD_MACHINE}.srec"
+        - "optee/tee-raw.bin"
+        - "optee/tee-%{DOMD_MACHINE}.srec"
         - "u-boot-elf-%{DOMD_MACHINE}.srec"
         - "u-boot-%{DOMD_MACHINE}.bin"
 
