@@ -237,6 +237,22 @@ components:
         - "tmp/deploy/images/%{DOMD_MACHINE}/%{XT_XEN_DTB_NAME}"
         - "tmp/deploy/images/%{DOMD_MACHINE}/%{BUILD_TARGET_DOMD}-%{DOMD_MACHINE}.ext4"
 
+        # These dependencies are required for correct operation of "pack-ipl" when "domd" has not yet been built.
+        - "tmp/deploy/images/%{DOMD_MACHINE}/bl2-%{DOMD_MACHINE}-4x2g.bin"
+        - "tmp/deploy/images/%{DOMD_MACHINE}/bl2-%{DOMD_MACHINE}-4x2g.srec"
+        - "tmp/deploy/images/%{DOMD_MACHINE}/bl31-%{DOMD_MACHINE}-4x2g.bin"
+        - "tmp/deploy/images/%{DOMD_MACHINE}/bl31-%{DOMD_MACHINE}-4x2g.srec"
+        - "tmp/deploy/images/%{DOMD_MACHINE}/bootparam_sa0-4x2g.bin"
+        - "tmp/deploy/images/%{DOMD_MACHINE}/bootparam_sa0-4x2g.srec"
+        - "tmp/deploy/images/%{DOMD_MACHINE}/cert_header_sa6-4x2g.bin"
+        - "tmp/deploy/images/%{DOMD_MACHINE}/cert_header_sa6-4x2g.srec"
+        - "tmp/deploy/images/%{DOMD_MACHINE}/cert_header_sa6_emmc.bin"
+        - "tmp/deploy/images/%{DOMD_MACHINE}/cert_header_sa6_emmc.srec"
+        - "tmp/deploy/images/%{DOMD_MACHINE}/optee/tee-raw.bin"
+        - "tmp/deploy/images/%{DOMD_MACHINE}/optee/tee-%{DOMD_MACHINE}.srec"
+        - "tmp/deploy/images/%{DOMD_MACHINE}/u-boot-elf-%{DOMD_MACHINE}.srec"
+        - "tmp/deploy/images/%{DOMD_MACHINE}/u-boot-%{DOMD_MACHINE}.bin"
+
   domu:
     build-dir: "%{YOCTOS_WORK_DIR}"
     sources:
