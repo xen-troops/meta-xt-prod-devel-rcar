@@ -9,6 +9,7 @@
   - [Fetching](#fetching)
   - [Building](#building)
   - [Build products](#build-products)
+  - [Pack-IPL: Packaging Boot Artifacts](#pack-ipl-packaging-boot-artifacts)
   - [Building with prebuilt graphics for DomD+DomU](#building-with-prebuilt-graphics-for-domddomu)
   - [Building with prebuilt graphics and Android guest](#building-with-prebuilt-graphics-and-android-guest)
     - [Creating SD card image](#creating-sd-card-image)
@@ -178,6 +179,22 @@ For `moulin prod-devel-rcar-virtio.yaml`:
 | android_kernel/   # Android kernel
 | android/          # Android
 ```
+
+## Pack-IPL: Packaging Boot Artifacts
+
+There is a possibility of quickly packaging boot artifacts. These artifacts are generated during the `domd` build process and are used for flashing the board.
+
+The product provides two options for packaging artifacts:
+- Pack-ipl – used for all machines described in the product YAML file except `salvator-xs-m3-2x4g`. Run with the command:
+```
+ninja pack-ipl
+```
+- Pack-ipl-m3 – used only for the `salvator-xs-m3-2x4g` machine, because it is specific and uses its own `-2x4g` memory suffix. Run with the command:
+```
+ninja pack-ipl-m3
+```
+Note: To generate artifacts, the `domd` component must be built. If it has not been built before, its build will start automatically.
+After successful execution, a `*.tar.bz2` archive will be created in the project directory. This archive will contain all the required artifacts for the selected board.
 
 ## Building with prebuilt graphics for DomD+DomU
 
