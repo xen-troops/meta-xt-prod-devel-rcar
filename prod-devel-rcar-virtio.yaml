@@ -389,6 +389,28 @@ components:
         - "u-boot-elf-%{DOMD_MACHINE}.srec"
         - "u-boot-%{DOMD_MACHINE}.bin"
 
+  pack-ipl-m3:
+    build-dir: "."
+    builder:
+      type: archive
+      base_dir: "%{YOCTOS_WORK_DIR}/%{DOMD_BUILD_DIR}/tmp/deploy/images/%{DOMD_MACHINE}/"
+      name: "ipl-%{DOMD_MACHINE}s-m3-2x4g.tar.bz2"
+      items:
+        - "bl2-%{DOMD_MACHINE}.bin"
+        - "bl2-%{DOMD_MACHINE}.srec"
+        - "bl31-%{DOMD_MACHINE}.bin"
+        - "bl31-%{DOMD_MACHINE}.srec"
+        - "bootparam_sa0.bin"
+        - "bootparam_sa0.srec"
+        - "cert_header_sa6.bin"
+        - "cert_header_sa6.srec"
+        - "cert_header_sa6_emmc.bin"
+        - "cert_header_sa6_emmc.srec"
+        - "optee/tee-raw.bin"
+        - "optee/tee-%{DOMD_MACHINE}.srec"
+        - "u-boot-elf-%{DOMD_MACHINE}.srec"
+        - "u-boot-%{DOMD_MACHINE}.bin"
+
 images:
   full:
     type: gpt
@@ -425,6 +447,19 @@ parameters:
           XT_OP_TEE_FLAVOUR: "salvator_m3_2x4g"
           XT_DOMD_DTB_NAME: "r8a77961-salvator-xs-2x4g-domd.dtb"
           XT_XEN_DTB_NAME: "r8a77961-salvator-xs-2x4g-xen.dtb"
+        components:
+          domd:
+            builder:
+              target_images:
+                # These dependencies are required for correct operation of "pack-ipl-m3" when "domd" has not yet been built.
+                - "tmp/deploy/images/%{DOMD_MACHINE}/bl2-%{DOMD_MACHINE}.bin"
+                - "tmp/deploy/images/%{DOMD_MACHINE}/bl2-%{DOMD_MACHINE}.srec"
+                - "tmp/deploy/images/%{DOMD_MACHINE}/bl31-%{DOMD_MACHINE}.bin"
+                - "tmp/deploy/images/%{DOMD_MACHINE}/bl31-%{DOMD_MACHINE}.srec"
+                - "tmp/deploy/images/%{DOMD_MACHINE}/bootparam_sa0.bin"
+                - "tmp/deploy/images/%{DOMD_MACHINE}/bootparam_sa0.srec"
+                - "tmp/deploy/images/%{DOMD_MACHINE}/cert_header_sa6.bin"
+                - "tmp/deploy/images/%{DOMD_MACHINE}/cert_header_sa6.srec"
     salvator-xs-h3-4x2g:
       overrides:
         variables:
